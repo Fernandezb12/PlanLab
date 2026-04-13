@@ -19,7 +19,8 @@ export default function RegisterPage() {
         <section className="rounded-3xl border border-slate-200 bg-white p-7 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">Registro</p>
           <h2 className="mt-2 text-2xl font-bold">Crea tu cuenta de docente</h2>
-          <p className="mt-2 mb-6 text-sm text-slate-500">Completa estos datos para comenzar tu onboarding inicial en PlanLab.</p>
+          <p className="mt-1 text-xs font-medium text-brand-600">Paso 1 de 1 · Perfil inicial</p>
+          <p className="mt-2 mb-6 text-sm text-slate-500">Completa estos datos para activar una experiencia personalizada desde tu primer ingreso.</p>
           <RegisterOnboardingForm />
           <p className="mt-6 text-sm text-slate-500">
             ¿Ya tienes una cuenta?{" "}

@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const educationLevels = [
-  "Educación Inicial",
-  "Educación Básica",
+  "Básica Primaria",
+  "Básica Secundaria",
   "Educación Media",
-  "Educación Técnico Profesional",
-  "Educación Superior"
+  "Educación Superior",
+  "Otro"
 ] as const;
 
 export const loginSchema = z.object({
