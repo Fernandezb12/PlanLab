@@ -24,7 +24,7 @@ export const RegisterOnboardingForm = () => {
 
   const onSubmit = form.handleSubmit((values) => {
     console.log("Mock register", values);
-    alert("Registro simulado completado. Próximo paso: activación real con Supabase.");
+    alert("Onboarding simulado completado. Próximo paso: activación real con Supabase.");
   });
 
   return (
