@@ -8,9 +8,17 @@ import { useForm } from "react-hook-form";
 import { educationLevels, type RegisterInput, registerSchema } from "@/lib/validations/auth";
 
 export const RegisterOnboardingForm = () => {
+<<<<<<< codex/create-next.js-project-structure-with-typescript-r7r32o
+  // Estos estados solo afectan UI; no se guardan en backend.
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // React Hook Form + Zod permiten validar en cliente con mensajes consistentes.
+=======
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+>>>>>>> main
   const form = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -22,9 +30,16 @@ export const RegisterOnboardingForm = () => {
     }
   });
 
+<<<<<<< codex/create-next.js-project-structure-with-typescript-r7r32o
+  // Submit temporal hasta conectar autenticación real.
+  const onSubmit = form.handleSubmit((values) => {
+    console.log("Mock register", values);
+    alert("Registro simulado completado. Próximo paso: activación real con Supabase.");
+=======
   const onSubmit = form.handleSubmit((values) => {
     console.log("Mock register", values);
     alert("Onboarding simulado completado. Próximo paso: activación real con Supabase.");
+>>>>>>> main
   });
 
   return (

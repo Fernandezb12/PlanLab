@@ -53,7 +53,11 @@ export default function LoginPage() {
           <p className="mt-8 text-sm text-slate-500">
             ¿Aún no tienes cuenta?{" "}
             <Link href="/auth/register" className="font-semibold text-brand-600 hover:text-brand-500">
+<<<<<<< codex/create-next.js-project-structure-with-typescript-r7r32o
+              Registro docente
+=======
               Crear cuenta docente
+>>>>>>> main
             </Link>
           </p>
         </section>
