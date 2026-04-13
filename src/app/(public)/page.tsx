@@ -1,55 +1,45 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 
-const highlights = [
-  "Planificaciones listas en menos tiempo",
-  "Actividades conectadas al objetivo de aprendizaje",
-  "Panel de resultados con lectura rápida",
-  "Reportes claros para liderazgo pedagógico"
-];
-
 export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-slate-950 px-6 py-10 text-slate-100">
+    <main className="min-h-screen bg-gradient-to-b from-brand-50 to-white px-6 py-10 dark:from-slate-950 dark:to-slate-900">
       <div className="mx-auto max-w-6xl">
-        <header className="mb-14 flex items-center justify-between">
+        <header className="mb-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="relative grid h-11 w-11 place-items-center overflow-hidden rounded-xl bg-brand-600 font-bold text-white shadow-lg shadow-brand-900/40">
-              <Image src="/logo.png" alt="PlanLab" fill sizes="44px" className="absolute inset-0 h-full w-full object-cover" />
-              <span className="relative">PL</span>
+            <div className="h-10 w-10 rounded-xl border border-dashed border-brand-500/60 bg-white text-center leading-10 dark:bg-slate-900">
+              PL
             </div>
             <div>
-              <p className="text-lg font-bold">PlanLab</p>
-              <p className="text-xs text-slate-400">Plataforma premium para planificación docente</p>
+              <p className="text-lg font-bold text-brand-600">PlanLab</p>
+              <p className="text-xs text-slate-500">Espacio listo para /public/logo.png</p>
             </div>
           </div>
           <ThemeToggle />
         </header>
 
-        <section className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+        <section className="grid gap-10 md:grid-cols-2 md:items-center">
           <div>
-            <p className="mb-3 inline-flex rounded-full border border-brand-500/40 bg-brand-500/10 px-3 py-1 text-xs font-semibold text-brand-300">Impulsa tu planificación pedagógica</p>
-            <h1 className="text-5xl font-extrabold leading-tight md:text-6xl">PlanLab convierte la planificación docente en una experiencia ágil y elegante.</h1>
-            <p className="mt-6 max-w-2xl text-lg text-slate-300">Diseña clases, organiza actividades, interpreta resultados y prepara reportes desde un solo lugar, con una experiencia pensada para equipos pedagógicos modernos.</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/auth/register" className="rounded-xl bg-brand-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-500">Comenzar onboarding</Link>
-              <Link href="/auth/login" className="rounded-xl border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-200 transition hover:bg-slate-800">Ya tengo cuenta</Link>
+            <p className="mb-2 inline-flex rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-700">EDTECH PREMIUM</p>
+            <h1 className="mb-4 text-5xl font-extrabold leading-tight">Planifica, ejecuta y reporta con una sola plataforma docente.</h1>
+            <p className="mb-8 text-slate-600 dark:text-slate-300">PlanLab transforma tu flujo pedagógico: planificaciones, actividades, resultados y reportes con IA y datos accionables.</p>
+            <div className="flex gap-3">
+              <Link href="/auth/login" className="rounded-xl bg-brand-600 px-5 py-3 font-semibold text-white hover:bg-brand-500">Iniciar sesión</Link>
+              <Link href="/auth/register" className="rounded-xl border border-slate-300 px-5 py-3 font-semibold hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800">Crear cuenta</Link>
             </div>
           </div>
-
-          <div className="rounded-3xl border border-slate-800 bg-slate-900/70 p-6 shadow-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-400">Qué puedes lograr con PlanLab</p>
-            <div className="mt-4 space-y-3">
-              {highlights.map((item) => (
-                <div key={item} className="rounded-xl border border-slate-800 bg-slate-950/60 px-4 py-3 text-sm text-slate-200">
-                  {item}
-                </div>
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900">
+            <p className="mb-4 text-sm font-semibold text-slate-500">Vista previa dashboard</p>
+            <div className="space-y-3">
+              {[
+                "Planificaciones alineadas al currículum",
+                "Generación de actividades con IA",
+                "Seguimiento de resultados por estudiante",
+                "Reportes exportables PDF"
+              ].map((feature) => (
+                <div key={feature} className="rounded-xl bg-slate-100 px-4 py-3 text-sm dark:bg-slate-800">{feature}</div>
               ))}
-            </div>
-            <div className="mt-6 rounded-2xl bg-gradient-to-r from-brand-600 to-indigo-500 p-4 text-sm text-white">
-              Una experiencia enfocada en decisiones pedagógicas más rápidas, claras y accionables.
             </div>
           </div>
         </section>
