@@ -9,10 +9,7 @@ import { useForm } from "react-hook-form";
 import { type LoginInput, loginSchema } from "@/lib/validations/auth";
 
 export const LoginForm = () => {
-<<<<<<< codex/create-next.js-project-structure-with-typescript-r7r32o
   // Controlo visibilidad para que el usuario pueda validar lo que escribe.
-=======
->>>>>>> main
   const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginInput>({
@@ -20,10 +17,7 @@ export const LoginForm = () => {
     defaultValues: { email: "", password: "" }
   });
 
-<<<<<<< codex/create-next.js-project-structure-with-typescript-r7r32o
   // Mantengo submit mock por ahora: solo simulamos autenticación en Fase 1.
-=======
->>>>>>> main
   const onSubmit = form.handleSubmit((values) => {
     console.log("Mock login", values);
     alert("Ingreso simulado. En la siguiente fase conectaremos autenticación real.");
