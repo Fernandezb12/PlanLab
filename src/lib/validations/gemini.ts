@@ -10,6 +10,7 @@ export const lessonPlanSchema = z.object({
 export type LessonPlan = z.infer<typeof lessonPlanSchema>;
 
 export const safeParseLessonPlan = (payload: unknown) => {
+  // safeParse evita throw y nos deja manejar errores de IA de forma controlada.
   const result = lessonPlanSchema.safeParse(payload);
   if (!result.success) {
     return {
