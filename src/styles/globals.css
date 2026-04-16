@@ -12,33 +12,7 @@
   --foreground: 226 232 240;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   color: rgb(var(--foreground));
   background: rgb(var(--background));
-}
-
-.glass-card {
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(248, 250, 252, 0.5));
-  backdrop-filter: blur(14px);
-}
-
-.dark .glass-card {
-  border: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.72), rgba(2, 6, 23, 0.42));
-}
-
-.reveal-up {
-  opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-
-.reveal-up.is-visible {
-  opacity: 1;
-  transform: translateY(0);
 }
