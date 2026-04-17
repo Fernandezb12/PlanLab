@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BookOpenCheck, LayoutTemplate, LineChart } from "lucide-react";
+import { ArrowLeft, BookOpenCheck, LayoutTemplate, LineChart } from "lucide-react";
 
 import { RegisterOnboardingForm } from "@/features/auth/register-onboarding-form";
 
@@ -15,6 +15,11 @@ export default function RegisterPage() {
     <main className="min-h-screen bg-slate-100 px-6 py-10 dark:bg-slate-950">
       <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[0.85fr_1.15fr]">
         <section className="order-2 rounded-3xl border border-slate-200 bg-white p-8 shadow-2xl dark:border-slate-800 dark:bg-slate-900 lg:order-1">
+          <Link href="/" className="mb-5 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-brand-600">
+            <ArrowLeft className="h-4 w-4" />
+            Volver al inicio
+          </Link>
+
           <div className="mb-8 flex items-center gap-3">
             <div className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-brand-600 font-bold text-white">
               <Image src="/logo.png" alt="PlanLab" fill sizes="40px" className="object-cover" />
