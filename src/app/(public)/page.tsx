@@ -13,6 +13,7 @@ import {
   Wand2
 } from "lucide-react";
 
+import { CountUp } from "@/components/landing/count-up";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { SectionTitle } from "@/components/landing/section-title";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
@@ -103,12 +104,7 @@ export default function LandingPage() {
             <a href="#tecnologia" className="transition hover:text-violet-500">Tecnología</a>
           </nav>
 
-          <div className="flex items-center gap-3">
-            <Link href="/auth/login" className="rounded-full border border-slate-300 px-5 py-2 text-sm font-semibold transition hover:bg-slate-100 dark:border-white/15 dark:hover:bg-white/10">
-              Iniciar sesión
-            </Link>
-            <ThemeToggle />
-          </div>
+          <ThemeToggle />
         </div>
       </header>
 
@@ -141,18 +137,18 @@ export default function LandingPage() {
         </ScrollReveal>
 
         <ScrollReveal>
-          <div className="glass-card-plus relative overflow-hidden rounded-[28px] p-6">
+          <div className="glass-card-plus mockup-shell relative overflow-hidden rounded-[28px] p-6">
             <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-violet-500/35 blur-3xl" />
             <div className="absolute -bottom-20 -left-14 h-44 w-44 rounded-full bg-blue-500/25 blur-3xl" />
 
             <div className="relative space-y-4">
-              <div className="rounded-2xl border border-white/10 bg-[#0f1220]/70 p-4 shadow-inner shadow-violet-900/20">
-                <div className="mb-3 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.15em] text-slate-400">
+              <div className="rounded-2xl border border-slate-200/70 bg-white/90 p-4 shadow-sm dark:border-white/10 dark:bg-[#0f1220]/70 dark:shadow-inner dark:shadow-violet-900/20">
+                <div className="mb-3 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
                   <span>Sesión activa</span>
                   <span>120 min</span>
                 </div>
-                <h3 className="text-lg font-bold text-white">Fracciones equivalentes · 5° Básico</h3>
-                <p className="mt-2 text-sm text-slate-300">Plan con secuencia didáctica, actividades y evaluación formativa.</p>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Fracciones equivalentes · 5° Básico</h3>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Plan con secuencia didáctica, actividades y evaluación formativa.</p>
                 <div className="mt-4 space-y-2">
                   <div className="h-2 rounded-full bg-violet-500/20">
                     <div className="h-2 w-3/12 rounded-full bg-violet-400" />
@@ -167,19 +163,23 @@ export default function LandingPage() {
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl border border-white/10 bg-[#0f1220]/70 p-4">
-                  <p className="text-xs text-slate-400">Asistencia</p>
-                  <p className="mt-2 text-2xl font-bold text-emerald-300">94%</p>
+                <div className="metric-card rounded-2xl border border-slate-200/70 bg-white/95 p-4 dark:border-white/10 dark:bg-[#0f1220]/70">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Asistencia</p>
+                  <p className="mt-2 text-2xl font-bold text-emerald-500 dark:text-emerald-300">
+                    <CountUp to={95} suffix="%" />
+                  </p>
                 </div>
-                <div className="rounded-2xl border border-white/10 bg-[#0f1220]/70 p-4">
-                  <p className="text-xs text-slate-400">Logro OA</p>
-                  <p className="mt-2 text-2xl font-bold text-amber-300">78%</p>
+                <div className="metric-card rounded-2xl border border-slate-200/70 bg-white/95 p-4 dark:border-white/10 dark:bg-[#0f1220]/70">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Logro OA</p>
+                  <p className="mt-2 text-2xl font-bold text-amber-500 dark:text-amber-300">
+                    <CountUp to={84} suffix="%" />
+                  </p>
                 </div>
               </div>
 
               <div className="rounded-2xl border border-violet-400/30 bg-violet-500/10 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-300">Sugerencia IA</p>
-                <p className="mt-2 text-sm text-slate-200">Refuerza con actividad breve de cierre para consolidar equivalencias en pares.</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">Sugerencia IA</p>
+                <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">Refuerza con actividad breve de cierre para consolidar equivalencias en pares.</p>
               </div>
             </div>
           </div>
