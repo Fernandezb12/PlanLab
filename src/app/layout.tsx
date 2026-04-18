@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { ThemeProvider } from "@/providers/theme-provider";
-import "@/styles/globals.css";
+import "../styles/globals.css";
 
 export const metadata: Metadata = {
   title: "PlanLab",
