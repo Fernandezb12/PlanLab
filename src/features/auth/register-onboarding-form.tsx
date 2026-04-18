@@ -2,20 +2,15 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff, GraduationCap, Mail, User } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { createClient } from "@/lib/supabase/client";
 import { educationLevels, type RegisterInput, registerSchema } from "@/lib/validations/auth";
 
 export const RegisterOnboardingForm = () => {
   // Estos estados solo afectan UI; no se guardan en backend.
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [registerError, setRegisterError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
 
   // React Hook Form + Zod permiten validar en cliente con mensajes consistentes.
   const form = useForm<RegisterInput>({
@@ -29,63 +24,10 @@ export const RegisterOnboardingForm = () => {
     }
   });
 
-  // Yo creo usuario real en Auth y persisto perfil docente en tabla profiles.
-  const onSubmit = form.handleSubmit(async (values) => {
-    setRegisterError(null);
-    setIsSubmitting(true);
-    const supabase = createClient();
-
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-      email: values.email,
-      password: values.password,
-      options: {
-        data: {
-          full_name: values.fullName,
-          main_education_level: values.mainEducationLevel
-        }
-      }
-    });
-
-    if (signUpError) {
-      setRegisterError("No pudimos crear tu cuenta. Intenta de nuevo con otro correo.");
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (!signUpData.session) {
-      // Si el proyecto no confirma email, este login debería entrar de inmediato.
-      const { error: loginAfterSignUpError } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password
-      });
-
-      if (loginAfterSignUpError) {
-        setRegisterError("Tu cuenta fue creada, pero no pudimos iniciar sesión automáticamente.");
-        setIsSubmitting(false);
-        return;
-      }
-    }
-
-    const { data: authData } = await supabase.auth.getUser();
-    const authUser = authData.user;
-
-    if (authUser) {
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: authUser.id,
-        full_name: values.fullName,
-        email: values.email,
-        main_education_level: values.mainEducationLevel
-      });
-
-      if (profileError) {
-        setRegisterError("La cuenta fue creada, pero no pudimos guardar tu perfil docente.");
-        setIsSubmitting(false);
-        return;
-      }
-    }
-
-    router.push("/dashboard");
-    router.refresh();
+  // Submit temporal hasta conectar autenticación real.
+  const onSubmit = form.handleSubmit((values) => {
+    console.log("Mock register", values);
+    alert("Registro simulado completado. Próximo paso: activación real con Supabase.");
   });
 
   return (
@@ -175,10 +117,9 @@ export const RegisterOnboardingForm = () => {
         <p className="mt-1 text-xs text-rose-500">{form.formState.errors.mainEducationLevel?.message}</p>
       </div>
 
-      <button disabled={isSubmitting} type="submit" className="w-full rounded-xl bg-gradient-to-r from-brand-600 via-brand-500 to-indigo-500 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand-900/25 transition hover:-translate-y-0.5 hover:shadow-xl">
-        {isSubmitting ? "Creando cuenta..." : "Crear cuenta y comenzar"}
+      <button type="submit" className="w-full rounded-xl bg-gradient-to-r from-brand-600 via-brand-500 to-indigo-500 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand-900/25 transition hover:-translate-y-0.5 hover:shadow-xl">
+        Crear cuenta y comenzar
       </button>
-      {registerError ? <p className="text-sm text-rose-500">{registerError}</p> : null}
     </form>
   );
 };

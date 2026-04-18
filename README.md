@@ -38,20 +38,19 @@ src/
 
 ## Roadmap por entregas
 
-### Entrega 1
+### Entrega 1 (actual)
 
 - Landing premium de marca PlanLab.
-- Login y registro con validación.
+- Login y registro mock con validación.
 - Shell base de dashboard responsive.
 - Vistas iniciales de planes, actividades, resultados y reportes.
 - Base técnica para Supabase, Gemini y endpoint PDF.
 
-### Entrega 2 (actual)
+### Entrega 2
 
 - Autenticación real con Supabase Auth.
-- Protección de rutas privadas con middleware.
-- Perfil docente real y base de datos multitenant con RLS.
-- Estructura lista para CRUD por docente (grupos, estudiantes, planes, actividades, reportes).
+- CRUD completo de planes y actividades.
+- Vinculación de estudiantes por grupos.
 
 ### Entrega 3
 
