@@ -27,10 +27,28 @@ export const activitySchema = z.object({
 export const activityRecordInputSchema = z.object({
   studentId: z.string().uuid("Estudiante inválido"),
   attended: z.boolean(),
-  resultScore: z
-    .union([z.number(), z.nan()])
-    .transform((value) => (Number.isNaN(value) ? null : value))
-    .pipe(z.number().nullable()),
+  resultScore: z.preprocess((value) => {
+    if (value === "" || value === null || value === undefined) {
+      return null;
+    }
+
+    if (typeof value === "number") {
+      return Number.isNaN(value) ? null : value;
+    }
+
+    if (typeof value === "string") {
+      const normalizedValue = value.trim();
+
+      if (!normalizedValue) {
+        return null;
+      }
+
+      const parsedValue = Number(normalizedValue);
+      return Number.isNaN(parsedValue) ? value : parsedValue;
+    }
+
+    return value;
+  }, z.number({ invalid_type_error: "Ingresa una nota numérica válida" }).nullable()),
   observation: z.string().trim().max(500, "La observación es demasiado larga").optional().or(z.literal(""))
 });
 

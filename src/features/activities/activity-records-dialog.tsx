@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 
 import { Modal } from "@/components/ui/modal";
 import { type ActivityActionResult, saveActivityRecordsAction } from "@/features/activities/actions";
-import { type SaveActivityRecordsInput } from "@/lib/validations/activities";
+import { getActivityStatusLabel, type SaveActivityRecordsInput } from "@/lib/validations/activities";
 
 type StudentRecord = {
   id: string;
@@ -147,7 +147,7 @@ export const ActivityRecordsDialog = ({ isOpen, activity, students, existingReco
               </p>
               <p className="mt-1 text-sm text-slate-500">
                 {activity?.activity_date ? new Date(activity.activity_date).toLocaleDateString("es-CO") : "Sin fecha"} · Estado actual:{" "}
-                {activity?.status ?? "Sin estado"}
+                {activity?.status ? getActivityStatusLabel(activity.status) : "Sin estado"}
               </p>
             </div>
 
@@ -156,7 +156,7 @@ export const ActivityRecordsDialog = ({ isOpen, activity, students, existingReco
                 <UsersRound className="h-4 w-4 text-blue-300" />
                 {studentRows.length} estudiantes listos para registrar
               </p>
-              <p className="mt-1 text-xs text-slate-400">Yo guardo todo en una sola acción para mantener el registro coherente.</p>
+              <p className="mt-1 text-xs text-slate-400">Puedes guardar asistencia, notas y observaciones completas o parciales en una sola acción.</p>
             </div>
           </div>
         </div>
@@ -217,7 +217,7 @@ export const ActivityRecordsDialog = ({ isOpen, activity, students, existingReco
                         }))
                       }
                       className="w-full rounded-2xl border border-white/10 bg-slate-900 px-3 py-2 text-sm text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
-                      placeholder="Opcional"
+                      placeholder="Déjala vacía si aún no calificas"
                     />
 
                     <textarea
@@ -230,7 +230,7 @@ export const ActivityRecordsDialog = ({ isOpen, activity, students, existingReco
                         }))
                       }
                       className="w-full rounded-2xl border border-white/10 bg-slate-900 px-3 py-2 text-sm text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
-                      placeholder="Observación opcional"
+                      placeholder="Observación opcional o seguimiento breve"
                     />
                   </div>
                 ))}

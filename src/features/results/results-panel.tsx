@@ -65,7 +65,7 @@ export const ResultsPanel = ({
       <Card className="glass-card-plus p-5">
         <p className="text-sm text-slate-500 dark:text-slate-400">Promedio general</p>
         <p className="mt-2 text-4xl font-bold tracking-tight">{formatScore(generalAverage, "0.0")}</p>
-        <p className="mt-2 text-sm text-slate-400">Basado en registros con nota real.</p>
+        <p className="mt-2 text-sm text-slate-400">Calculado con las notas reales que ya registraste.</p>
       </Card>
 
       <Card className="glass-card-plus p-5">
@@ -77,13 +77,13 @@ export const ResultsPanel = ({
       <Card className="glass-card-plus p-5">
         <p className="text-sm text-slate-500 dark:text-slate-400">Grupos con dificultad</p>
         <p className="mt-2 text-4xl font-bold tracking-tight">{groupsWithDifficulty}</p>
-        <p className="mt-2 text-sm text-slate-400">Promedio bajo o asistencia frágil.</p>
+        <p className="mt-2 text-sm text-slate-400">Grupos que conviene mirar con más atención.</p>
       </Card>
 
       <Card className="glass-card-plus p-5">
         <p className="text-sm text-slate-500 dark:text-slate-400">Estudiantes con alerta</p>
         <p className="mt-2 text-4xl font-bold tracking-tight">{studentsWithAlert}</p>
-        <p className="mt-2 text-sm text-slate-400">{pendingActivitiesCount} actividades siguen sin registro consolidado.</p>
+        <p className="mt-2 text-sm text-slate-400">{pendingActivitiesCount} actividades aún no tienen registro consolidado.</p>
       </Card>
     </div>
 
@@ -98,7 +98,7 @@ export const ResultsPanel = ({
           <EmptyState
             icon={ChartColumn}
             title="Aún no hay resultados consolidados"
-            description="Registra resultados de actividades para ver la evolución real de cada grupo."
+            description="Registra asistencia, notas u observaciones en tus actividades para empezar a ver la evolución real de cada grupo."
           />
         ) : (
           <div className="space-y-3">
@@ -154,7 +154,7 @@ export const ResultsPanel = ({
             <EmptyState
               icon={AlertTriangle}
               title="No hay alertas activas por ahora"
-              description="Cuando detectemos riesgos reales en asistencia o rendimiento, aparecerán aquí."
+              description="Cuando aparezcan señales de riesgo en asistencia o rendimiento, las verás resumidas aquí."
             />
           ) : (
             <div className="space-y-2">
@@ -176,15 +176,15 @@ export const ResultsPanel = ({
           <div className="space-y-3 text-sm text-slate-300">
             <p className="flex items-start gap-2">
               <Users className="mt-0.5 h-4 w-4 text-blue-400" />
-              Promedio general: <span className="font-semibold text-white">{formatScore(generalAverage, "Sin datos")}</span>
+              Promedio general registrado: <span className="font-semibold text-white">{formatScore(generalAverage, "Sin datos")}</span>
             </p>
             <p className="flex items-start gap-2">
               <CircleAlert className="mt-0.5 h-4 w-4 text-violet-400" />
-              Asistencia promedio: <span className="font-semibold text-white">{formatPercent(attendanceAverage, "Sin datos")}</span>
+              Asistencia promedio consolidada: <span className="font-semibold text-white">{formatPercent(attendanceAverage, "Sin datos")}</span>
             </p>
             <p className="flex items-start gap-2">
               <AlertTriangle className="mt-0.5 h-4 w-4 text-amber-400" />
-              Actividades pendientes de registrar: <span className="font-semibold text-white">{pendingActivitiesCount}</span>
+              Actividades pendientes por registrar: <span className="font-semibold text-white">{pendingActivitiesCount}</span>
             </p>
           </div>
         </Card>
