@@ -12,8 +12,8 @@ const loginHighlights = [
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen bg-slate-100 px-6 py-10 dark:bg-slate-950">
-      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-6xl items-center">
+    <main className="min-h-screen bg-slate-100 px-6 py-8 dark:bg-slate-950">
+      <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl items-center">
         <div className="grid w-full overflow-hidden rounded-3xl border border-slate-200 bg-white/80 shadow-2xl dark:border-slate-800 dark:bg-slate-900/60 lg:grid-cols-[1.2fr_0.8fr]">
           <section className="relative p-8 md:p-10">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(46,122,247,0.25),transparent_45%)]" />
@@ -30,7 +30,7 @@ export default function LoginPage() {
               </div>
 
               <p className="inline-flex rounded-full border border-brand-500/30 bg-brand-500/10 px-3 py-1 text-xs font-medium text-brand-700 dark:text-brand-300">Ingreso rápido</p>
-              <h1 className="mt-5 text-4xl font-bold leading-tight text-slate-900 dark:text-white md:text-5xl">Bienvenido nuevamente.</h1>
+              <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white md:text-5xl">Bienvenido nuevamente.</h1>
               <p className="mt-4 max-w-xl text-slate-700 dark:text-slate-300">Ingresa en segundos para continuar tu planificación, revisar actividades pendientes y mantener el seguimiento pedagógico al día.</p>
 
               <div className="mt-10 space-y-4">
@@ -50,7 +50,7 @@ export default function LoginPage() {
               Volver al inicio
             </Link>
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">Login</p>
-            <h2 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">Accede a tu espacio</h2>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Accede a tu espacio</h2>
             <p className="mb-8 mt-2 text-sm text-slate-500">Tu panel te espera con planes, actividades y reportes listos para trabajar.</p>
 
             <LoginForm />

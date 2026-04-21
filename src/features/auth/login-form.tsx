@@ -3,24 +3,47 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { createClient } from "@/lib/supabase/client";
+import { mapLoginErrorMessage } from "@/lib/supabase/auth-errors";
 import { type LoginInput, loginSchema } from "@/lib/validations/auth";
 
 export const LoginForm = () => {
   // Controlo visibilidad para que el usuario pueda validar lo que escribe.
   const [showPassword, setShowPassword] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" }
   });
 
-  // Mantengo submit mock por ahora: solo simulamos autenticación en Fase 1.
-  const onSubmit = form.handleSubmit((values) => {
-    console.log("Mock login", values);
-    alert("Ingreso simulado. En la siguiente fase conectaremos autenticación real.");
+  // Yo autentico directo con Supabase para habilitar acceso real al panel.
+  const onSubmit = form.handleSubmit(async (values) => {
+    setAuthError(null);
+    setIsSubmitting(true);
+
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password
+    });
+
+    if (error) {
+      setAuthError(mapLoginErrorMessage(error));
+      setIsSubmitting(false);
+      return;
+    }
+
+    const nextPath = searchParams.get("next");
+    router.push(nextPath && nextPath.startsWith("/") ? nextPath : "/dashboard");
+    router.refresh();
   });
 
   return (
@@ -68,10 +91,12 @@ export const LoginForm = () => {
 
       <button
         type="submit"
+        disabled={isSubmitting}
         className="w-full rounded-xl bg-gradient-to-r from-brand-600 via-brand-500 to-indigo-500 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-brand-900/25 transition hover:-translate-y-0.5 hover:shadow-xl"
       >
-        Entrar a PlanLab
+        {isSubmitting ? "Ingresando..." : "Entrar a PlanLab"}
       </button>
+      {authError ? <p className="text-sm text-rose-500">{authError}</p> : null}
     </form>
   );
 };
