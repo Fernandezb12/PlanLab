@@ -16,7 +16,9 @@ export default async function ActividadesPage() {
   const [
     { data: groupsData, error: groupsError },
     { data: lessonPlansData, error: lessonPlansError },
-    { data: activitiesData, error: activitiesError }
+    { data: activitiesData, error: activitiesError },
+    { data: studentsData, error: studentsError },
+    { data: activityRecordsData, error: activityRecordsError }
   ] = await Promise.all([
     supabase.from("groups").select("id,name,level").order("created_at", { ascending: false }),
     supabase
@@ -26,7 +28,9 @@ export default async function ActividadesPage() {
     supabase
       .from("activities")
       .select("id,lesson_plan_id,group_id,title,activity_date,status,notes,created_at,lesson_plans(title),groups(name,level)")
-      .order("activity_date", { ascending: false, nullsFirst: false })
+      .order("activity_date", { ascending: false, nullsFirst: false }),
+    supabase.from("students").select("id,group_id,full_name,student_code,status").order("full_name"),
+    supabase.from("activity_records").select("id,activity_id,student_id,attended,result_score,observation")
   ]);
 
   if (groupsError) {
@@ -44,5 +48,23 @@ export default async function ActividadesPage() {
     throw new Error(`No pudimos cargar tus actividades: ${activitiesError.message}`);
   }
 
-  return <ActivitiesPanel groups={groupsData ?? []} lessonPlans={lessonPlansData ?? []} activities={activitiesData ?? []} />;
+  if (studentsError) {
+    console.error("Error real students for activities:", studentsError);
+    throw new Error(`No pudimos cargar tus estudiantes para actividades: ${studentsError.message}`);
+  }
+
+  if (activityRecordsError) {
+    console.error("Error real activity records:", activityRecordsError);
+    throw new Error(`No pudimos cargar los registros de actividades: ${activityRecordsError.message}`);
+  }
+
+  return (
+    <ActivitiesPanel
+      groups={groupsData ?? []}
+      lessonPlans={lessonPlansData ?? []}
+      activities={activitiesData ?? []}
+      students={studentsData ?? []}
+      activityRecords={activityRecordsData ?? []}
+    />
+  );
 }

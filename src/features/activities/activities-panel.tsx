@@ -1,6 +1,7 @@
 "use client";
 
-import { Eye, Pencil, PlusCircle, Trash2 } from "lucide-react";
+import { ClipboardCheck, Eye, Pencil, PlusCircle, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 
 import { EmptyState } from "@/components/ui/empty-state";
@@ -9,6 +10,7 @@ import { ModuleHeader } from "@/components/ui/module-header";
 import { createActivityAction, deleteActivityAction, type ActivityActionResult, updateActivityAction } from "@/features/activities/actions";
 import { ActivityDetailsDialog } from "@/features/activities/activity-details-dialog";
 import { ActivityFormDialog } from "@/features/activities/activity-form-dialog";
+import { ActivityRecordsDialog } from "@/features/activities/activity-records-dialog";
 import { getActivityStatusLabel } from "@/lib/validations/activities";
 
 type GroupOption = {
@@ -39,6 +41,23 @@ type ActivityRecord = {
   groups: { name: string; level: string | null } | { name: string; level: string | null }[] | null;
 };
 
+type StudentRecord = {
+  id: string;
+  group_id: string | null;
+  full_name: string;
+  student_code: string | null;
+  status: string;
+};
+
+type ExistingActivityRecord = {
+  id: string;
+  activity_id: string;
+  student_id: string;
+  attended: boolean;
+  result_score: number | null;
+  observation: string | null;
+};
+
 type FeedbackState = {
   tone: "success" | "error";
   message: string;
@@ -55,13 +74,17 @@ type ActivitiesPanelProps = {
   groups: GroupOption[];
   lessonPlans: LessonPlanOption[];
   activities: ActivityRecord[];
+  students: StudentRecord[];
+  activityRecords: ExistingActivityRecord[];
 };
 
-export const ActivitiesPanel = ({ groups, lessonPlans, activities }: ActivitiesPanelProps) => {
+export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, activityRecords }: ActivitiesPanelProps) => {
+  const router = useRouter();
   const [feedback, setFeedback] = useState<FeedbackState>(null);
   const [isDeleting, startDeleteTransition] = useTransition();
   const [formOpen, setFormOpen] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [recordsOpen, setRecordsOpen] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState<ActivityRecord | null>(null);
 
   const groupOptions = useMemo(() => groups.map((group) => ({ id: group.id, name: group.name, level: group.level })), [groups]);
@@ -86,7 +109,9 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities }: ActivitiesP
 
     if (result.success) {
       setFormOpen(false);
+      setRecordsOpen(false);
       setSelectedActivity(null);
+      router.refresh();
     }
   };
 
@@ -103,6 +128,11 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities }: ActivitiesP
   const openViewActivity = (activity: ActivityRecord) => {
     setSelectedActivity(activity);
     setDetailsOpen(true);
+  };
+
+  const openManageRecords = (activity: ActivityRecord) => {
+    setSelectedActivity(activity);
+    setRecordsOpen(true);
   };
 
   const handleDeleteActivity = (activity: ActivityRecord) => {
@@ -200,6 +230,15 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities }: ActivitiesP
                   <div className="flex flex-wrap items-center justify-end gap-1.5">
                     <button
                       type="button"
+                      onClick={() => openManageRecords(activity)}
+                      className="rounded-lg border border-emerald-500/30 p-2 text-emerald-200 hover:bg-emerald-500/10"
+                      aria-label="Registrar resultados"
+                      title="Registrar resultados"
+                    >
+                      <ClipboardCheck className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
                       onClick={() => openViewActivity(activity)}
                       className="rounded-lg border border-slate-300 p-2 hover:bg-slate-100 dark:border-white/10 dark:hover:bg-white/10"
                       aria-label="Ver actividad"
@@ -255,6 +294,18 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities }: ActivitiesP
           setDetailsOpen(false);
           setSelectedActivity(null);
         }}
+      />
+
+      <ActivityRecordsDialog
+        isOpen={recordsOpen}
+        activity={selectedActivity}
+        students={students}
+        existingRecords={activityRecords}
+        onClose={() => {
+          setRecordsOpen(false);
+          setSelectedActivity(null);
+        }}
+        onCompleted={handleCompleted}
       />
     </section>
   );
