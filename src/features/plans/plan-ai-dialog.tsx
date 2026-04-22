@@ -138,6 +138,7 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
   const [toast, setToast] = useState<{ tone: "warning" | "success"; message: string } | null>(null);
   const [generatedPlan, setGeneratedPlan] = useState<LessonPlanAI | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [generationError, setGenerationError] = useState<string | null>(null);
 
   const defaultValues = useMemo(() => buildDefaultPromptValues(groups, plan), [groups, plan]);
 
@@ -154,6 +155,7 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
     promptForm.reset(defaultValues);
     setGeneratedPlan(null);
     setSaveError(null);
+    setGenerationError(null);
     setToast(null);
   }, [defaultValues, isOpen, promptForm]);
 
@@ -170,6 +172,7 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
 
   const runGeneration = promptForm.handleSubmit((values) => {
     setSaveError(null);
+    setGenerationError(null);
     setToast(null);
 
     startGenerateTransition(async () => {
@@ -177,13 +180,16 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
       const result = await action(values);
 
       if (!result.success) {
+        setGeneratedPlan(null);
+        setGenerationError(result.message);
         setToast({
           tone: "warning",
-          message: result.message || "No fue posible generar el plan en este intento. Intenta nuevamente."
+          message: result.message || "No fue posible generar la propuesta en este momento. Intenta nuevamente en unos instantes."
         });
         return;
       }
 
+      setGenerationError(null);
       setGeneratedPlan(result.plan);
       setToast({
         tone: "success",
@@ -548,14 +554,23 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
                 </div>
               ) : (
                 <div className="grid h-full min-h-[420px] place-items-center rounded-[30px] border border-dashed border-slate-300 bg-slate-50/80 px-8 text-center dark:border-white/10 dark:bg-white/[0.02]">
-                  <div className="max-w-md space-y-3">
+                  <div className="max-w-md space-y-4">
                     <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-violet-500/15 text-violet-200">
                       <Sparkles className="h-7 w-7" />
                     </div>
-                    <h3 className="text-xl font-semibold text-slate-950 dark:text-white">{plan ? "Propuesta de mejora del plan" : "Propuesta de plan asistida por IA"}</h3>
+                    <h3 className="text-xl font-semibold text-slate-950 dark:text-white">
+                      {generationError ? "La propuesta no pudo generarse por ahora" : plan ? "Propuesta de mejora del plan" : "Propuesta de plan asistida por IA"}
+                    </h3>
                     <p className="text-sm leading-6 text-slate-600 dark:text-slate-400">
-                      Completa el contexto pedagógico y genera una propuesta estructurada para revisarla antes de guardarla.
+                      {generationError
+                        ? generationError
+                        : "Completa el contexto pedagógico y genera una propuesta estructurada para revisarla antes de guardarla."}
                     </p>
+                    {generationError ? (
+                      <div className="rounded-2xl border border-amber-300/70 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">
+                        Puedes intentarlo nuevamente sin cerrar esta ventana. Ajusta el contexto si lo necesitas y vuelve a generar la propuesta.
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               )}
