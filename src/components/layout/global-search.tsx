@@ -118,7 +118,7 @@ export const GlobalSearch = () => {
 
   return (
     <div ref={containerRef} className="relative hidden sm:block">
-      <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 dark:text-slate-400" />
+      <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 transition-colors dark:text-slate-400" />
       <input
         value={query}
         onChange={(event) => setQuery(event.target.value)}
@@ -128,20 +128,20 @@ export const GlobalSearch = () => {
           }
         }}
         placeholder="Buscar planes, actividades, estudiantes o grupos"
-        className="w-[280px] rounded-2xl border border-slate-300 bg-white/95 py-2.5 pl-10 pr-10 text-sm text-slate-800 shadow-sm outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10 md:w-[320px] lg:w-[360px] dark:border-white/15 dark:bg-white/6 dark:text-slate-100"
+        className="w-[280px] rounded-2xl border border-slate-300/90 bg-white/96 py-2.5 pl-11 pr-10 text-sm text-slate-800 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.28)] outline-none transition placeholder:text-slate-500 focus:border-violet-500/80 focus:bg-white focus:ring-4 focus:ring-violet-500/12 md:w-[320px] lg:w-[360px] dark:border-slate-700/80 dark:bg-slate-900/90 dark:text-slate-100 dark:placeholder:text-slate-400 dark:shadow-[0_16px_34px_-26px_rgba(0,0,0,0.6)] dark:focus:border-violet-400/70 dark:focus:bg-slate-900 dark:focus:ring-violet-500/14"
       />
-      {isLoading ? <LoaderCircle className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-slate-400" /> : null}
+      {isLoading ? <LoaderCircle className="absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-slate-400 dark:text-slate-500" /> : null}
 
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-[min(420px,calc(100vw-2rem))] overflow-hidden rounded-[24px] border border-slate-200 bg-white/98 shadow-[0_30px_70px_-35px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/96">
-          <div className="border-b border-slate-200/80 px-4 py-3 dark:border-white/10">
+        <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-[min(420px,calc(100vw-2rem))] overflow-hidden rounded-[24px] border border-slate-200/90 bg-white/98 shadow-[0_30px_70px_-35px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-950/96">
+          <div className="border-b border-slate-200/80 px-4 py-3 dark:border-slate-800/90">
             <p className="text-sm font-semibold text-slate-900 dark:text-white">Búsqueda global</p>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Encuentra información clave del sistema y navega rápidamente al módulo correspondiente.</p>
           </div>
 
           <div className="max-h-[420px] overflow-y-auto px-2 py-2">
             {!hasResults && query.trim().length >= 2 && !isLoading ? (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center dark:border-white/10 dark:bg-white/[0.03]">
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center dark:border-slate-700 dark:bg-slate-900/70">
                 <p className="text-sm font-medium text-slate-800 dark:text-slate-100">No hay coincidencias por ahora</p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Prueba con el título del plan, el nombre del grupo, el estudiante o el tema trabajado.</p>
               </div>
@@ -161,7 +161,7 @@ export const GlobalSearch = () => {
                           setQuery("");
                           router.push(item.href);
                         }}
-                        className="w-full rounded-2xl border border-transparent px-3 py-3 text-left transition hover:border-violet-200 hover:bg-slate-100 focus:border-violet-200 focus:bg-slate-100 focus:outline-none dark:hover:border-violet-500/20 dark:hover:bg-white/8 dark:focus:border-violet-500/20 dark:focus:bg-white/8"
+                        className="w-full rounded-2xl border border-transparent px-3 py-3 text-left transition hover:border-violet-200 hover:bg-slate-100/90 focus:border-violet-300 focus:bg-slate-100/90 focus:outline-none dark:hover:border-violet-500/25 dark:hover:bg-slate-900/85 dark:focus:border-violet-500/35 dark:focus:bg-slate-900/85"
                       >
                         <p className="text-sm font-semibold text-slate-900 dark:text-white">{item.title}</p>
                         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{item.subtitle}</p>
