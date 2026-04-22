@@ -117,6 +117,47 @@ const adjustReinforcementDistribution = (data: ReinforcementPlanAI, targetMinute
 
 const cleanJsonText = (value: string) => value.trim().replace(/^```json\s*/i, "").replace(/^```/, "").replace(/```$/, "").trim();
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const extractGeminiErrorText = (error: unknown): string => {
+  if (!error) {
+    return "";
+  }
+
+  if (typeof error === "string") {
+    return error;
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  if (typeof error === "object") {
+    const record = error as Record<string, unknown>;
+    return [record.message, record.status, record.code, record.details]
+      .filter((value) => typeof value === "string" || typeof value === "number")
+      .join(" ");
+  }
+
+  return "";
+};
+
+const isTemporaryGeminiError = (error: unknown) => {
+  const text = extractGeminiErrorText(error).toLowerCase();
+
+  return (
+    text.includes("503") ||
+    text.includes("unavailable") ||
+    text.includes("high demand") ||
+    text.includes("timeout") ||
+    text.includes("timed out") ||
+    text.includes("network") ||
+    text.includes("fetch failed") ||
+    text.includes("econnreset") ||
+    text.includes("temporarily unavailable")
+  );
+};
+
 const normalizeLessonPlanResponse = (payload: unknown): unknown => {
   if (!payload || typeof payload !== "object") {
     return payload;
@@ -137,23 +178,40 @@ const requestStructuredGemini = async <T>({
   responseJsonSchema: object;
 }) => {
   const client = getGeminiClient();
-  const response = await client.models.generateContent({
-    model: getGeminiModel(),
-    contents: prompt,
-    config: {
-      responseMimeType: "application/json",
-      responseJsonSchema,
-      temperature: 0.5
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const response = await client.models.generateContent({
+        model: getGeminiModel(),
+        contents: prompt,
+        config: {
+          responseMimeType: "application/json",
+          responseJsonSchema,
+          temperature: 0.5
+        }
+      });
+
+      const rawText = response.text;
+
+      if (!rawText) {
+        throw new Error("Gemini no devolvió contenido utilizable.");
+      }
+
+      return JSON.parse(cleanJsonText(rawText)) as T;
+    } catch (error) {
+      lastError = error;
+
+      if (attempt === 0 && isTemporaryGeminiError(error)) {
+        await delay(1200);
+        continue;
+      }
+
+      throw error;
     }
-  });
-
-  const rawText = response.text;
-
-  if (!rawText) {
-    throw new Error("Gemini no devolvió contenido utilizable.");
   }
 
-  return JSON.parse(cleanJsonText(rawText)) as T;
+  throw lastError;
 };
 
 export const generateLessonPlanWithGemini = async (input: GeneratePlanAIInput): Promise<LessonPlanAI> => {
