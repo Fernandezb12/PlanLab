@@ -105,7 +105,7 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
         </aside>
 
         <main className="flex min-h-screen flex-col">
-          <header className="sticky top-0 z-40 border-b border-slate-200/90 bg-white/88 px-5 py-3.5 backdrop-blur-md dark:border-white/10 dark:bg-[#0a0f1f]/75 md:px-8">
+          <header className="sticky top-0 z-40 border-b border-slate-200/90 bg-white/88 px-5 py-3.5 backdrop-blur-md dark:border-slate-800/80 dark:bg-[#0a0f1f]/82 md:px-8">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <p className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">{currentTitle}</p>
 
@@ -117,15 +117,15 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
                   <button
                     type="button"
                     onClick={() => setIsProfileMenuOpen((prev) => !prev)}
-                    className="rounded-full border border-slate-300 bg-white/95 p-1 transition hover:bg-slate-100 dark:border-white/15 dark:bg-white/[0.05] dark:hover:bg-white/10"
+                    className="rounded-2xl border border-slate-300/90 bg-white/96 p-1 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.28)] transition hover:border-slate-400 hover:bg-white focus:outline-none focus:ring-4 focus:ring-violet-500/12 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-[0_16px_34px_-26px_rgba(0,0,0,0.6)] dark:hover:border-slate-600 dark:hover:bg-slate-900"
                     aria-label="Abrir menú de perfil"
                     aria-expanded={isProfileMenuOpen}
                   >
-                    <div className="grid h-7 w-7 place-items-center rounded-full bg-slate-900 text-xs font-semibold text-white dark:bg-white dark:text-slate-900">{initials}</div>
+                    <div className="grid h-8 w-8 place-items-center rounded-xl bg-slate-900 text-xs font-semibold text-white dark:bg-white dark:text-slate-900">{initials}</div>
                   </button>
 
                   {isProfileMenuOpen ? (
-                    <div className="absolute right-0 top-11 w-56 rounded-2xl border border-slate-200 bg-white/98 p-2 shadow-[0_24px_50px_-30px_rgba(15,23,42,0.45)] backdrop-blur-md dark:border-white/10 dark:bg-slate-950/95">
+                    <div className="absolute right-0 top-12 w-56 rounded-2xl border border-slate-200 bg-white/98 p-2 shadow-[0_24px_50px_-30px_rgba(15,23,42,0.45)] backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/95">
                       <p className="px-3 pb-2 pt-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Mi cuenta</p>
                       <div className="px-3 pb-2">
                         <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{userProfile.fullName ?? "Docente PlanLab"}</p>
