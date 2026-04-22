@@ -100,9 +100,9 @@ export const GroupFormDialog = ({ isOpen, group, onClose, onCompleted, createGro
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-200">Nombre del grupo</label>
+            <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Nombre del grupo</label>
             <input
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20"
+              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
               placeholder="7A, Matemáticas 10B..."
               {...form.register("name")}
             />
@@ -110,9 +110,9 @@ export const GroupFormDialog = ({ isOpen, group, onClose, onCompleted, createGro
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-200">Nivel educativo</label>
+            <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Nivel educativo</label>
             <input
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20"
+              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
               placeholder="Básica Secundaria"
               {...form.register("level")}
             />
@@ -122,9 +122,9 @@ export const GroupFormDialog = ({ isOpen, group, onClose, onCompleted, createGro
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-200">Área</label>
+            <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Área</label>
             <input
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20"
+              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
               placeholder="Matemáticas, Lengua..."
               {...form.register("subject")}
             />
@@ -132,9 +132,9 @@ export const GroupFormDialog = ({ isOpen, group, onClose, onCompleted, createGro
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-200">Período</label>
+            <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Período</label>
             <input
-              className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20"
+              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
               placeholder="2026-1"
               {...form.register("period")}
             />
@@ -148,7 +148,7 @@ export const GroupFormDialog = ({ isOpen, group, onClose, onCompleted, createGro
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10"
           >
             Cancelar
           </button>

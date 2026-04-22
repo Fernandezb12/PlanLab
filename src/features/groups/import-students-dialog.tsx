@@ -287,14 +287,14 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
       contentClassName="max-w-6xl max-h-[85vh] overflow-hidden p-0"
     >
       <div className="flex max-h-[85vh] min-h-0 flex-col">
-        <div className="shrink-0 border-b border-white/10 px-6 pb-5 pt-6">
+        <div className="shrink-0 border-b border-slate-200 px-6 pb-5 pt-6 dark:border-white/10">
           <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-200">Grupo de destino</label>
+              <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Grupo de destino</label>
               <select
                 value={selectedGroupId}
                 onChange={(event) => setSelectedGroupId(event.target.value)}
-                className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 dark:border-white/10 dark:bg-slate-900 dark:text-white"
               >
                 <option value="">Selecciona un grupo</option>
                 {groups.map((group) => (
@@ -306,9 +306,9 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
             </div>
 
             <div className="space-y-2">
-              <p className="text-sm font-medium text-slate-200">Archivo</p>
+              <p className="text-sm font-medium text-slate-800 dark:text-slate-200">Archivo</p>
               <div
-                className="rounded-[24px] border border-dashed border-white/15 bg-white/[0.04] p-5"
+                className="rounded-[24px] border border-dashed border-slate-300 bg-slate-50/85 p-5 dark:border-white/15 dark:bg-white/[0.04]"
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={(event) => {
                   event.preventDefault();
@@ -321,12 +321,12 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
               >
                 <div className="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
                   <div className="space-y-1">
-                    <p className="inline-flex items-center gap-2 text-sm font-semibold text-white">
-                      <FileSpreadsheet className="h-4 w-4 text-blue-300" />
+                    <p className="inline-flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white">
+                      <FileSpreadsheet className="h-4 w-4 text-blue-500 dark:text-blue-300" />
                       Arrastra tu archivo o selecciónalo manualmente
                     </p>
-                    <p className="text-sm text-slate-400">Encabezados recomendados: `full_name`, `student_code`, `status`, `notes`.</p>
-                    {fileName ? <p className="text-xs text-slate-500">Archivo cargado: {fileName}</p> : null}
+                    <p className="text-sm text-slate-600 dark:text-slate-400">Encabezados recomendados: `full_name`, `student_code`, `status`, `notes`.</p>
+                    {fileName ? <p className="text-xs text-slate-500 dark:text-slate-500">Archivo cargado: {fileName}</p> : null}
                   </div>
 
                   <div className="flex flex-wrap gap-3">
@@ -334,7 +334,7 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
                     <button
                       type="button"
                       onClick={() => inputRef.current?.click()}
-                      className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-slate-100 transition hover:bg-white/10"
+                      className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:text-slate-100 dark:hover:bg-white/10"
                     >
                       <Upload className="h-4 w-4" />
                       Seleccionar archivo
@@ -342,7 +342,7 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
                     <button
                       type="button"
                       onClick={resetState}
-                      className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:bg-white/10"
+                      className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
                     >
                       <XCircle className="h-4 w-4" />
                       Limpiar
@@ -357,7 +357,7 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
         <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
           <div className="space-y-5">
             {parseError ? (
-              <div className="rounded-2xl border border-rose-500/25 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+              <div className="rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-900 dark:border-rose-500/25 dark:bg-rose-500/10 dark:text-rose-200">
                 <div className="inline-flex items-center gap-2 font-medium">
                   <AlertTriangle className="h-4 w-4" />
                   {parseError}
@@ -366,7 +366,7 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
             ) : null}
 
             {isParsing ? (
-              <div className="flex items-center gap-3 rounded-2xl border border-blue-500/20 bg-blue-500/10 px-4 py-3 text-sm text-blue-100">
+              <div className="flex items-center gap-3 rounded-2xl border border-blue-300 bg-blue-50 px-4 py-3 text-sm text-blue-900 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-100">
                 <LoaderCircle className="h-4 w-4 animate-spin" />
                 Procesando archivo y preparando vista previa...
               </div>
@@ -375,33 +375,33 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
             {previewRows.length > 0 ? (
               <>
                 <div className="grid gap-3 md:grid-cols-4">
-                  <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                  <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.04]">
                     <p className="text-xs uppercase tracking-[0.16em] text-slate-500">Filas detectadas</p>
-                    <p className="mt-2 text-3xl font-bold text-white">{previewSummary.total}</p>
+                    <p className="mt-2 text-3xl font-bold text-slate-950 dark:text-white">{previewSummary.total}</p>
                   </div>
-                  <div className="rounded-2xl border border-emerald-500/15 bg-emerald-500/10 p-4">
-                    <p className="text-xs uppercase tracking-[0.16em] text-emerald-300/80">Válidas</p>
-                    <p className="mt-2 text-3xl font-bold text-white">{previewSummary.valid}</p>
+                  <div className="rounded-2xl border border-emerald-300 bg-emerald-50 p-4 dark:border-emerald-500/15 dark:bg-emerald-500/10">
+                    <p className="text-xs uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-300/80">Válidas</p>
+                    <p className="mt-2 text-3xl font-bold text-emerald-900 dark:text-white">{previewSummary.valid}</p>
                   </div>
-                  <div className="rounded-2xl border border-amber-500/15 bg-amber-500/10 p-4">
-                    <p className="text-xs uppercase tracking-[0.16em] text-amber-300/80">Inválidas</p>
-                    <p className="mt-2 text-3xl font-bold text-white">{previewSummary.invalid}</p>
+                  <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4 dark:border-amber-500/15 dark:bg-amber-500/10">
+                    <p className="text-xs uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300/80">Inválidas</p>
+                    <p className="mt-2 text-3xl font-bold text-amber-900 dark:text-white">{previewSummary.invalid}</p>
                   </div>
-                  <div className="rounded-2xl border border-rose-500/15 bg-rose-500/10 p-4">
-                    <p className="text-xs uppercase tracking-[0.16em] text-rose-300/80">Duplicadas en archivo</p>
-                    <p className="mt-2 text-3xl font-bold text-white">{previewSummary.duplicatesInFile}</p>
+                  <div className="rounded-2xl border border-rose-300 bg-rose-50 p-4 dark:border-rose-500/15 dark:bg-rose-500/10">
+                    <p className="text-xs uppercase tracking-[0.16em] text-rose-700 dark:text-rose-300/80">Duplicadas en archivo</p>
+                    <p className="mt-2 text-3xl font-bold text-rose-900 dark:text-white">{previewSummary.duplicatesInFile}</p>
                   </div>
                 </div>
 
-                <div className="rounded-[24px] border border-white/10 bg-black/10">
-                  <div className="border-b border-white/10 px-4 py-3">
-                    <h3 className="text-sm font-semibold text-white">Vista previa de importación</h3>
-                    <p className="mt-1 text-xs text-slate-400">Revisa las filas detectadas antes de confirmar el guardado en Supabase.</p>
+                <div className="rounded-[24px] border border-slate-200 bg-white dark:border-white/10 dark:bg-black/10">
+                  <div className="border-b border-slate-200 px-4 py-3 dark:border-white/10">
+                    <h3 className="text-sm font-semibold text-slate-950 dark:text-white">Vista previa de importación</h3>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Revisa las filas detectadas antes de confirmar el guardado en Supabase.</p>
                   </div>
                   <div className="max-h-[34vh] overflow-auto">
                     <table className="w-full min-w-[920px] text-sm">
-                      <thead className="sticky top-0 z-10 bg-slate-950">
-                        <tr className="border-b border-white/10 text-slate-300">
+                      <thead className="sticky top-0 z-10 bg-slate-100 dark:bg-slate-950">
+                        <tr className="border-b border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-300">
                           <th className="px-4 py-3 text-left">Fila</th>
                           <th className="px-4 py-3 text-left">Nombre</th>
                           <th className="px-4 py-3 text-left">Código</th>
@@ -412,16 +412,18 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
                       </thead>
                       <tbody>
                         {previewRows.map((row) => (
-                          <tr key={`${row.rowNumber}-${row.studentCode ?? row.fullName}`} className="border-b border-white/5 text-slate-200">
+                          <tr key={`${row.rowNumber}-${row.studentCode ?? row.fullName}`} className="border-b border-slate-100 text-slate-700 dark:border-white/5 dark:text-slate-200">
                             <td className="px-4 py-3">{row.rowNumber}</td>
                             <td className="px-4 py-3 font-medium">{row.fullName}</td>
                             <td className="px-4 py-3">{row.studentCode ?? "—"}</td>
                             <td className="px-4 py-3">{row.status}</td>
-                            <td className="max-w-[280px] px-4 py-3 text-slate-400">{row.notes ?? "Sin observaciones"}</td>
+                            <td className="max-w-[280px] px-4 py-3 text-slate-500 dark:text-slate-400">{row.notes ?? "Sin observaciones"}</td>
                             <td className="px-4 py-3">
                               <span
                                 className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
-                                  row.isValid ? "bg-emerald-500/15 text-emerald-200" : "bg-rose-500/15 text-rose-200"
+                                  row.isValid
+                                    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-200"
+                                    : "bg-rose-100 text-rose-800 dark:bg-rose-500/15 dark:text-rose-200"
                                 }`}
                               >
                                 {row.isValid ? "Lista para importar" : row.error ?? "Fila inválida"}
@@ -438,13 +440,13 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
           </div>
         </div>
 
-        <div className="sticky bottom-0 shrink-0 border-t border-white/10 bg-slate-950/95 px-6 py-4 backdrop-blur-md">
+        <div className="sticky bottom-0 shrink-0 border-t border-slate-200 bg-white/96 px-6 py-4 backdrop-blur-md dark:border-white/10 dark:bg-slate-950/95">
           <div className="flex flex-wrap items-center justify-end gap-3">
             <button
               type="button"
               onClick={onClose}
               disabled={isPending || isParsing}
-              className="rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+              className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10"
             >
               Cancelar
             </button>

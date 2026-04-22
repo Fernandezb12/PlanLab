@@ -113,22 +113,22 @@ export const ReportFormDialog = ({ isOpen, groups, activities, onClose, onComple
       contentClassName="max-w-3xl"
     >
       <form onSubmit={onSubmit} className="space-y-5">
-        <div className="rounded-[26px] border border-white/10 bg-white/[0.04] p-5">
+        <div className="rounded-[26px] border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-white/[0.04]">
           <div className="mb-4 flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-2xl bg-slate-500/15 text-slate-100">
               <FilePlus2 className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-white">Configuración del reporte</h3>
-              <p className="text-sm text-slate-400">Selecciona el grupo, el tipo de reporte y, si corresponde, una actividad asociada.</p>
+              <h3 className="text-sm font-semibold text-slate-950 dark:text-white">Configuración del reporte</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Selecciona el grupo, el tipo de reporte y, si corresponde, una actividad asociada.</p>
             </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-200">Grupo</label>
+              <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Grupo</label>
               <select
-                className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-400/20"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-400/20 dark:border-white/10 dark:bg-slate-900 dark:text-white"
                 {...form.register("groupId")}
               >
                 <option value="">Selecciona un grupo</option>
@@ -142,9 +142,9 @@ export const ReportFormDialog = ({ isOpen, groups, activities, onClose, onComple
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-200">Tipo de reporte</label>
+              <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Tipo de reporte</label>
               <select
-                className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-400/20"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-400/20 dark:border-white/10 dark:bg-slate-900 dark:text-white"
                 {...form.register("reportType")}
               >
                 {reportTypes.map((reportType) => (
@@ -158,9 +158,9 @@ export const ReportFormDialog = ({ isOpen, groups, activities, onClose, onComple
           </div>
 
           <div className="mt-4 space-y-2">
-            <label className="text-sm font-medium text-slate-200">Actividad asociada</label>
+            <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Actividad asociada</label>
             <select
-              className="w-full rounded-2xl border border-white/10 bg-slate-900 px-4 py-3 text-sm text-white outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-400/20"
+              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-400/20 dark:border-white/10 dark:bg-slate-900 dark:text-white"
               {...form.register("activityId")}
             >
               <option value="">Sin actividad específica</option>
@@ -170,7 +170,7 @@ export const ReportFormDialog = ({ isOpen, groups, activities, onClose, onComple
                 </option>
               ))}
             </select>
-            <p className="text-xs text-slate-400">Este vínculo es opcional. Puede asociarse a una actividad específica o dejarse como reporte general del grupo.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Este vínculo es opcional. Puede asociarse a una actividad específica o dejarse como reporte general del grupo.</p>
             <p className="text-xs text-rose-400">{form.formState.errors.activityId?.message}</p>
           </div>
         </div>
@@ -181,7 +181,7 @@ export const ReportFormDialog = ({ isOpen, groups, activities, onClose, onComple
             type="button"
             onClick={onClose}
             disabled={isPending}
-            className="rounded-xl border border-white/10 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10"
           >
             Cancelar
           </button>
