@@ -113,7 +113,7 @@ export const GroupFormDialog = ({ isOpen, group, onClose, onCompleted, createGro
             <label className="text-sm font-medium text-slate-200">Nivel educativo</label>
             <input
               className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20"
-              placeholder="Básica secundaria"
+              placeholder="Básica Secundaria"
               {...form.register("level")}
             />
             <p className="text-xs text-rose-400">{form.formState.errors.level?.message}</p>

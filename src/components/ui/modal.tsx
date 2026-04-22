@@ -12,15 +12,27 @@ type ModalProps = {
   children: ReactNode;
   onClose: () => void;
   contentClassName?: string;
+  bodyClassName?: string;
+  headerClassName?: string;
+  closeOnOverlayClick?: boolean;
 };
 
-export const Modal = ({ isOpen, title, description, children, onClose, contentClassName }: ModalProps) => {
+export const Modal = ({
+  isOpen,
+  title,
+  description,
+  children,
+  onClose,
+  contentClassName,
+  bodyClassName,
+  headerClassName,
+  closeOnOverlayClick = true
+}: ModalProps) => {
   useEffect(() => {
     if (!isOpen) {
       return;
     }
 
-    // Yo permito cerrar con Escape para mantener el flujo ágil.
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
@@ -36,27 +48,37 @@ export const Modal = ({ isOpen, title, description, children, onClose, contentCl
   }
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/70 px-4 py-8 backdrop-blur-sm" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-[80] flex items-center justify-center bg-slate-950/72 px-4 py-5 backdrop-blur-sm md:px-6 md:py-8"
+      onClick={() => {
+        if (closeOnOverlayClick) {
+          onClose();
+        }
+      }}
+    >
       <div
-        className={cn("w-full max-w-2xl rounded-[28px] border border-white/10 bg-slate-950/95 p-6 shadow-2xl shadow-black/40", contentClassName)}
+        className={cn(
+          "flex max-h-[calc(100vh-2.5rem)] min-h-0 w-full max-w-2xl flex-col overflow-hidden rounded-[30px] border border-slate-200 bg-white/98 shadow-[0_30px_70px_-35px_rgba(15,23,42,0.55)] dark:border-white/10 dark:bg-slate-950/95",
+          contentClassName
+        )}
         onClick={(event) => event.stopPropagation()}
       >
-        <div className="flex items-start justify-between gap-4">
+        <div className={cn("flex items-start justify-between gap-4 border-b border-slate-200/80 px-6 py-5 dark:border-white/10", headerClassName)}>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-white">{title}</h2>
-            {description ? <p className="mt-1 text-sm text-slate-400">{description}</p> : null}
+            <h2 className="text-2xl font-bold tracking-tight text-slate-950 dark:text-white">{title}</h2>
+            {description ? <p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-400">{description}</p> : null}
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-white/10 p-2 text-slate-300 transition hover:bg-white/10"
+            className="rounded-xl border border-slate-300 p-2 text-slate-600 transition hover:bg-slate-100 dark:border-white/10 dark:text-slate-300 dark:hover:bg-white/10"
             aria-label="Cerrar"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="mt-6">{children}</div>
+        <div className={cn("min-h-0 px-6 py-5", bodyClassName)}>{children}</div>
       </div>
     </div>
   );

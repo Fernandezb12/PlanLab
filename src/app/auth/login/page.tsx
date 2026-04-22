@@ -10,7 +10,14 @@ const loginHighlights = [
   { icon: Sparkles, text: "Flujo rápido para retomar tu jornada pedagógica." }
 ];
 
-export default function LoginPage() {
+type LoginPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const nextPath = typeof resolvedSearchParams.next === "string" ? resolvedSearchParams.next : null;
+
   return (
     <main className="min-h-screen bg-slate-100 px-6 py-8 dark:bg-slate-950">
       <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl items-center">
@@ -53,7 +60,7 @@ export default function LoginPage() {
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Accede a tu espacio</h2>
             <p className="mb-8 mt-2 text-sm text-slate-500">Tu panel te espera con planes, actividades y reportes listos para trabajar.</p>
 
-            <LoginForm />
+            <LoginForm nextPath={nextPath} />
 
             <p className="mt-8 text-sm text-slate-500">
               ¿Aún no tienes cuenta?{" "}

@@ -1,69 +1,116 @@
 # PlanLab
 
-Plataforma edtech para docentes que centraliza planificación, gestión de actividades, seguimiento de resultados y generación de reportes pedagógicos.
+PlanLab es una plataforma pedagógica para docentes que integra planificación de clase, gestión de grupos, actividades, resultados, reportes y apoyo con IA en un solo flujo de trabajo.
 
-## Visión del producto
+## Qué resuelve
 
-PlanLab busca reducir la carga operativa del profesor y elevar la calidad de las decisiones pedagógicas con un flujo único:
+PlanLab organiza el proceso docente de punta a punta:
 
-1. Diseñar planes de clase con apoyo de IA.
-2. Gestionar actividades por curso y estudiante.
-3. Medir resultados y progreso en tiempo real.
-4. Emitir reportes accionables para equipos directivos y familias.
+- Crear y mejorar planes de clase.
+- Programar actividades por grupo.
+- Registrar asistencia, notas y observaciones por estudiante.
+- Detectar alertas pedagógicas tempranas.
+- Generar reportes y exportaciones académicas.
+- Apoyar decisiones con propuestas estructuradas de IA.
 
-## Arquitectura
+## Flujo principal del producto
 
-- **Frontend:** Next.js App Router + TypeScript + Tailwind CSS.
-- **UI/UX:** Arquitectura modular por dominios (`features`) y por capas de presentación (`components`).
-- **Validación:** Zod + React Hook Form para formularios y parseo seguro de respuestas IA.
-- **Integraciones preparadas:** Supabase (auth + data), Gemini (servicios IA), PDF API route.
-- **Persistencia:** SQL inicial para Supabase con RLS por `auth.uid()`.
+```text
+Grupos -> Estudiantes -> Planes -> Actividades -> Resultados -> Reportes
+```
 
-## Estructura de módulos
+## Funcionalidades actuales
 
-```bash
+### Base académica
+
+- Autenticación real con Supabase.
+- Protección de rutas privadas.
+- Perfil docente real.
+- CRUD de grupos y estudiantes.
+- Importación masiva de estudiantes.
+- CRUD de planes de clase.
+- CRUD de actividades.
+- Registro por estudiante en actividades.
+- Resultados reales con métricas básicas.
+- Dashboard real del docente.
+- Reportes base conectados a datos reales.
+
+### Capa inteligente
+
+- Generación de planes con IA.
+- Mejora de planes existentes con IA.
+- Estrategias de refuerzo desde resultados.
+- Validación estricta con Zod para respuestas IA.
+
+### Exportación
+
+- Exportación PDF en backend.
+- Exportación Word editable para planes.
+- Nombres de archivo legibles y consistentes.
+
+### Experiencia de producto
+
+- Interfaz premium en modo oscuro.
+- Modo claro adaptado.
+- Buscador global.
+- Centro de notificaciones.
+- Skeletons, toasts y estados vacíos consistentes.
+
+## Stack técnico
+
+| Capa | Tecnología |
+| --- | --- |
+| Frontend | Next.js App Router + React + TypeScript |
+| UI | Tailwind CSS + componentes modulares propios |
+| Datos | Supabase Database + Auth + Storage |
+| Validación | Zod + React Hook Form |
+| IA | Gemini mediante `@google/genai` |
+| Documentos | `@react-pdf/renderer` + `docx` |
+
+## Arquitectura del proyecto
+
+```text
 src/
   app/
     (public)/
     (dashboard)/
     api/
   components/
-    ui/ layout/ shared/ landing/ auth/ dashboard/ plans/ activities/ results/ reports/
+    layout/
+    pdf/
+    shared/
+    ui/
   features/
-    auth/ plans/ activities/ results/ reports/ profile/
+    activities/
+    auth/
+    dashboard/
+    groups/
+    plans/
+    profile/
+    reports/
+    results/
   lib/
-    supabase/ gemini/ pdf/ utils/ validations/ constants/
-  types/ data/ providers/ hooks/ styles/
+    gemini/
+    notifications/
+    pdf/
+    plans/
+    supabase/
+    validations/
+    word/
+  styles/
 ```
 
-## Roadmap por entregas
+## Variables de entorno
 
-### Entrega 1
+Crea un archivo `.env.local` con estas variables:
 
-- Landing premium de marca PlanLab.
-- Login y registro con validación.
-- Shell base de dashboard responsive.
-- Vistas iniciales de planes, actividades, resultados y reportes.
-- Base técnica para Supabase, Gemini y endpoint PDF.
-
-### Entrega 2 (actual)
-
-- Autenticación real con Supabase Auth.
-- Protección de rutas privadas con middleware.
-- Perfil docente real y base de datos multitenant con RLS.
-- Estructura lista para CRUD por docente (grupos, estudiantes, planes, actividades, reportes).
-
-### Entrega 3
-
-- Generación asistida de planes con Gemini.
-- Evaluación automática y analítica por objetivos.
-- Exportación PDF real con plantillas institucionales.
-
-### Entrega 4
-
-- Panel directivo multi-curso.
-- Reportes comparativos por periodo.
-- Alertas tempranas y recomendaciones pedagógicas.
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-3-flash-preview
+SUPABASE_DOCUMENTS_BUCKET=documents
+```
 
 ## Puesta en marcha
 
@@ -72,13 +119,83 @@ npm install
 npm run dev
 ```
 
-Variables recomendadas en `.env.local`:
+La aplicación quedará disponible en:
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+http://localhost:3000
 ```
 
----
+## Scripts útiles
 
-© Daniel Fernandez. Todos los derechos reservados.
+```bash
+npm run dev
+npm run typecheck
+npm run lint
+npm run build
+```
+
+## Requisitos de Supabase
+
+PlanLab espera estas capacidades activas:
+
+- Auth por correo electrónico.
+- RLS habilitado en tablas por `auth.uid()`.
+- Bucket para documentos exportados.
+- Esquema base del proyecto ya creado.
+
+### Tabla de notificaciones
+
+Si vas a usar notificaciones persistentes, ejecuta el SQL incluido en:
+
+- [supabase/notifications.sql](supabase/notifications.sql)
+
+Ese archivo crea:
+
+- tabla `public.notifications`
+- índices útiles
+- políticas RLS por usuario autenticado
+
+Si la tabla aún no existe, la app usa un fallback seguro basado en el estado actual del sistema para no romper la interfaz.
+
+## Exportaciones
+
+### PDF
+
+- Generación en backend.
+- Documentos blancos, legibles e imprimibles.
+- Uso de datos reales desde Supabase.
+
+### Word
+
+- Exportación editable para planes de clase.
+- Reutiliza la misma estructura normalizada que la vista previa y el PDF.
+
+## IA en PlanLab
+
+La integración con Gemini está diseñada para producto, no como chatbot:
+
+- Toda llamada ocurre del lado servidor.
+- La clave no se expone en frontend.
+- La salida estructurada se valida con Zod.
+- El docente revisa y aplica la propuesta antes de guardarla.
+
+## Estado actual
+
+PlanLab está orientado a uso real docente, con foco en:
+
+- estabilidad funcional
+- consistencia visual
+- claridad pedagógica
+- evolución incremental sin rehacer la arquitectura
+
+## Validación recomendada antes de publicar
+
+```bash
+npm run typecheck
+npm run lint
+npm run build
+```
+
+## Autoría
+
+Desarrollado por Daniel Fernandez para la evolución de PlanLab como producto edtech profesional.

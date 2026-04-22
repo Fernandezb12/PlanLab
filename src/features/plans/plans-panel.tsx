@@ -1,12 +1,14 @@
 "use client";
 
-import { Copy, Eye, Pencil, PlusCircle, Trash2 } from "lucide-react";
-import { useMemo, useState, useTransition } from "react";
+import { Copy, Eye, Pencil, PlusCircle, Sparkles, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 
+import { DocumentExportMenu } from "@/components/pdf/document-export-menu";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Card } from "@/components/ui/card";
 import { ModuleHeader } from "@/components/ui/module-header";
 import { createPlanAction, deletePlanAction, duplicatePlanAction, type PlanActionResult, updatePlanAction } from "@/features/plans/actions";
+import { PlanAIDialog } from "@/features/plans/plan-ai-dialog";
 import { PlanDetailsDialog } from "@/features/plans/plan-details-dialog";
 import { PlanFormDialog } from "@/features/plans/plan-form-dialog";
 import { getEvaluationTypeLabel, getPlanStatusLabel } from "@/lib/validations/plans";
@@ -29,6 +31,7 @@ type PlanRecord = {
   evaluation_type: string;
   status: string;
   created_at: string;
+  plan_json?: Record<string, unknown> | null;
   groups: { name: string; level: string | null } | { name: string; level: string | null }[] | null;
 };
 
@@ -46,17 +49,26 @@ const statusStyles: Record<string, string> = {
 type PlansPanelProps = {
   groups: GroupOption[];
   plans: PlanRecord[];
+  initialAIOpen?: boolean;
 };
 
-export const PlansPanel = ({ groups, plans }: PlansPanelProps) => {
+export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelProps) => {
   const [feedback, setFeedback] = useState<FeedbackState>(null);
   const [isDeleting, startDeleteTransition] = useTransition();
   const [isDuplicating, startDuplicateTransition] = useTransition();
   const [formOpen, setFormOpen] = useState(false);
+  const [aiOpen, setAIOpen] = useState(initialAIOpen);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<PlanRecord | null>(null);
+  const [aiPlan, setAIPlan] = useState<PlanRecord | null>(null);
 
   const groupedOptions = useMemo(() => groups.map((group) => ({ id: group.id, name: group.name, level: group.level })), [groups]);
+
+  useEffect(() => {
+    if (initialAIOpen) {
+      setAIOpen(true);
+    }
+  }, [initialAIOpen]);
 
   const handleCompleted = (result: PlanActionResult) => {
     setFeedback({
@@ -75,9 +87,19 @@ export const PlansPanel = ({ groups, plans }: PlansPanelProps) => {
     setFormOpen(true);
   };
 
+  const openAICreatePlan = () => {
+    setAIPlan(null);
+    setAIOpen(true);
+  };
+
   const openEditPlan = (plan: PlanRecord) => {
     setSelectedPlan(plan);
     setFormOpen(true);
+  };
+
+  const openImprovePlan = (plan: PlanRecord) => {
+    setAIPlan(plan);
+    setAIOpen(true);
   };
 
   const openViewPlan = (plan: PlanRecord) => {
@@ -106,18 +128,29 @@ export const PlansPanel = ({ groups, plans }: PlansPanelProps) => {
   return (
     <section className="space-y-6">
       <ModuleHeader
-        title="Módulo de Planes"
-        subtitle="Diseña, organiza y administra tus planes con datos reales del sistema."
+        title="Planes"
+        subtitle="Diseña, organiza y administra tus planes de trabajo."
         actions={
-          <button
-            type="button"
-            onClick={openCreatePlan}
-            disabled={groups.length === 0}
-            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/30 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            <PlusCircle className="h-4 w-4" />
-            Crear nuevo plan
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={openAICreatePlan}
+              disabled={groups.length === 0}
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-900/30 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Sparkles className="h-4 w-4" />
+              Generar plan con IA
+            </button>
+            <button
+              type="button"
+              onClick={openCreatePlan}
+              disabled={groups.length === 0}
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-slate-100 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <PlusCircle className="h-4 w-4" />
+              Crear nuevo plan
+            </button>
+          </div>
         }
       />
 
@@ -137,21 +170,30 @@ export const PlansPanel = ({ groups, plans }: PlansPanelProps) => {
         <EmptyState
           icon={PlusCircle}
           title="Primero crea un grupo para planificar"
-          description="Tus planes deben asociarse a uno de tus grupos reales. Cuando tengas grupos, podrás crear planes desde aquí."
+          description="Cada plan debe asociarse a un grupo. Cuando tengas uno disponible, podrás crearlo manualmente o generar una propuesta con IA."
         />
       ) : !plans.length ? (
         <EmptyState
           icon={PlusCircle}
           title="Aún no has creado planes"
-          description="Comienza con tu primer plan y deja lista la base para actividades y resultados."
+          description="Crea tu primer plan o genera una propuesta con IA para organizar actividades, resultados y seguimiento del curso."
           action={
-            <button
-              type="button"
-              onClick={openCreatePlan}
-              className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-white/15 dark:text-slate-200 dark:hover:bg-white/10"
-            >
-              Crear primer plan
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <button
+                type="button"
+                onClick={openAICreatePlan}
+                className="rounded-lg bg-gradient-to-r from-violet-500 to-indigo-500 px-3 py-2 text-sm font-medium text-white transition hover:brightness-110"
+              >
+                Generar con IA
+              </button>
+              <button
+                type="button"
+                onClick={openCreatePlan}
+                className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100 dark:border-white/15 dark:text-slate-200 dark:hover:bg-white/10"
+              >
+                Crear primer plan
+              </button>
+            </div>
           }
         />
       ) : (
@@ -182,6 +224,16 @@ export const PlansPanel = ({ groups, plans }: PlansPanelProps) => {
                   </div>
 
                   <div className="flex flex-wrap items-center justify-end gap-1.5">
+                    <DocumentExportMenu pdfEndpoint={`/api/export/plans/${plan.id}`} wordEndpoint={`/api/export/plans/${plan.id}/word`} />
+                    <button
+                      type="button"
+                      onClick={() => openImprovePlan(plan)}
+                      className="rounded-lg border border-violet-500/30 p-2 text-violet-200 transition hover:bg-violet-500/10"
+                      aria-label="Mejorar con IA"
+                      title="Mejorar con IA"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                    </button>
                     <button
                       type="button"
                       onClick={() => openViewPlan(plan)}
@@ -239,6 +291,24 @@ export const PlansPanel = ({ groups, plans }: PlansPanelProps) => {
         onCompleted={handleCompleted}
         createPlanAction={createPlanAction}
         updatePlanAction={updatePlanAction}
+      />
+
+      <PlanAIDialog
+        isOpen={aiOpen}
+        groups={groupedOptions}
+        plan={aiPlan}
+        onClose={() => {
+          setAIOpen(false);
+          setAIPlan(null);
+        }}
+        onCompleted={(result) => {
+          handleCompleted(result);
+
+          if (result.success) {
+            setAIOpen(false);
+            setAIPlan(null);
+          }
+        }}
       />
 
       <PlanDetailsDialog

@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -11,13 +11,16 @@ import { createClient } from "@/lib/supabase/client";
 import { mapLoginErrorMessage } from "@/lib/supabase/auth-errors";
 import { type LoginInput, loginSchema } from "@/lib/validations/auth";
 
-export const LoginForm = () => {
+type LoginFormProps = {
+  nextPath?: string | null;
+};
+
+export const LoginForm = ({ nextPath }: LoginFormProps) => {
   // Controlo visibilidad para que el usuario pueda validar lo que escribe.
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const form = useForm<LoginInput>({
     resolver: zodResolver(loginSchema),
@@ -41,7 +44,6 @@ export const LoginForm = () => {
       return;
     }
 
-    const nextPath = searchParams.get("next");
     router.push(nextPath && nextPath.startsWith("/") ? nextPath : "/dashboard");
     router.refresh();
   });

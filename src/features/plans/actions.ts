@@ -2,8 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 
+import { createNotification } from "@/lib/notifications/server";
 import { createClient } from "@/lib/supabase/server";
-import { planSchema, type PlanInput } from "@/lib/validations/plans";
+import { normalizeEvaluationType, planSchema, type PlanInput } from "@/lib/validations/plans";
 
 export type PlanActionResult = {
   success: boolean;
@@ -56,6 +57,18 @@ const validatePlanOwnership = async (supabase: Awaited<ReturnType<typeof getAuth
   }
 };
 
+const buildStoredPlanJson = (values: PlanInput) =>
+  values.planJson ?? {
+    title: values.title,
+    subject: values.subject,
+    topic: values.topic,
+    duration_minutes: values.durationMinutes,
+    objective: values.objective,
+    resources: values.resources?.trim() ? values.resources.trim() : null,
+    evaluation_type: values.evaluationType,
+    status: values.status
+  };
+
 const buildPlanPayload = (values: PlanInput, userId: string) => ({
   user_id: userId,
   group_id: values.groupId,
@@ -67,17 +80,7 @@ const buildPlanPayload = (values: PlanInput, userId: string) => ({
   resources: values.resources?.trim() ? values.resources.trim() : null,
   evaluation_type: values.evaluationType,
   status: values.status,
-  // Yo guardo una estructura simple para dejar el campo listo sin meter IA todavía.
-  plan_json: {
-    title: values.title,
-    subject: values.subject,
-    topic: values.topic,
-    duration_minutes: values.durationMinutes,
-    objective: values.objective,
-    resources: values.resources?.trim() ? values.resources.trim() : null,
-    evaluation_type: values.evaluationType,
-    status: values.status
-  }
+  plan_json: buildStoredPlanJson(values)
 });
 
 export const createPlanAction = async (input: PlanInput): Promise<PlanActionResult> => {
@@ -99,6 +102,16 @@ export const createPlanAction = async (input: PlanInput): Promise<PlanActionResu
         success: false,
         message: `No pudimos crear el plan: ${error.message}`
       };
+    }
+
+    if (parsed.data.planJson?.generated_with_ai) {
+      await createNotification(supabase, {
+        userId: user.id,
+        type: "plan_ai",
+        title: "Plan generado con apoyo de IA",
+        message: `El plan "${parsed.data.title}" quedó listo para revisión y uso docente.`,
+        href: "/planes"
+      });
     }
 
     revalidatePath("/planes");
@@ -140,16 +153,7 @@ export const updatePlanAction = async (input: PlanInput): Promise<PlanActionResu
         resources: parsed.data.resources?.trim() ? parsed.data.resources.trim() : null,
         evaluation_type: parsed.data.evaluationType,
         status: parsed.data.status,
-        plan_json: {
-          title: parsed.data.title,
-          subject: parsed.data.subject,
-          topic: parsed.data.topic,
-          duration_minutes: parsed.data.durationMinutes,
-          objective: parsed.data.objective,
-          resources: parsed.data.resources?.trim() ? parsed.data.resources.trim() : null,
-          evaluation_type: parsed.data.evaluationType,
-          status: parsed.data.status
-        }
+        plan_json: buildStoredPlanJson(parsed.data)
       })
       .eq("id", parsed.data.id)
       .eq("user_id", user.id);
@@ -160,6 +164,16 @@ export const updatePlanAction = async (input: PlanInput): Promise<PlanActionResu
         success: false,
         message: `No pudimos actualizar el plan: ${error.message}`
       };
+    }
+
+    if (parsed.data.planJson?.generated_with_ai) {
+      await createNotification(supabase, {
+        userId: user.id,
+        type: "plan_ai",
+        title: "Plan mejorado con apoyo de IA",
+        message: `El plan "${parsed.data.title}" se actualizó con una propuesta pedagógica refinada.`,
+        href: "/planes"
+      });
     }
 
     revalidatePath("/planes");
@@ -202,6 +216,16 @@ export const duplicatePlanAction = async (planId: string): Promise<PlanActionRes
       await validateGroupOwnership(supabase, originalPlan.group_id, user.id);
     }
 
+    const normalizedEvaluationType = normalizeEvaluationType(originalPlan.evaluation_type) ?? "otra";
+    const normalizedPlanJson =
+      originalPlan.plan_json && typeof originalPlan.plan_json === "object"
+        ? {
+            ...(originalPlan.plan_json as Record<string, unknown>),
+            evaluation_type:
+              normalizeEvaluationType((originalPlan.plan_json as Record<string, unknown>).evaluation_type) ?? normalizedEvaluationType
+          }
+        : originalPlan.plan_json;
+
     const { error } = await supabase.from("lesson_plans").insert({
       user_id: user.id,
       group_id: originalPlan.group_id,
@@ -211,8 +235,8 @@ export const duplicatePlanAction = async (planId: string): Promise<PlanActionRes
       duration_minutes: originalPlan.duration_minutes,
       objective: originalPlan.objective,
       resources: originalPlan.resources,
-      evaluation_type: originalPlan.evaluation_type,
-      plan_json: originalPlan.plan_json,
+      evaluation_type: normalizedEvaluationType,
+      plan_json: normalizedPlanJson,
       status: originalPlan.status
     });
 

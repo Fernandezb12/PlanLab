@@ -64,10 +64,10 @@ type FeedbackState = {
 } | null;
 
 const statusStyles: Record<string, string> = {
-  scheduled: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
-  in_progress: "bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300",
-  pending_record: "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
-  completed: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300"
+  scheduled: "border border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-900/30 dark:text-blue-300",
+  in_progress: "border border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-500/20 dark:bg-violet-900/30 dark:text-violet-300",
+  pending_record: "border border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-500/20 dark:bg-amber-900/30 dark:text-amber-300",
+  completed: "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-900/30 dark:text-emerald-300"
 };
 
 type ActivitiesPanelProps = {
@@ -150,7 +150,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
     <section className="space-y-6">
       <ModuleHeader
         title="Actividades"
-        subtitle="Programa y administra actividades reales conectadas a tus planes."
+        subtitle="Programa y organiza actividades vinculadas a tus planes."
         actions={
           <button
             type="button"
@@ -165,13 +165,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
       />
 
       {feedback ? (
-        <div
-          className={`rounded-2xl border px-4 py-3 text-sm ${
-            feedback.tone === "success"
-              ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
-              : "border-rose-500/30 bg-rose-500/10 text-rose-200"
-          }`}
-        >
+        <div className={`rounded-2xl border px-4 py-3 text-sm ${feedback.tone === "success" ? "semantic-success" : "semantic-risk"}`}>
           {feedback.message}
         </div>
       ) : null}
@@ -180,13 +174,13 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
         <EmptyState
           icon={PlusCircle}
           title="Primero crea un plan para programar actividades"
-          description="Las actividades nacen a partir de tus planes reales. Cuando tengas planes, podrás programarlas desde aquí."
+          description="Las actividades se crean a partir de tus planes. Cuando tengas uno disponible, podrás programarlas desde aquí."
         />
       ) : !activities.length ? (
         <EmptyState
           icon={PlusCircle}
           title="Todavía no tienes actividades programadas"
-          description="Crea tu primera actividad a partir de un plan existente para comenzar el seguimiento real."
+          description="Crea tu primera actividad a partir de un plan existente para comenzar el seguimiento del curso."
           action={
             <button
               type="button"
@@ -220,7 +214,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                         {getActivityStatusLabel(activity.status)}
                       </span>
                       {relatedGroup?.level ? (
-                        <span className="inline-flex rounded-full border border-white/10 px-2.5 py-1 text-xs font-semibold text-slate-300">
+                        <span className="inline-flex rounded-full border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-600 dark:border-white/10 dark:text-slate-300">
                           {relatedGroup.level}
                         </span>
                       ) : null}
@@ -231,7 +225,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                     <button
                       type="button"
                       onClick={() => openManageRecords(activity)}
-                      className="rounded-lg border border-emerald-500/30 p-2 text-emerald-200 hover:bg-emerald-500/10"
+                      className="rounded-lg border border-emerald-300 bg-emerald-50 p-2 text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-transparent dark:text-emerald-200 dark:hover:bg-emerald-500/10"
                       aria-label="Registrar resultados"
                       title="Registrar resultados"
                     >
@@ -240,7 +234,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                     <button
                       type="button"
                       onClick={() => openViewActivity(activity)}
-                      className="rounded-lg border border-slate-300 p-2 hover:bg-slate-100 dark:border-white/10 dark:hover:bg-white/10"
+                      className="rounded-lg border border-slate-300 bg-white p-2 text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:bg-transparent dark:text-slate-200 dark:hover:bg-white/10"
                       aria-label="Ver actividad"
                       title="Ver actividad"
                     >
@@ -249,7 +243,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                     <button
                       type="button"
                       onClick={() => openEditActivity(activity)}
-                      className="rounded-lg border border-slate-300 p-2 hover:bg-slate-100 dark:border-white/10 dark:hover:bg-white/10"
+                      className="rounded-lg border border-slate-300 bg-white p-2 text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:bg-transparent dark:text-slate-200 dark:hover:bg-white/10"
                       aria-label="Editar actividad"
                       title="Editar actividad"
                     >
@@ -259,7 +253,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                       type="button"
                       onClick={() => handleDeleteActivity(activity)}
                       disabled={isDeleting}
-                      className="rounded-lg border border-rose-500/30 p-2 text-rose-300 hover:bg-rose-500/10 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="rounded-lg border border-rose-300 bg-rose-50 p-2 text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/30 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10"
                       aria-label="Eliminar actividad"
                       title="Eliminar actividad"
                     >

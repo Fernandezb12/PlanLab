@@ -22,9 +22,10 @@ body {
 }
 
 .glass-card {
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.74), rgba(248, 250, 252, 0.58));
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 252, 0.9));
   backdrop-filter: blur(14px);
+  box-shadow: 0 18px 38px -30px rgba(15, 23, 42, 0.22);
 }
 
 .dark .glass-card {
@@ -33,10 +34,11 @@ body {
 }
 
 .glass-card-plus {
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(14px);
   transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+  box-shadow: 0 18px 38px -30px rgba(15, 23, 42, 0.24);
 }
 
 .dark .glass-card-plus {
@@ -46,8 +48,56 @@ body {
 
 .glass-card-plus:hover {
   transform: translateY(-2px);
-  border-color: rgba(139, 92, 246, 0.32);
-  box-shadow: 0 16px 30px -24px rgba(99, 102, 241, 0.4);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 20px 36px -26px rgba(99, 102, 241, 0.28);
+}
+
+.semantic-success {
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(236, 253, 245, 0.96);
+  color: rgb(6, 95, 70);
+}
+
+.semantic-warning {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(255, 251, 235, 0.96);
+  color: rgb(146, 64, 14);
+}
+
+.semantic-risk {
+  border-color: rgba(244, 63, 94, 0.3);
+  background: rgba(255, 241, 242, 0.96);
+  color: rgb(159, 18, 57);
+}
+
+.semantic-info {
+  border-color: rgba(59, 130, 246, 0.28);
+  background: rgba(239, 246, 255, 0.96);
+  color: rgb(30, 64, 175);
+}
+
+.dark .semantic-success {
+  border-color: rgba(16, 185, 129, 0.28);
+  background: rgba(16, 185, 129, 0.12);
+  color: rgb(167, 243, 208);
+}
+
+.dark .semantic-warning {
+  border-color: rgba(245, 158, 11, 0.28);
+  background: rgba(245, 158, 11, 0.12);
+  color: rgb(253, 230, 138);
+}
+
+.dark .semantic-risk {
+  border-color: rgba(244, 63, 94, 0.28);
+  background: rgba(244, 63, 94, 0.12);
+  color: rgb(254, 205, 211);
+}
+
+.dark .semantic-info {
+  border-color: rgba(59, 130, 246, 0.28);
+  background: rgba(59, 130, 246, 0.12);
+  color: rgb(191, 219, 254);
 }
 
 .mockup-shell {

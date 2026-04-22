@@ -11,6 +11,7 @@ import {
   evaluationTypes,
   evaluationTypeLabels,
   getPlanStatusLabel,
+  normalizeEvaluationType,
   planSchema,
   planStatuses,
   type PlanInput
@@ -81,9 +82,7 @@ export const PlanFormDialog = ({ isOpen, groups, plan, onClose, onCompleted, cre
             durationMinutes: plan.duration_minutes,
             objective: plan.objective,
             resources: plan.resources ?? "",
-            evaluationType: (evaluationTypes.includes(plan.evaluation_type as (typeof evaluationTypes)[number])
-              ? plan.evaluation_type
-              : "formativa") as PlanInput["evaluationType"],
+            evaluationType: normalizeEvaluationType(plan.evaluation_type) ?? "formativa",
             status: (planStatuses.includes(plan.status as (typeof planStatuses)[number]) ? plan.status : "draft") as PlanInput["status"]
           }
         : buildEmptyValues(groups)
@@ -128,6 +127,7 @@ export const PlanFormDialog = ({ isOpen, groups, plan, onClose, onCompleted, cre
       title={plan ? "Editar plan" : "Crear nuevo plan"}
       description="Registra la información base del plan y déjalo listo para las siguientes fases."
       contentClassName="max-w-4xl max-h-[85vh] overflow-hidden p-0"
+      bodyClassName="min-h-0 flex-1 p-0"
     >
       <div className="flex h-[85vh] max-h-[85vh] min-h-0 flex-col">
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5">

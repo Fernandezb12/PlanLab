@@ -17,7 +17,7 @@ export const ThemeToggle = () => {
     <button
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="inline-flex items-center gap-2 rounded-full border border-slate-300/60 px-3 py-2 text-sm hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+      className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white/95 px-3.5 py-2 text-sm font-medium text-slate-800 shadow-sm transition hover:bg-slate-100 dark:border-slate-700 dark:bg-white/[0.05] dark:text-slate-100 dark:hover:bg-slate-800"
       aria-label="Cambiar tema"
     >
       {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}

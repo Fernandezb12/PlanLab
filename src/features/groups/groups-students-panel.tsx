@@ -200,7 +200,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
               <h2 className="text-xl font-bold tracking-tight">Grupos</h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Cada grupo queda asociado solo a tu cuenta docente.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Cada grupo está disponible únicamente dentro de tu cuenta docente.</p>
             </div>
             <div className="rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-violet-300">
               {groups.length} registrados
@@ -263,7 +263,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
         <EmptyState
           icon={UserPlus}
           title="No se encontraron estudiantes"
-          description={groups.length === 0 ? "Primero crea un grupo y luego agrega estudiantes vinculados a ese curso." : "Agrega estudiantes a tus grupos para monitorear su progreso desde el panel o usa la importación masiva."}
+          description={groups.length === 0 ? "Primero crea un grupo y luego agrega estudiantes vinculados a ese curso." : "Agrega estudiantes a tus grupos o utiliza la importación masiva para completar este listado."}
           action={
             <button
               type="button"
@@ -279,7 +279,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
               <h2 className="text-xl font-bold tracking-tight">Estudiantes</h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400">Tus estudiantes se cargan con datos reales y filtrados por tu sesión.</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400">Este listado muestra los estudiantes registrados en tu cuenta.</p>
             </div>
             <div className="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-blue-300">
               {students.length} registrados
