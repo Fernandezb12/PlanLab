@@ -168,7 +168,7 @@ export const NotificationsPopover = () => {
             loadNotifications();
           }
         }}
-        className="relative rounded-2xl border border-slate-300 bg-white/95 p-2.5 text-slate-700 shadow-sm transition hover:bg-slate-100 dark:border-white/15 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
+        className="relative rounded-2xl border border-slate-300/90 bg-white/96 p-2.5 text-slate-700 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.28)] transition hover:border-slate-400 hover:bg-white focus:outline-none focus:ring-4 focus:ring-violet-500/12 dark:border-slate-700/80 dark:bg-slate-900/90 dark:text-slate-200 dark:shadow-[0_16px_34px_-26px_rgba(0,0,0,0.6)] dark:hover:border-slate-600 dark:hover:bg-slate-900"
         aria-label="Abrir notificaciones"
       >
         <Bell className="h-4 w-4" />
@@ -180,8 +180,8 @@ export const NotificationsPopover = () => {
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-[380px] overflow-hidden rounded-[24px] border border-slate-200 bg-white/98 shadow-[0_30px_70px_-35px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/96">
-          <div className="flex items-center justify-between border-b border-slate-200/80 px-4 py-3 dark:border-white/10">
+        <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-[380px] overflow-hidden rounded-[24px] border border-slate-200 bg-white/98 shadow-[0_30px_70px_-35px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/96">
+          <div className="flex items-center justify-between border-b border-slate-200/80 px-4 py-3 dark:border-slate-800/90">
             <div>
               <p className="text-sm font-semibold text-slate-900 dark:text-white">Notificaciones</p>
               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
@@ -194,7 +194,7 @@ export const NotificationsPopover = () => {
               type="button"
               onClick={markAllAsRead}
               disabled={!hasUnread || !persistenceEnabled}
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:text-slate-200 dark:hover:bg-white/10"
+              className="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900"
             >
               <CheckCheck className="h-3.5 w-3.5" />
               Marcar todo
