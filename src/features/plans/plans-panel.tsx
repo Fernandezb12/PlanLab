@@ -1,12 +1,14 @@
 "use client";
 
 import { Copy, Eye, Pencil, PlusCircle, Sparkles, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 
 import { DocumentExportMenu } from "@/components/pdf/document-export-menu";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Card } from "@/components/ui/card";
 import { ModuleHeader } from "@/components/ui/module-header";
+import { ToastMessage } from "@/components/ui/toast-message";
 import { createPlanAction, deletePlanAction, duplicatePlanAction, type PlanActionResult, updatePlanAction } from "@/features/plans/actions";
 import { PlanAIDialog } from "@/features/plans/plan-ai-dialog";
 import { PlanDetailsDialog } from "@/features/plans/plan-details-dialog";
@@ -53,7 +55,9 @@ type PlansPanelProps = {
 };
 
 export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelProps) => {
+  const router = useRouter();
   const [feedback, setFeedback] = useState<FeedbackState>(null);
+  const [toast, setToast] = useState<{ tone: "success" | "warning"; message: string } | null>(null);
   const [isDeleting, startDeleteTransition] = useTransition();
   const [isDuplicating, startDuplicateTransition] = useTransition();
   const [formOpen, setFormOpen] = useState(false);
@@ -79,6 +83,7 @@ export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelP
     if (result.success) {
       setFormOpen(false);
       setSelectedPlan(null);
+      router.refresh();
     }
   };
 
@@ -127,6 +132,8 @@ export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelP
 
   return (
     <section className="space-y-6">
+      {toast ? <ToastMessage message={toast.message} tone={toast.tone} onClose={() => setToast(null)} /> : null}
+
       <ModuleHeader
         title="Planes"
         subtitle="Diseña, organiza y administra tus planes de trabajo."
@@ -305,8 +312,17 @@ export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelP
           handleCompleted(result);
 
           if (result.success) {
+            setToast({
+              tone: "success",
+              message: result.message
+            });
             setAIOpen(false);
             setAIPlan(null);
+          } else {
+            setToast({
+              tone: "warning",
+              message: result.message
+            });
           }
         }}
       />
