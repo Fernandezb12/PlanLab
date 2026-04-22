@@ -163,8 +163,8 @@ export const DocumentExportMenu = ({ pdfEndpoint, wordEndpoint, tone = "secondar
           disabled={Boolean(isLoading)}
           className={
             tone === "primary"
-              ? "inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-slate-700 to-slate-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
-              : "inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white/90 px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/15 dark:bg-white/[0.05] dark:text-slate-100 dark:hover:bg-white/10"
+              ? "inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-slate-700 to-slate-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_30px_-20px_rgba(15,23,42,0.45)] transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-violet-500/12 disabled:cursor-not-allowed disabled:opacity-60"
+              : "inline-flex items-center gap-2 rounded-xl border border-slate-300/90 bg-white/92 px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.28)] transition hover:border-slate-400 hover:bg-white focus:outline-none focus:ring-4 focus:ring-violet-500/12 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700/80 dark:bg-slate-900/85 dark:text-slate-100 dark:shadow-[0_16px_34px_-26px_rgba(0,0,0,0.6)] dark:hover:border-slate-600 dark:hover:bg-slate-900"
           }
         >
           {isLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
@@ -174,7 +174,7 @@ export const DocumentExportMenu = ({ pdfEndpoint, wordEndpoint, tone = "secondar
 
         {isOpen ? (
           <div
-            className={`absolute right-0 z-40 min-w-[220px] rounded-2xl border border-slate-200 bg-white/98 p-2 shadow-[0_24px_50px_-30px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/96 ${
+            className={`absolute right-0 z-40 min-w-[220px] rounded-2xl border border-slate-200 bg-white/98 p-2 shadow-[0_24px_50px_-30px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/96 ${
               openUpward ? "bottom-[calc(100%+0.6rem)] origin-bottom-right" : "top-[calc(100%+0.6rem)] origin-top-right"
             }`}
           >
@@ -183,7 +183,7 @@ export const DocumentExportMenu = ({ pdfEndpoint, wordEndpoint, tone = "secondar
                 <button
                   type="button"
                   onClick={() => generatePdf("view")}
-                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-800 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-white/10"
+                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-800 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-900"
                 >
                   <Eye className="h-4 w-4 text-violet-500" />
                   Ver PDF
@@ -191,7 +191,7 @@ export const DocumentExportMenu = ({ pdfEndpoint, wordEndpoint, tone = "secondar
                 <button
                   type="button"
                   onClick={() => generatePdf("download")}
-                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-800 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-white/10"
+                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-800 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-900"
                 >
                   <FileDown className="h-4 w-4 text-blue-500" />
                   Descargar PDF
@@ -203,7 +203,7 @@ export const DocumentExportMenu = ({ pdfEndpoint, wordEndpoint, tone = "secondar
               <button
                 type="button"
                 onClick={exportWord}
-                className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-800 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-white/10"
+                className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-800 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-900"
               >
                 <FileText className="h-4 w-4 text-emerald-500" />
                 Exportar Word
