@@ -177,7 +177,10 @@ export const updatePlanAction = async (input: PlanInput): Promise<PlanActionResu
     }
 
     revalidatePath("/planes");
-    return { success: true, message: "Plan actualizado correctamente." };
+    return {
+      success: true,
+      message: parsed.data.planJson?.generated_with_ai ? "La propuesta se aplicó correctamente al plan." : "Plan actualizado correctamente."
+    };
   } catch (error) {
     console.error("Excepción actualizando plan:", error);
     return {
