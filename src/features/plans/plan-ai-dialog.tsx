@@ -114,6 +114,24 @@ const buildPlanInput = (values: GeneratePlanAIInput, generatedPlan: LessonPlanAI
   }
 });
 
+const hasRequiredGeneratedContent = (plan: LessonPlanAI | null) => {
+  if (!plan) {
+    return false;
+  }
+
+  return Boolean(
+    plan.objective.trim() &&
+      plan.resources.trim() &&
+      plan.inicio.trim() &&
+      plan.desarrollo.trim() &&
+      plan.cierre.trim() &&
+      plan.distribucion_tiempo &&
+      Number.isFinite(plan.distribucion_tiempo.inicio) &&
+      Number.isFinite(plan.distribucion_tiempo.desarrollo) &&
+      Number.isFinite(plan.distribucion_tiempo.cierre)
+  );
+};
+
 export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: PlanAIDialogProps) => {
   const [isGenerating, startGenerateTransition] = useTransition();
   const [isSaving, startSaveTransition] = useTransition();
@@ -203,6 +221,11 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
 
     if (!parsedPlan.success) {
       setSaveError("Revisa la propuesta generada antes de guardarla.");
+      return;
+    }
+
+    if (!hasRequiredGeneratedContent(parsedPlan.data)) {
+      setSaveError("Completa los bloques esenciales de la propuesta antes de aplicarla al plan.");
       return;
     }
 
@@ -335,14 +358,16 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
                     <p className="text-xs text-slate-500">Este campo es opcional y ayuda a ajustar mejor la propuesta.</p>
                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={isGenerating}
-                    className="mt-5 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    {isGenerating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
-                    {generatedPlan ? "Regenerar propuesta" : plan ? "Mejorar propuesta" : "Generar propuesta"}
-                  </button>
+                  {!generatedPlan ? (
+                    <button
+                      type="submit"
+                      disabled={isGenerating}
+                      className="mt-5 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {isGenerating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+                      {plan ? "Generar propuesta" : "Generar propuesta"}
+                    </button>
+                  ) : null}
                 </div>
               </form>
             </div>
@@ -358,10 +383,10 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
                 </div>
               ) : generatedPlan ? (
                 <div className="space-y-5">
-                    <div className="rounded-[26px] border border-violet-300/40 bg-violet-50 p-4 dark:border-violet-500/20 dark:bg-violet-500/10">
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-200">Propuesta revisable</p>
-                      <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Revisa y ajusta la propuesta antes de aplicarla al plan de clase.</p>
-                    </div>
+                  <div className="rounded-[26px] border border-violet-300/40 bg-violet-50 p-4 dark:border-violet-500/20 dark:bg-violet-500/10">
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-200">Propuesta revisable</p>
+                    <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Revisa y ajusta la propuesta antes de aplicarla al plan de clase.</p>
+                  </div>
 
                   <div className="rounded-[24px] border border-slate-200 bg-slate-50/80 px-4 py-3 dark:border-white/10 dark:bg-white/[0.03]">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Propuesta sugerida por IA</p>
@@ -537,7 +562,7 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
             </div>
           </div>
 
-          <div className="shrink-0 border-t border-slate-200 bg-white/96 px-6 py-4 shadow-[0_-18px_40px_-28px_rgba(15,23,42,0.12)] backdrop-blur-md dark:border-white/10 dark:bg-slate-950/95 dark:shadow-[0_-18px_40px_-28px_rgba(0,0,0,0.75)]">
+          <div className="sticky bottom-0 shrink-0 border-t border-slate-200 bg-white/96 px-6 py-4 shadow-[0_-18px_40px_-28px_rgba(15,23,42,0.12)] backdrop-blur-md dark:border-white/10 dark:bg-slate-950/95 dark:shadow-[0_-18px_40px_-28px_rgba(0,0,0,0.75)]">
             <div className="flex flex-wrap items-center justify-end gap-3">
               {saveError ? <p className="mr-auto text-sm text-rose-400">{saveError}</p> : null}
               <button
@@ -548,15 +573,38 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
               >
                 Cancelar
               </button>
-              <button
-                type="button"
-                onClick={handleSave}
-                disabled={!generatedPlan || isGenerating || isSaving}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {isSaving ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                {plan ? "Aplicar propuesta al plan" : "Guardar plan"}
-              </button>
+              {generatedPlan ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={runGeneration}
+                    disabled={isGenerating || isSaving}
+                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:text-slate-200 dark:hover:bg-white/10"
+                  >
+                    {isGenerating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+                    Regenerar propuesta
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSave}
+                    disabled={isGenerating || isSaving || !hasRequiredGeneratedContent(generatedPlan)}
+                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isSaving ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                    {plan ? "Aplicar cambios al plan" : "Guardar plan"}
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={runGeneration}
+                  disabled={isGenerating || isSaving}
+                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isGenerating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+                  Generar propuesta
+                </button>
+              )}
             </div>
           </div>
         </div>
