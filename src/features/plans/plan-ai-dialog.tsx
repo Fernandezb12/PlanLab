@@ -341,7 +341,7 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
                     className="mt-5 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {isGenerating ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
-                    {plan ? "Mejorar propuesta" : "Generar propuesta"}
+                    {generatedPlan ? "Regenerar propuesta" : plan ? "Mejorar propuesta" : "Generar propuesta"}
                   </button>
                 </div>
               </form>
