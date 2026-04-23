@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   BarChart3,
@@ -13,6 +12,7 @@ import {
   Wand2
 } from "lucide-react";
 
+import { PlanLabBrand } from "@/components/branding/planlab-brand";
 import { CountUp } from "@/components/landing/count-up";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { SectionTitle } from "@/components/landing/section-title";
@@ -88,13 +88,9 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 border-b border-slate-200/60 bg-white/75 backdrop-blur-md dark:border-white/10 dark:bg-[#070915]/75">
         <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-3">
-            <div className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 text-sm font-bold text-white shadow-xl shadow-violet-900/30">
-              <Image src="/logo.png" alt="PlanLab" fill sizes="40px" className="object-cover" />
-              <span className="relative">PL</span>
-            </div>
-            <div>
-              <p className="text-xl font-extrabold tracking-tight">PlanLab</p>
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Laboratorio pedagógico</p>
+            <div className="min-w-0">
+              <PlanLabBrand kind="full" priority className="max-w-[168px]" />
+              <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Laboratorio pedagógico</p>
             </div>
           </Link>
 
@@ -278,9 +274,8 @@ export default function LandingPage() {
       <footer className="border-t border-slate-200/70 bg-white/80 px-6 py-12 dark:border-white/10 dark:bg-[#080a16]/80">
         <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-8 sm:flex-row sm:items-center">
           <div className="flex items-center gap-3">
-            <div className="relative grid h-9 w-9 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-violet-500 to-indigo-500 font-bold text-white">
-              <Image src="/logo.png" alt="PlanLab" fill sizes="36px" className="object-cover" />
-              <span className="relative text-xs">PL</span>
+            <div className="relative h-9 w-9 shrink-0">
+              <PlanLabBrand kind="icon" className="h-full w-full" />
             </div>
             <div>
               <p className="text-sm font-bold">PlanLab</p>

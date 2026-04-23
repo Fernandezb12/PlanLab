@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, BarChart3, ShieldCheck, Sparkles } from "lucide-react";
 
+import { PlanLabBrand } from "@/components/branding/planlab-brand";
 import { LoginForm } from "@/features/auth/login-form";
 
 const loginHighlights = [
@@ -26,13 +26,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(46,122,247,0.25),transparent_45%)]" />
             <div className="relative z-10">
               <div className="mb-10 flex items-center gap-3">
-                <div className="relative grid h-11 w-11 place-items-center overflow-hidden rounded-xl bg-brand-600 font-bold text-white">
-                  <Image src="/logo.png" alt="PlanLab" fill sizes="44px" className="object-cover" />
-                  <span className="relative">PL</span>
-                </div>
-                <div>
-                  <p className="text-lg font-bold text-slate-900 dark:text-white">PlanLab</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Acceso profesional docente</p>
+                <div className="min-w-0">
+                  <PlanLabBrand kind="full" priority className="max-w-[164px]" />
+                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Acceso profesional docente</p>
                 </div>
               </div>
 

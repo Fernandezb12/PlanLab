@@ -1,12 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FileText, FolderKanban, GraduationCap, LayoutDashboard, ListChecks, Menu, Settings2, Users, X } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
+import { PlanLabBrand } from "@/components/branding/planlab-brand";
 import { GlobalSearch } from "@/components/layout/global-search";
 import { NotificationsPopover } from "@/components/layout/notifications-popover";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
@@ -85,15 +85,9 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
           />
           <aside className="absolute inset-y-0 left-0 flex w-[min(84vw,320px)] flex-col border-r border-slate-200 bg-white px-4 py-5 shadow-[0_30px_80px_-28px_rgba(15,23,42,0.42)] dark:border-white/10 dark:bg-[#0d1120] dark:shadow-[0_34px_90px_-34px_rgba(0,0,0,0.78)]">
             <div className="mb-8 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 font-bold text-white shadow-lg shadow-violet-900/35">
-                  <Image src="/logo.png" alt="PlanLab" fill sizes="40px" className="object-cover" />
-                  <span className="relative">PL</span>
-                </div>
-                <div>
-                  <p className="text-xl font-extrabold tracking-tight">PlanLab</p>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Laboratorio pedagógico</p>
-                </div>
+              <div className="min-w-0 flex-1">
+                <PlanLabBrand kind="full" priority className="max-w-[168px]" />
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Laboratorio pedagógico</p>
               </div>
               <button
                 type="button"
@@ -131,15 +125,9 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
 
       <div className="mx-auto grid min-h-screen max-w-[1600px] md:grid-cols-[280px_1fr]">
         <aside className="hidden border-r border-slate-200/90 bg-white/88 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#0d1120] md:sticky md:top-0 md:block md:h-screen md:overflow-y-auto">
-          <div className="mb-10 flex items-center gap-3">
-            <div className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 font-bold text-white shadow-lg shadow-violet-900/35">
-              <Image src="/logo.png" alt="PlanLab" fill sizes="40px" className="object-cover" />
-              <span className="relative">PL</span>
-            </div>
-            <div>
-              <p className="text-3xl font-extrabold tracking-tight">PlanLab</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Tu laboratorio pedagógico inteligente</p>
-            </div>
+          <div className="mb-10">
+            <PlanLabBrand kind="full" priority className="max-w-[188px]" />
+            <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">Tu laboratorio pedagógico inteligente</p>
           </div>
 
           <nav className="space-y-2">
@@ -176,6 +164,9 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
                 >
                   <Menu className="h-5 w-5" />
                 </button>
+                <div className="relative h-8 w-8 shrink-0 md:hidden">
+                  <PlanLabBrand kind="icon" className="h-full w-full" />
+                </div>
                 <p className="truncate text-xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-2xl">{currentTitle}</p>
               </div>
 

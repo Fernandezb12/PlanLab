@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, BookOpenCheck, LayoutTemplate, LineChart } from "lucide-react";
 
+import { PlanLabBrand } from "@/components/branding/planlab-brand";
 import { RegisterOnboardingForm } from "@/features/auth/register-onboarding-form";
 
 const firstSteps = [
@@ -20,15 +20,9 @@ export default function RegisterPage() {
             Volver al inicio
           </Link>
 
-          <div className="mb-8 flex items-center gap-3">
-            <div className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-brand-600 font-bold text-white">
-              <Image src="/logo.png" alt="PlanLab" fill sizes="40px" className="object-cover" />
-              <span className="relative">PL</span>
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-slate-900 dark:text-white">PlanLab</p>
-              <p className="text-xs text-slate-500">Registro docente</p>
-            </div>
+          <div className="mb-8">
+            <PlanLabBrand kind="full" priority className="max-w-[164px]" />
+            <p className="mt-2 text-xs text-slate-500">Registro docente</p>
           </div>
 
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">Crear cuenta</p>
