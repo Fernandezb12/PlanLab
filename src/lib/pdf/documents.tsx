@@ -404,7 +404,12 @@ export const ReportPdfDocument = ({ data }: { data: ReportPdfData }) => (
     teacherName={data.teacherName}
     generatedAt={data.generatedAt}
   >
-    <View style={styles.sectionCard} wrap={false}>
+    <View style={[styles.accentPanel, { marginBottom: 14 }]} wrap={false}>
+      <Text style={[styles.sectionTitle, { color: colors.accent, marginBottom: 4 }]}>Resumen ejecutivo</Text>
+      <Text style={styles.paragraph}>{data.executiveSummary}</Text>
+    </View>
+
+    <View style={[styles.sectionCard, { marginBottom: 14 }]} wrap={false}>
       <View style={styles.infoGrid}>
         <View style={styles.infoItem}>
           <Text style={styles.infoLabel}>Tipo de reporte</Text>
@@ -424,45 +429,50 @@ export const ReportPdfDocument = ({ data }: { data: ReportPdfData }) => (
       </View>
     </View>
 
-    <View style={styles.section} wrap={false}>
-      <Text style={styles.sectionTitle}>Resumen ejecutivo</Text>
-      <Text style={styles.paragraph}>{data.executiveSummary}</Text>
-    </View>
-
-    <View style={styles.section} wrap={false}>
+    <View style={styles.sectionCard} wrap={false}>
       <Text style={styles.sectionTitle}>Indicadores principales</Text>
-      <View style={styles.grid}>
-        <View style={styles.statCard}>
+      <View style={[styles.grid, { justifyContent: "space-between" }]}>
+        <View style={[styles.statCard, { width: "32%" }]}>
           <Text style={styles.statLabel}>Promedio general</Text>
           <Text style={styles.statValue}>{formatScore(data.averageScore)}</Text>
         </View>
-        <View style={styles.statCard}>
+        <View style={[styles.statCard, { width: "32%" }]}>
           <Text style={styles.statLabel}>Asistencia promedio</Text>
           <Text style={styles.statValue}>{formatPercent(data.attendanceAverage)}</Text>
         </View>
-        <View style={styles.statCard}>
+        <View style={[styles.statCard, { width: "32%" }]}>
           <Text style={styles.statLabel}>Alertas</Text>
           <Text style={styles.statValue}>{data.alerts.length}</Text>
         </View>
       </View>
     </View>
 
-    <View style={styles.sectionCard} wrap={false}>
-      <Text style={styles.sectionTitle}>Alertas detectadas</Text>
-      {data.alerts.length ? data.alerts.map((alert, index) => <Text key={index} style={styles.listItem}>• {alert}</Text>) : <Text style={styles.paragraph}>No se detectaron alertas activas en este corte.</Text>}
-    </View>
+    <View style={[styles.grid, { justifyContent: "space-between", marginTop: 14 }]}>
+      <View style={[styles.sectionCard, { width: "48.5%" }]} wrap={false}>
+        <Text style={styles.sectionTitle}>Alertas detectadas</Text>
+        {data.alerts.length ? (
+          data.alerts.map((alert, index) => (
+            <Text key={index} style={styles.listItem}>
+              • {alert}
+            </Text>
+          ))
+        ) : (
+          <Text style={styles.paragraph}>No se detectaron alertas activas en este corte.</Text>
+        )}
+      </View>
 
-    <View style={[styles.sectionCard, { marginTop: 14 }]} wrap={false}>
-      <Text style={styles.sectionTitle}>Observaciones generales</Text>
-      {data.observations.length ? (
-        data.observations.map((observation, index) => (
-          <Text key={index} style={styles.listItem}>
-            • {observation}
-          </Text>
-        ))
-      ) : (
-        <Text style={styles.paragraph}>No se registraron observaciones adicionales para este reporte.</Text>
-      )}
+      <View style={[styles.sectionCard, { width: "48.5%" }]} wrap={false}>
+        <Text style={styles.sectionTitle}>Observaciones generales</Text>
+        {data.observations.length ? (
+          data.observations.map((observation, index) => (
+            <Text key={index} style={styles.listItem}>
+              • {observation}
+            </Text>
+          ))
+        ) : (
+          <Text style={styles.paragraph}>No se registraron observaciones adicionales para este reporte.</Text>
+        )}
+      </View>
     </View>
   </BaseDocument>
 );

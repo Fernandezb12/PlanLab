@@ -130,7 +130,7 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
       ) : null}
 
       <div className="mx-auto grid min-h-screen max-w-[1600px] md:grid-cols-[280px_1fr]">
-        <aside className="hidden border-r border-slate-200/90 bg-white/88 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#0d1120] md:block">
+        <aside className="hidden border-r border-slate-200/90 bg-white/88 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#0d1120] md:sticky md:top-0 md:block md:h-screen md:overflow-y-auto">
           <div className="mb-10 flex items-center gap-3">
             <div className="relative grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-violet-500 to-indigo-500 font-bold text-white shadow-lg shadow-violet-900/35">
               <Image src="/logo.png" alt="PlanLab" fill sizes="40px" className="object-cover" />

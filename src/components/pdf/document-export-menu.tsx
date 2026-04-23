@@ -194,7 +194,7 @@ export const DocumentExportMenu = ({
 
         {isOpen ? (
           <div
-            className={`absolute right-0 z-[95] min-w-[220px] rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_28px_60px_-32px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-950 dark:shadow-[0_34px_70px_-34px_rgba(0,0,0,0.78)] ${
+            className={`absolute right-0 z-[140] min-w-[220px] rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_32px_70px_-32px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-950 dark:shadow-[0_38px_80px_-36px_rgba(0,0,0,0.8)] ${
               openUpward ? "bottom-[calc(100%+0.5rem)] origin-bottom-right" : "top-[calc(100%+0.5rem)] origin-top-right"
             }`}
           >

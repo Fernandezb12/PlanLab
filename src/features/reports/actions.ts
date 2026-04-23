@@ -117,3 +117,32 @@ export const createReportAction = async (input: CreateReportInput): Promise<Repo
     };
   }
 };
+
+export const deleteReportAction = async (reportId: string): Promise<ReportActionResult> => {
+  try {
+    const { supabase, user } = await getAuthenticatedSupabase();
+
+    const { error } = await supabase.from("reports").delete().eq("id", reportId).eq("user_id", user.id);
+
+    if (error) {
+      console.error("Error real eliminando reporte:", error);
+      return {
+        success: false,
+        message: `No pudimos eliminar el reporte: ${error.message}`
+      };
+    }
+
+    revalidatePath("/reportes");
+    revalidatePath("/dashboard");
+    return {
+      success: true,
+      message: "Reporte eliminado correctamente."
+    };
+  } catch (error) {
+    console.error("Excepción eliminando reporte:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "No pudimos eliminar el reporte."
+    };
+  }
+};
