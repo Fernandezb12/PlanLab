@@ -231,7 +231,12 @@ export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelP
                   </div>
 
                   <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
-                    <DocumentExportMenu pdfEndpoint={`/api/export/plans/${plan.id}`} wordEndpoint={`/api/export/plans/${plan.id}/word`} />
+                    <DocumentExportMenu
+                      pdfEndpoint={`/api/export/plans/${plan.id}`}
+                      wordEndpoint={`/api/export/plans/${plan.id}/word`}
+                      preferredSide="top"
+                      showViewPdf={false}
+                    />
                     <button
                       type="button"
                       onClick={() => openImprovePlan(plan)}

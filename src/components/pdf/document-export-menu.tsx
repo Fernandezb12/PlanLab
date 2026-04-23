@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, Eye, FileDown, FileText, LoaderCircle } from "lucide-react";
+import { ChevronDown, FileDown, FileText, LoaderCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { ToastMessage } from "@/components/ui/toast-message";
@@ -11,6 +11,8 @@ type DocumentExportMenuProps = {
   pdfEndpoint?: string;
   wordEndpoint?: string;
   tone?: "primary" | "secondary";
+  preferredSide?: "auto" | "top" | "bottom";
+  showViewPdf?: boolean;
 };
 
 type ExportPdfResponse = {
@@ -24,7 +26,13 @@ const readFilenameFromHeaders = (headers: Headers) => {
   return match?.[1] ?? "planlab.docx";
 };
 
-export const DocumentExportMenu = ({ pdfEndpoint, wordEndpoint, tone = "secondary" }: DocumentExportMenuProps) => {
+export const DocumentExportMenu = ({
+  pdfEndpoint,
+  wordEndpoint,
+  tone = "secondary",
+  preferredSide = "auto",
+  showViewPdf = true
+}: DocumentExportMenuProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<ExportMode | "word" | null>(null);
@@ -58,9 +66,21 @@ export const DocumentExportMenu = ({ pdfEndpoint, wordEndpoint, tone = "secondar
       return;
     }
 
+    if (preferredSide === "top") {
+      setOpenUpward(true);
+      setIsOpen(true);
+      return;
+    }
+
+    if (preferredSide === "bottom") {
+      setOpenUpward(false);
+      setIsOpen(true);
+      return;
+    }
+
     const rect = containerRef.current?.getBoundingClientRect();
     if (rect) {
-      const estimatedHeight = 184;
+      const estimatedHeight = showViewPdf && pdfEndpoint ? 184 : 136;
       const viewportGap = 20;
       setOpenUpward(rect.bottom + estimatedHeight > window.innerHeight - viewportGap && rect.top > estimatedHeight);
     }
@@ -174,29 +194,32 @@ export const DocumentExportMenu = ({ pdfEndpoint, wordEndpoint, tone = "secondar
 
         {isOpen ? (
           <div
-            className={`absolute right-0 z-40 min-w-[220px] rounded-2xl border border-slate-200 bg-white/98 p-2 shadow-[0_24px_50px_-30px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/96 ${
-              openUpward ? "bottom-[calc(100%+0.6rem)] origin-bottom-right" : "top-[calc(100%+0.6rem)] origin-top-right"
+            className={`absolute right-0 z-[95] min-w-[220px] rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_28px_60px_-32px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-950 dark:shadow-[0_34px_70px_-34px_rgba(0,0,0,0.78)] ${
+              openUpward ? "bottom-[calc(100%+0.5rem)] origin-bottom-right" : "top-[calc(100%+0.5rem)] origin-top-right"
             }`}
           >
-            {pdfEndpoint ? (
+            {pdfEndpoint && showViewPdf ? (
               <>
                 <button
                   type="button"
                   onClick={() => generatePdf("view")}
                   className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-800 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-900"
                 >
-                  <Eye className="h-4 w-4 text-violet-500" />
+                  <FileDown className="h-4 w-4 text-blue-500" />
                   Ver PDF
                 </button>
-                <button
-                  type="button"
-                  onClick={() => generatePdf("download")}
-                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-800 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-900"
-                >
-                  <FileDown className="h-4 w-4 text-blue-500" />
-                  Descargar PDF
-                </button>
               </>
+            ) : null}
+
+            {pdfEndpoint ? (
+              <button
+                type="button"
+                onClick={() => generatePdf("download")}
+                className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-800 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-900"
+              >
+                <FileDown className="h-4 w-4 text-blue-500" />
+                Descargar PDF
+              </button>
             ) : null}
 
             {wordEndpoint ? (
