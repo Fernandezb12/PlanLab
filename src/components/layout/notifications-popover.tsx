@@ -180,7 +180,7 @@ export const NotificationsPopover = () => {
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-[90] w-[min(22rem,calc(100vw-1rem))] overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_36px_90px_-38px_rgba(15,23,42,0.38)] dark:border-slate-800 dark:bg-slate-950 dark:shadow-[0_42px_90px_-42px_rgba(0,0,0,0.82)] sm:top-[calc(100%+0.75rem)] sm:w-[380px] sm:rounded-[24px]">
+        <div className="fixed inset-x-3 top-[4.75rem] z-[110] overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_36px_90px_-38px_rgba(15,23,42,0.38)] dark:border-slate-800 dark:bg-slate-950 dark:shadow-[0_42px_90px_-42px_rgba(0,0,0,0.82)] sm:absolute sm:inset-x-auto sm:right-0 sm:top-[calc(100%+0.75rem)] sm:w-[380px] sm:rounded-[24px]">
           <div className="flex items-start justify-between gap-3 border-b border-slate-200/80 px-3.5 py-3 dark:border-slate-800/90 sm:items-center sm:px-4">
             <div>
               <p className="text-sm font-semibold text-slate-900 dark:text-white">Notificaciones</p>
@@ -201,7 +201,7 @@ export const NotificationsPopover = () => {
             </button>
           </div>
 
-          <div className="max-h-[min(60vh,26rem)] overflow-y-auto px-2 py-2 sm:max-h-[420px]">
+          <div className="max-h-[min(56vh,24rem)] overflow-y-auto px-2 py-2 sm:max-h-[420px]">
             {isLoading ? (
               <div className="grid min-h-[150px] place-items-center sm:min-h-[180px]">
                 <LoaderCircle className="h-5 w-5 animate-spin text-slate-400" />

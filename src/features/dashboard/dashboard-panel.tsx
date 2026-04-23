@@ -52,7 +52,7 @@ export const DashboardPanel = ({ teacherName, kpis, quickActions, recentActivity
       <ModuleHeader title="Dashboard" subtitle="Consulta tus indicadores principales y accede rápidamente a las acciones clave." />
 
       <Card className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white dark:from-slate-950 dark:to-slate-900">
-        <h1 className="text-4xl font-extrabold tracking-tight">¡Hola, {teacherName}!</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">¡Hola, {teacherName}!</h1>
         <p className="mt-2 text-slate-300">Este tablero reúne información de planes, actividades, resultados y reportes en un solo lugar.</p>
       </Card>
 
@@ -106,7 +106,7 @@ export const DashboardPanel = ({ teacherName, kpis, quickActions, recentActivity
           ) : (
             <div className="mt-4 space-y-3">
               {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm dark:border-white/10 dark:bg-white/5">
+                <div key={activity.id} className="flex flex-col gap-1 rounded-xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm sm:flex-row sm:items-center sm:justify-between dark:border-white/10 dark:bg-white/5">
                   <p className="text-sm">{activity.text}</p>
                   <p className="text-xs text-slate-500">{activity.time}</p>
                 </div>
@@ -124,8 +124,8 @@ export const DashboardPanel = ({ teacherName, kpis, quickActions, recentActivity
           ) : (
             <div className="mt-4 space-y-3">
               {alerts.map((alert) => (
-                <div key={alert.id} className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 dark:border-amber-400/40 dark:bg-amber-500/10">
-                  <div className="flex items-center gap-2">
+                <div key={alert.id} className="flex flex-col gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 sm:flex-row sm:items-center sm:justify-between dark:border-amber-400/40 dark:bg-amber-500/10">
+                  <div className="flex items-start gap-2">
                     <AlertTriangle className="h-4 w-4 text-amber-500" />
                     <p className="text-sm text-amber-900 dark:text-slate-100">{alert.text}</p>
                   </div>

@@ -230,7 +230,7 @@ export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelP
                     </div>
                   </div>
 
-                  <div className="flex w-full shrink-0 flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+                  <div className="grid w-full grid-cols-3 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:items-center sm:justify-end">
                     <DocumentExportMenu
                       pdfEndpoint={`/api/export/plans/${plan.id}`}
                       wordEndpoint={`/api/export/plans/${plan.id}/word`}
@@ -240,7 +240,7 @@ export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelP
                     <button
                       type="button"
                       onClick={() => openImprovePlan(plan)}
-                      className="flex-1 rounded-xl border border-violet-300 bg-violet-50 p-2.5 text-violet-700 transition hover:bg-violet-100 focus:outline-none focus:ring-4 focus:ring-violet-500/12 dark:border-violet-500/30 dark:bg-violet-500/10 dark:text-violet-200 dark:hover:bg-violet-500/14 sm:flex-none"
+                      className="inline-flex h-10 items-center justify-center rounded-xl border border-violet-300 bg-violet-50 px-2 text-violet-700 transition hover:bg-violet-100 focus:outline-none focus:ring-4 focus:ring-violet-500/12 dark:border-violet-500/30 dark:bg-violet-500/10 dark:text-violet-200 dark:hover:bg-violet-500/14 sm:h-auto sm:px-2.5"
                       aria-label="Mejorar con IA"
                       title="Mejorar con IA"
                     >
@@ -249,7 +249,7 @@ export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelP
                     <button
                       type="button"
                       onClick={() => openViewPlan(plan)}
-                      className="flex-1 rounded-xl border border-slate-300 bg-white p-2.5 text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-4 focus:ring-violet-500/12 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 sm:flex-none"
+                      className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-2 text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-4 focus:ring-violet-500/12 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 sm:h-auto sm:px-2.5"
                       aria-label="Ver plan"
                       title="Ver plan"
                     >
@@ -258,7 +258,7 @@ export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelP
                     <button
                       type="button"
                       onClick={() => openEditPlan(plan)}
-                      className="flex-1 rounded-xl border border-slate-300 bg-white p-2.5 text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-4 focus:ring-violet-500/12 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 sm:flex-none"
+                      className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-2 text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-4 focus:ring-violet-500/12 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 sm:h-auto sm:px-2.5"
                       aria-label="Editar plan"
                       title="Editar plan"
                     >
@@ -268,7 +268,7 @@ export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelP
                       type="button"
                       onClick={() => handleDuplicatePlan(plan.id)}
                       disabled={isDuplicating}
-                      className="flex-1 rounded-xl border border-slate-300 bg-white p-2.5 text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-4 focus:ring-violet-500/12 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 sm:flex-none"
+                      className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-300 bg-white px-2 text-slate-700 transition hover:bg-slate-100 focus:outline-none focus:ring-4 focus:ring-violet-500/12 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 sm:h-auto sm:px-2.5"
                       aria-label="Duplicar plan"
                       title="Duplicar plan"
                     >
@@ -278,7 +278,7 @@ export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelP
                       type="button"
                       onClick={() => handleDeletePlan(plan)}
                       disabled={isDeleting}
-                      className="flex-1 rounded-xl border border-rose-300 bg-rose-50 p-2.5 text-rose-700 transition hover:bg-rose-100 focus:outline-none focus:ring-4 focus:ring-rose-500/12 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/14 sm:flex-none"
+                      className="inline-flex h-10 items-center justify-center rounded-xl border border-rose-300 bg-rose-50 px-2 text-rose-700 transition hover:bg-rose-100 focus:outline-none focus:ring-4 focus:ring-rose-500/12 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/14 sm:h-auto sm:px-2.5"
                       aria-label="Eliminar plan"
                       title="Eliminar plan"
                     >
