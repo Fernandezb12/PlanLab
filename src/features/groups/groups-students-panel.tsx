@@ -142,7 +142,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
               type="button"
               onClick={() => setImportModalOpen(true)}
               disabled={groups.length === 0}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.24)] transition hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10 sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.24)] transition hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10 sm:w-auto sm:px-4 sm:py-2.5 sm:text-[0.95rem]"
             >
               <FileUp className="h-4 w-4" />
               Importar estudiantes
@@ -150,7 +150,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
             <button
               type="button"
               onClick={openCreateGroup}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.2)] transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10 sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.2)] transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10 sm:w-auto sm:px-4 sm:py-2.5 sm:text-[0.95rem]"
             >
               <Plus className="h-4 w-4" />
               Crear grupo
@@ -159,7 +159,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
               type="button"
               onClick={openCreateStudent}
               disabled={groups.length === 0}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 px-3 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 px-3 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-4 sm:py-2.5 sm:text-[0.95rem]"
             >
               <UserPlus className="h-4 w-4" />
               Agregar estudiante
@@ -227,7 +227,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
                   <button
                     type="button"
                     onClick={() => openEditGroup(group)}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10 sm:px-4 sm:py-2.5 sm:text-sm"
                   >
                     <Pencil className="h-3.5 w-3.5" />
                     Editar
@@ -236,7 +236,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
                     type="button"
                     onClick={() => handleDeleteGroup(group)}
                     disabled={isDeleting}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/25 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/25 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10 sm:px-4 sm:py-2.5 sm:text-sm"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                     Eliminar
@@ -353,7 +353,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
                     <button
                       type="button"
                       onClick={() => openEditStudent(student)}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10 sm:px-4 sm:py-2.5 sm:text-sm"
                     >
                       <Pencil className="h-3.5 w-3.5" />
                       Editar
@@ -362,7 +362,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
                       type="button"
                       onClick={() => handleDeleteStudent(student)}
                       disabled={isDeleting}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/25 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/25 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10 sm:px-4 sm:py-2.5 sm:text-sm"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                       Eliminar

@@ -156,7 +156,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
             type="button"
             onClick={openCreateActivity}
             disabled={lessonPlans.length === 0}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-900/30 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-5 sm:py-3 sm:text-[0.95rem]"
           >
             <PlusCircle className="h-4 w-4" />
             Crear actividad
@@ -225,7 +225,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                     <button
                       type="button"
                       onClick={() => openManageRecords(activity)}
-                      className="inline-flex h-10 items-center justify-center rounded-lg border border-emerald-300 bg-emerald-50 px-2 text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-transparent dark:text-emerald-200 dark:hover:bg-emerald-500/10 sm:h-auto sm:px-2.5"
+                      className="inline-flex h-10 items-center justify-center rounded-lg border border-emerald-300 bg-emerald-50 px-2 text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-transparent dark:text-emerald-200 dark:hover:bg-emerald-500/10 sm:h-11 sm:min-w-11 sm:px-3"
                       aria-label="Registrar resultados"
                       title="Registrar resultados"
                     >
@@ -234,7 +234,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                     <button
                       type="button"
                       onClick={() => openViewActivity(activity)}
-                      className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-300 bg-white px-2 text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:bg-transparent dark:text-slate-200 dark:hover:bg-white/10 sm:h-auto sm:px-2.5"
+                      className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-300 bg-white px-2 text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:bg-transparent dark:text-slate-200 dark:hover:bg-white/10 sm:h-11 sm:min-w-11 sm:px-3"
                       aria-label="Ver actividad"
                       title="Ver actividad"
                     >
@@ -243,7 +243,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                     <button
                       type="button"
                       onClick={() => openEditActivity(activity)}
-                      className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-300 bg-white px-2 text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:bg-transparent dark:text-slate-200 dark:hover:bg-white/10 sm:h-auto sm:px-2.5"
+                      className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-300 bg-white px-2 text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:bg-transparent dark:text-slate-200 dark:hover:bg-white/10 sm:h-11 sm:min-w-11 sm:px-3"
                       aria-label="Editar actividad"
                       title="Editar actividad"
                     >
@@ -253,7 +253,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                       type="button"
                       onClick={() => handleDeleteActivity(activity)}
                       disabled={isDeleting}
-                      className="inline-flex h-10 items-center justify-center rounded-lg border border-rose-300 bg-rose-50 px-2 text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/30 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10 sm:h-auto sm:px-2.5"
+                      className="inline-flex h-10 items-center justify-center rounded-lg border border-rose-300 bg-rose-50 px-2 text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/30 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10 sm:h-11 sm:min-w-11 sm:px-3"
                       aria-label="Eliminar actividad"
                       title="Eliminar actividad"
                     >

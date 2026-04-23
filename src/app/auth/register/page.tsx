@@ -20,9 +20,9 @@ export default function RegisterPage() {
             Volver al inicio
           </Link>
 
-          <div className="mb-8">
-            <PlanLabBrand kind="full" priority className="max-w-[164px]" />
-            <p className="mt-2 text-xs text-slate-500">Registro docente</p>
+          <div className="mb-8 py-1">
+            <PlanLabBrand kind="full" priority className="max-w-[188px]" />
+            <p className="mt-2.5 pl-1 text-xs text-slate-500">Registro docente</p>
           </div>
 
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">Crear cuenta</p>

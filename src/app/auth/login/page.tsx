@@ -26,9 +26,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(46,122,247,0.25),transparent_45%)]" />
             <div className="relative z-10">
               <div className="mb-10 flex items-center gap-3">
-                <div className="min-w-0">
-                  <PlanLabBrand kind="full" priority className="max-w-[164px]" />
-                  <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Acceso profesional docente</p>
+                <div className="min-w-0 py-1">
+                  <PlanLabBrand kind="full" priority className="max-w-[188px]" />
+                  <p className="mt-2.5 pl-1 text-xs text-slate-500 dark:text-slate-400">Acceso profesional docente</p>
                 </div>
               </div>
 

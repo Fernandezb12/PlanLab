@@ -86,11 +86,11 @@ export default function LandingPage() {
       <div className="glow-orb glow-orb-bottom" />
 
       <header className="sticky top-0 z-50 border-b border-slate-200/60 bg-white/75 backdrop-blur-md dark:border-white/10 dark:bg-[#070915]/75">
-        <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6">
+        <div className="mx-auto flex h-24 w-full max-w-7xl items-center justify-between px-6">
           <Link href="/" className="flex items-center gap-3">
-            <div className="min-w-0">
-              <PlanLabBrand kind="full" priority className="max-w-[168px]" />
-              <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Laboratorio pedagógico</p>
+            <div className="min-w-0 py-1">
+              <PlanLabBrand kind="full" priority className="max-w-[172px]" />
+              <p className="mt-2.5 pl-1 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Laboratorio pedagógico</p>
             </div>
           </Link>
 

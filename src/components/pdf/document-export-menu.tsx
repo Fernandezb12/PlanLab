@@ -183,8 +183,8 @@ export const DocumentExportMenu = ({
           disabled={Boolean(isLoading)}
           className={
             tone === "primary"
-              ? "inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-700 to-slate-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_30px_-20px_rgba(15,23,42,0.45)] transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-violet-500/12 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-              : "inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300/90 bg-white/92 px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.28)] transition hover:border-slate-400 hover:bg-white focus:outline-none focus:ring-4 focus:ring-violet-500/12 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700/80 dark:bg-slate-900/85 dark:text-slate-100 dark:shadow-[0_16px_34px_-26px_rgba(0,0,0,0.6)] dark:hover:border-slate-600 dark:hover:bg-slate-900 sm:w-auto"
+              ? "inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-700 to-slate-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_30px_-20px_rgba(15,23,42,0.45)] transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-violet-500/12 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:px-4 sm:py-3 sm:text-[0.95rem]"
+              : "inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300/90 bg-white/92 px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.28)] transition hover:border-slate-400 hover:bg-white focus:outline-none focus:ring-4 focus:ring-violet-500/12 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700/80 dark:bg-slate-900/85 dark:text-slate-100 dark:shadow-[0_16px_34px_-26px_rgba(0,0,0,0.6)] dark:hover:border-slate-600 dark:hover:bg-slate-900 sm:w-auto sm:px-4 sm:py-3 sm:text-[0.95rem]"
           }
         >
           {isLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}

@@ -87,7 +87,6 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
             <div className="mb-8 flex items-center justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <PlanLabBrand kind="full" priority className="max-w-[168px]" />
-                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Laboratorio pedagógico</p>
               </div>
               <button
                 type="button"
@@ -125,9 +124,8 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
 
       <div className="mx-auto grid min-h-screen max-w-[1600px] md:grid-cols-[280px_1fr]">
         <aside className="hidden border-r border-slate-200/90 bg-white/88 p-5 backdrop-blur-md dark:border-white/10 dark:bg-[#0d1120] md:sticky md:top-0 md:block md:h-screen md:overflow-y-auto">
-          <div className="mb-10">
+          <div className="mb-9">
             <PlanLabBrand kind="full" priority className="max-w-[188px]" />
-            <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">Tu laboratorio pedagógico inteligente</p>
           </div>
 
           <nav className="space-y-2">
