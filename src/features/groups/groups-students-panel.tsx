@@ -137,12 +137,12 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
         title="Grupos y Estudiantes"
         subtitle="Administra grupos, estudiantes y su estado académico."
         actions={
-          <>
+          <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center">
             <button
               type="button"
               onClick={() => setImportModalOpen(true)}
               disabled={groups.length === 0}
-              className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.24)] transition hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.24)] transition hover:border-slate-400 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10 sm:w-auto"
             >
               <FileUp className="h-4 w-4" />
               Importar estudiantes
@@ -150,7 +150,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
             <button
               type="button"
               onClick={openCreateGroup}
-              className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.2)] transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.2)] transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10 sm:w-auto"
             >
               <Plus className="h-4 w-4" />
               Crear grupo
@@ -159,12 +159,12 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
               type="button"
               onClick={openCreateStudent}
               disabled={groups.length === 0}
-              className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 px-3 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 px-3 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
             >
               <UserPlus className="h-4 w-4" />
               Agregar estudiante
             </button>
-          </>
+          </div>
         }
       />
 
@@ -196,7 +196,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
           }
         />
       ) : (
-        <Card className="glass-card-plus overflow-x-auto p-4">
+        <Card className="glass-card-plus p-4">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
               <h2 className="text-xl font-bold tracking-tight">Grupos</h2>
@@ -207,55 +207,96 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
             </div>
           </div>
 
-          <table className="w-full min-w-[820px] text-sm">
-            <thead>
-              <tr className="border-b border-slate-200 dark:border-white/10">
-                <th className="py-2.5 text-left">Grupo</th>
-                <th className="text-left">Nivel</th>
-                <th className="text-left">Área</th>
-                <th className="text-left">Período</th>
-                <th className="text-left">Estudiantes</th>
-                <th className="text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {groups.map((group) => (
-                <tr key={group.id} className="border-b border-slate-100 transition hover:bg-slate-50/80 dark:border-white/5 dark:hover:bg-white/[0.03]">
-                  <td className="py-3 font-semibold tracking-tight">{group.name}</td>
-                  <td>{group.level ?? "Sin nivel"}</td>
-                  <td>{group.subject ?? "General"}</td>
-                  <td>{group.period ?? "Sin período"}</td>
-                  <td>
-                    <span className="inline-flex items-center gap-2 rounded-full bg-slate-900/5 px-2.5 py-1 text-xs font-semibold dark:bg-white/10">
-                      <Users className="h-3.5 w-3.5" />
-                      {group.studentCount}
-                    </span>
-                  </td>
-                  <td className="py-3">
-                    <div className="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openEditGroup(group)}
-                        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10"
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                        Editar
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteGroup(group)}
-                        disabled={isDeleting}
-                        className="inline-flex items-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/25 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                        Eliminar
-                      </button>
-                    </div>
-                  </td>
+          <div className="space-y-3 md:hidden">
+            {groups.map((group) => (
+              <div key={group.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-50">{group.name}</p>
+                    <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                      {group.level ?? "Sin nivel"} · {group.subject ?? "General"}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{group.period ?? "Sin período"}</p>
+                  </div>
+                  <span className="inline-flex items-center gap-2 rounded-full bg-slate-900/5 px-2.5 py-1 text-xs font-semibold dark:bg-white/10">
+                    <Users className="h-3.5 w-3.5" />
+                    {group.studentCount}
+                  </span>
+                </div>
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={() => openEditGroup(group)}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteGroup(group)}
+                    disabled={isDeleting}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/25 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="hidden overflow-x-auto md:block">
+            <table className="w-full min-w-[820px] text-sm">
+              <thead>
+                <tr className="border-b border-slate-200 dark:border-white/10">
+                  <th className="py-2.5 text-left">Grupo</th>
+                  <th className="text-left">Nivel</th>
+                  <th className="text-left">Área</th>
+                  <th className="text-left">Período</th>
+                  <th className="text-left">Estudiantes</th>
+                  <th className="text-right">Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {groups.map((group) => (
+                  <tr key={group.id} className="border-b border-slate-100 transition hover:bg-slate-50/80 dark:border-white/5 dark:hover:bg-white/[0.03]">
+                    <td className="py-3 font-semibold tracking-tight">{group.name}</td>
+                    <td>{group.level ?? "Sin nivel"}</td>
+                    <td>{group.subject ?? "General"}</td>
+                    <td>{group.period ?? "Sin período"}</td>
+                    <td>
+                      <span className="inline-flex items-center gap-2 rounded-full bg-slate-900/5 px-2.5 py-1 text-xs font-semibold dark:bg-white/10">
+                        <Users className="h-3.5 w-3.5" />
+                        {group.studentCount}
+                      </span>
+                    </td>
+                    <td className="py-3">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openEditGroup(group)}
+                          className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                          Editar
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteGroup(group)}
+                          disabled={isDeleting}
+                          className="inline-flex items-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/25 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                          Eliminar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </Card>
       )}
 
@@ -275,7 +316,7 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
           }
         />
       ) : (
-        <Card className="glass-card-plus overflow-x-auto p-4">
+        <Card className="glass-card-plus p-4">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
               <h2 className="text-xl font-bold tracking-tight">Estudiantes</h2>
@@ -286,62 +327,110 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
             </div>
           </div>
 
-          <table className="w-full min-w-[980px] text-sm">
-            <thead>
-              <tr className="border-b border-slate-200 dark:border-white/10">
-                <th className="py-2.5 text-left">Nombre</th>
-                <th className="text-left">Código</th>
-                <th className="text-left">Grupo</th>
-                <th className="text-left">Estado</th>
-                <th className="text-left">Observación</th>
-                <th className="text-right">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((student) => {
-                const relatedGroup = Array.isArray(student.groups) ? student.groups[0] : student.groups;
+          <div className="space-y-3 md:hidden">
+            {students.map((student) => {
+              const relatedGroup = Array.isArray(student.groups) ? student.groups[0] : student.groups;
 
-                return (
-                  <tr key={student.id} className="border-b border-slate-100 transition hover:bg-slate-50/80 dark:border-white/5 dark:hover:bg-white/[0.03]">
-                    <td className="py-3 font-semibold tracking-tight">{student.full_name}</td>
-                    <td className="font-medium text-slate-600 dark:text-slate-300">{student.student_code ?? "—"}</td>
-                    <td>{relatedGroup?.name ?? "Sin grupo"}</td>
-                    <td>
-                      <span
-                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
-                          studentStatusStyles[student.status] ?? "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                        }`}
-                      >
-                        {student.status}
-                      </span>
-                    </td>
-                    <td className="max-w-[360px] text-slate-600 dark:text-slate-300">{student.notes ?? "Sin observaciones"}</td>
-                    <td className="py-3">
-                      <div className="flex justify-end gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEditStudent(student)}
-                        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10"
+              return (
+                <div key={student.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-white/[0.03]">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-50">{student.full_name}</p>
+                      <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                        {student.student_code ?? "Sin código"} · {relatedGroup?.name ?? "Sin grupo"}
+                      </p>
+                    </div>
+                    <span
+                      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
+                        studentStatusStyles[student.status] ?? "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      }`}
+                    >
+                      {student.status}
+                    </span>
+                  </div>
+                  <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">{student.notes ?? "Sin observaciones"}</p>
+                  <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={() => openEditStudent(student)}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10"
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                      Editar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteStudent(student)}
+                      disabled={isDeleting}
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/25 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                      Eliminar
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="hidden overflow-x-auto md:block">
+            <table className="w-full min-w-[980px] text-sm">
+              <thead>
+                <tr className="border-b border-slate-200 dark:border-white/10">
+                  <th className="py-2.5 text-left">Nombre</th>
+                  <th className="text-left">Código</th>
+                  <th className="text-left">Grupo</th>
+                  <th className="text-left">Estado</th>
+                  <th className="text-left">Observación</th>
+                  <th className="text-right">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {students.map((student) => {
+                  const relatedGroup = Array.isArray(student.groups) ? student.groups[0] : student.groups;
+
+                  return (
+                    <tr key={student.id} className="border-b border-slate-100 transition hover:bg-slate-50/80 dark:border-white/5 dark:hover:bg-white/[0.03]">
+                      <td className="py-3 font-semibold tracking-tight">{student.full_name}</td>
+                      <td className="font-medium text-slate-600 dark:text-slate-300">{student.student_code ?? "—"}</td>
+                      <td>{relatedGroup?.name ?? "Sin grupo"}</td>
+                      <td>
+                        <span
+                          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
+                            studentStatusStyles[student.status] ?? "bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                          }`}
                         >
-                          <Pencil className="h-3.5 w-3.5" />
-                          Editar
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteStudent(student)}
-                          disabled={isDeleting}
-                        className="inline-flex items-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/25 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                          Eliminar
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                          {student.status}
+                        </span>
+                      </td>
+                      <td className="max-w-[360px] text-slate-600 dark:text-slate-300">{student.notes ?? "Sin observaciones"}</td>
+                      <td className="py-3">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() => openEditStudent(student)}
+                            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 dark:border-white/10 dark:bg-white/[0.04] dark:text-slate-100 dark:hover:bg-white/10"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                            Editar
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteStudent(student)}
+                            disabled={isDeleting}
+                            className="inline-flex items-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/25 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            Eliminar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </Card>
       )}
 

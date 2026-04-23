@@ -88,6 +88,32 @@ export const ReinforcementDialog = ({ isOpen, input, onClose, onCompleted }: Rei
     });
   }, [input, isOpen]);
 
+  const fallbackCopyText = (value: string) => {
+    if (typeof document === "undefined") {
+      return false;
+    }
+
+    const textArea = document.createElement("textarea");
+    textArea.value = value;
+    textArea.setAttribute("readonly", "");
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+    textArea.style.pointerEvents = "none";
+
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      return document.execCommand("copy");
+    } catch (error) {
+      console.error("Error real en fallback de copiado:", error);
+      return false;
+    } finally {
+      document.body.removeChild(textArea);
+    }
+  };
+
   const handleCopy = async () => {
     if (!strategy) {
       return;
@@ -105,7 +131,25 @@ export const ReinforcementDialog = ({ isOpen, input, onClose, onCompleted }: Rei
     ].join("\n\n");
 
     try {
-      await navigator.clipboard.writeText(payload);
+      let copied = false;
+
+      if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(payload);
+          copied = true;
+        } catch (error) {
+          console.error("Error real usando Clipboard API:", error);
+        }
+      }
+
+      if (!copied) {
+        copied = fallbackCopyText(payload);
+      }
+
+      if (!copied) {
+        throw new Error("copy_failed");
+      }
+
       setToast({
         tone: "success",
         message: "La estrategia se copió al portapapeles."

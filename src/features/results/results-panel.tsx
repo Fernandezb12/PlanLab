@@ -142,11 +142,11 @@ export const ResultsPanel = ({
                     </span>
                   </div>
 
-                  <div className="mt-3 flex flex-wrap justify-end gap-2">
+                  <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-end">
                     <button
                       type="button"
                       onClick={() => setSelectedReinforcement(group.reinforcementContext)}
-                      className="inline-flex items-center gap-2 rounded-lg border border-violet-300 bg-violet-50 px-3 py-2 text-sm font-medium text-violet-700 transition hover:bg-violet-100 dark:border-violet-500/30 dark:bg-transparent dark:text-violet-200 dark:hover:bg-violet-500/10"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-violet-300 bg-violet-50 px-3 py-2 text-sm font-medium text-violet-700 transition hover:bg-violet-100 dark:border-violet-500/30 dark:bg-transparent dark:text-violet-200 dark:hover:bg-violet-500/10 sm:w-auto"
                     >
                       <Sparkles className="h-4 w-4" />
                       Generar refuerzo
@@ -198,13 +198,13 @@ export const ResultsPanel = ({
               <div className="space-y-2">
                 {alerts.map((alert) => (
                   <div key={alert.id} className={`rounded-xl border px-3 py-2 text-sm ${alertStyles[alert.tone]}`}>
-                    <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                       <span>{alert.text}</span>
                       {alert.reinforcementContext ? (
                         <button
                           type="button"
                           onClick={() => setSelectedReinforcement(alert.reinforcementContext ?? null)}
-                          className="inline-flex items-center gap-1 rounded-lg border border-violet-300 bg-violet-50 px-2.5 py-1 text-xs font-medium text-violet-700 transition hover:bg-violet-100 dark:border-violet-500/30 dark:bg-transparent dark:text-violet-100 dark:hover:bg-violet-500/10"
+                          className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-violet-300 bg-violet-50 px-2.5 py-1 text-xs font-medium text-violet-700 transition hover:bg-violet-100 dark:border-violet-500/30 dark:bg-transparent dark:text-violet-100 dark:hover:bg-violet-500/10 sm:w-auto"
                         >
                           <Sparkles className="h-3.5 w-3.5" />
                           Refuerzo
