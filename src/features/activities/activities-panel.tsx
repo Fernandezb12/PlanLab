@@ -221,11 +221,11 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                     </div>
                   </div>
 
-                  <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+                  <div className="grid w-full grid-cols-4 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:items-center sm:justify-end">
                     <button
                       type="button"
                       onClick={() => openManageRecords(activity)}
-                      className="flex-1 rounded-lg border border-emerald-300 bg-emerald-50 p-2 text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-transparent dark:text-emerald-200 dark:hover:bg-emerald-500/10 sm:flex-none"
+                      className="inline-flex h-10 items-center justify-center rounded-lg border border-emerald-300 bg-emerald-50 px-2 text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-transparent dark:text-emerald-200 dark:hover:bg-emerald-500/10 sm:h-auto sm:px-2.5"
                       aria-label="Registrar resultados"
                       title="Registrar resultados"
                     >
@@ -234,7 +234,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                     <button
                       type="button"
                       onClick={() => openViewActivity(activity)}
-                      className="flex-1 rounded-lg border border-slate-300 bg-white p-2 text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:bg-transparent dark:text-slate-200 dark:hover:bg-white/10 sm:flex-none"
+                      className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-300 bg-white px-2 text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:bg-transparent dark:text-slate-200 dark:hover:bg-white/10 sm:h-auto sm:px-2.5"
                       aria-label="Ver actividad"
                       title="Ver actividad"
                     >
@@ -243,7 +243,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                     <button
                       type="button"
                       onClick={() => openEditActivity(activity)}
-                      className="flex-1 rounded-lg border border-slate-300 bg-white p-2 text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:bg-transparent dark:text-slate-200 dark:hover:bg-white/10 sm:flex-none"
+                      className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-300 bg-white px-2 text-slate-700 transition hover:bg-slate-100 dark:border-white/10 dark:bg-transparent dark:text-slate-200 dark:hover:bg-white/10 sm:h-auto sm:px-2.5"
                       aria-label="Editar actividad"
                       title="Editar actividad"
                     >
@@ -253,7 +253,7 @@ export const ActivitiesPanel = ({ groups, lessonPlans, activities, students, act
                       type="button"
                       onClick={() => handleDeleteActivity(activity)}
                       disabled={isDeleting}
-                      className="flex-1 rounded-lg border border-rose-300 bg-rose-50 p-2 text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/30 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10 sm:flex-none"
+                      className="inline-flex h-10 items-center justify-center rounded-lg border border-rose-300 bg-rose-50 px-2 text-rose-700 transition hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-rose-500/30 dark:bg-transparent dark:text-rose-300 dark:hover:bg-rose-500/10 sm:h-auto sm:px-2.5"
                       aria-label="Eliminar actividad"
                       title="Eliminar actividad"
                     >

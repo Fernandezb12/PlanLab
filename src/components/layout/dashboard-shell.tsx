@@ -179,7 +179,7 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
                 <p className="truncate text-xl font-bold tracking-tight text-slate-950 dark:text-white sm:text-2xl">{currentTitle}</p>
               </div>
 
-              <div className="flex w-full items-center justify-end gap-2.5 sm:w-auto md:gap-3">
+              <div className="ml-auto flex w-auto items-center justify-end gap-2 sm:gap-2.5 md:gap-3">
                 <GlobalSearch />
                 <ThemeToggle />
                 <NotificationsPopover />
@@ -187,7 +187,7 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
                   <button
                     type="button"
                     onClick={() => setIsProfileMenuOpen((prev) => !prev)}
-                    className="rounded-2xl border border-slate-300/90 bg-white/96 p-1 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.28)] transition hover:border-slate-400 hover:bg-white focus:outline-none focus:ring-4 focus:ring-violet-500/12 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-[0_16px_34px_-26px_rgba(0,0,0,0.6)] dark:hover:border-slate-600 dark:hover:bg-slate-900"
+                    className="shrink-0 rounded-2xl border border-slate-300/90 bg-white/96 p-1 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.28)] transition hover:border-slate-400 hover:bg-white focus:outline-none focus:ring-4 focus:ring-violet-500/12 dark:border-slate-700/80 dark:bg-slate-900/90 dark:shadow-[0_16px_34px_-26px_rgba(0,0,0,0.6)] dark:hover:border-slate-600 dark:hover:bg-slate-900"
                     aria-label="Abrir menú de perfil"
                     aria-expanded={isProfileMenuOpen}
                   >

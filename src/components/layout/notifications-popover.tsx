@@ -168,7 +168,7 @@ export const NotificationsPopover = () => {
             loadNotifications();
           }
         }}
-        className="relative rounded-2xl border border-slate-300/90 bg-white/96 p-2.5 text-slate-700 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.28)] transition hover:border-slate-400 hover:bg-white focus:outline-none focus:ring-4 focus:ring-violet-500/12 dark:border-slate-700/80 dark:bg-slate-900/90 dark:text-slate-200 dark:shadow-[0_16px_34px_-26px_rgba(0,0,0,0.6)] dark:hover:border-slate-600 dark:hover:bg-slate-900"
+        className="relative shrink-0 rounded-2xl border border-slate-300/90 bg-white/96 p-2.5 text-slate-700 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.28)] transition hover:border-slate-400 hover:bg-white focus:outline-none focus:ring-4 focus:ring-violet-500/12 dark:border-slate-700/80 dark:bg-slate-900/90 dark:text-slate-200 dark:shadow-[0_16px_34px_-26px_rgba(0,0,0,0.6)] dark:hover:border-slate-600 dark:hover:bg-slate-900"
         aria-label="Abrir notificaciones"
       >
         <Bell className="h-4 w-4" />
@@ -180,8 +180,8 @@ export const NotificationsPopover = () => {
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+0.75rem)] z-[90] w-[380px] overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_36px_90px_-38px_rgba(15,23,42,0.38)] dark:border-slate-800 dark:bg-slate-950 dark:shadow-[0_42px_90px_-42px_rgba(0,0,0,0.82)]">
-          <div className="flex items-center justify-between border-b border-slate-200/80 px-4 py-3 dark:border-slate-800/90">
+        <div className="absolute right-0 top-[calc(100%+0.5rem)] z-[90] w-[min(22rem,calc(100vw-1rem))] overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_36px_90px_-38px_rgba(15,23,42,0.38)] dark:border-slate-800 dark:bg-slate-950 dark:shadow-[0_42px_90px_-42px_rgba(0,0,0,0.82)] sm:top-[calc(100%+0.75rem)] sm:w-[380px] sm:rounded-[24px]">
+          <div className="flex items-start justify-between gap-3 border-b border-slate-200/80 px-3.5 py-3 dark:border-slate-800/90 sm:items-center sm:px-4">
             <div>
               <p className="text-sm font-semibold text-slate-900 dark:text-white">Notificaciones</p>
               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
@@ -194,25 +194,25 @@ export const NotificationsPopover = () => {
               type="button"
               onClick={markAllAsRead}
               disabled={!hasUnread || !persistenceEnabled}
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+              className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               <CheckCheck className="h-3.5 w-3.5" />
               Marcar todo
             </button>
           </div>
 
-          <div className="max-h-[420px] overflow-y-auto px-2 py-2">
+          <div className="max-h-[min(60vh,26rem)] overflow-y-auto px-2 py-2 sm:max-h-[420px]">
             {isLoading ? (
-              <div className="grid min-h-[180px] place-items-center">
+              <div className="grid min-h-[150px] place-items-center sm:min-h-[180px]">
                 <LoaderCircle className="h-5 w-5 animate-spin text-slate-400" />
               </div>
             ) : errorMessage ? (
-              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-6 text-center dark:border-amber-500/30 dark:bg-amber-500/10">
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-5 text-center dark:border-amber-500/30 dark:bg-amber-500/10 sm:py-6">
                 <p className="text-sm font-medium text-amber-900 dark:text-amber-100">No fue posible actualizar este panel</p>
                 <p className="mt-1 text-xs text-amber-700 dark:text-amber-200">{errorMessage}</p>
               </div>
             ) : notifications.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center dark:border-slate-700 dark:bg-slate-900">
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-center dark:border-slate-700 dark:bg-slate-900 sm:py-6">
                 <p className="text-sm font-medium text-slate-800 dark:text-slate-100">No hay notificaciones por ahora</p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Cuando surjan recordatorios o alertas del sistema, aparecerán en este espacio.</p>
               </div>
@@ -221,7 +221,7 @@ export const NotificationsPopover = () => {
                 {notifications.map((notification) => {
                   const content = (
                     <div
-                      className={`rounded-2xl border px-3 py-3 transition hover:bg-slate-100 dark:hover:bg-white/[0.06] ${
+                      className={`rounded-2xl border px-3 py-2.5 transition hover:bg-slate-100 dark:hover:bg-white/[0.06] sm:py-3 ${
                         notification.is_read ? "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" : typeStyles[notification.type]
                       }`}
                     >

@@ -176,15 +176,15 @@ export const DocumentExportMenu = ({
     <>
       {toast ? <ToastMessage message={toast.message} tone={toast.tone} onClose={() => setToast(null)} /> : null}
 
-      <div ref={containerRef} className="relative">
+      <div ref={containerRef} className="relative w-full sm:w-auto">
         <button
           type="button"
           onClick={toggleMenu}
           disabled={Boolean(isLoading)}
           className={
             tone === "primary"
-              ? "inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-slate-700 to-slate-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_30px_-20px_rgba(15,23,42,0.45)] transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-violet-500/12 disabled:cursor-not-allowed disabled:opacity-60"
-              : "inline-flex items-center gap-2 rounded-xl border border-slate-300/90 bg-white/92 px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.28)] transition hover:border-slate-400 hover:bg-white focus:outline-none focus:ring-4 focus:ring-violet-500/12 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700/80 dark:bg-slate-900/85 dark:text-slate-100 dark:shadow-[0_16px_34px_-26px_rgba(0,0,0,0.6)] dark:hover:border-slate-600 dark:hover:bg-slate-900"
+              ? "inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-700 to-slate-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_30px_-20px_rgba(15,23,42,0.45)] transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-violet-500/12 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+              : "inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300/90 bg-white/92 px-3.5 py-2.5 text-sm font-medium text-slate-800 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.28)] transition hover:border-slate-400 hover:bg-white focus:outline-none focus:ring-4 focus:ring-violet-500/12 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-700/80 dark:bg-slate-900/85 dark:text-slate-100 dark:shadow-[0_16px_34px_-26px_rgba(0,0,0,0.6)] dark:hover:border-slate-600 dark:hover:bg-slate-900 sm:w-auto"
           }
         >
           {isLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
@@ -194,7 +194,7 @@ export const DocumentExportMenu = ({
 
         {isOpen ? (
           <div
-            className={`absolute right-0 z-[140] min-w-[220px] rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_32px_70px_-32px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-950 dark:shadow-[0_38px_80px_-36px_rgba(0,0,0,0.8)] ${
+            className={`absolute right-0 z-[140] w-full min-w-0 rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_32px_70px_-32px_rgba(15,23,42,0.42)] dark:border-slate-800 dark:bg-slate-950 dark:shadow-[0_38px_80px_-36px_rgba(0,0,0,0.8)] sm:min-w-[220px] sm:w-auto ${
               openUpward ? "bottom-[calc(100%+0.5rem)] origin-bottom-right" : "top-[calc(100%+0.5rem)] origin-top-right"
             }`}
           >
