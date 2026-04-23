@@ -133,7 +133,7 @@ export const GlobalSearch = () => {
       {isLoading ? <LoaderCircle className="absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-slate-400 dark:text-slate-500" /> : null}
 
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-[min(420px,calc(100vw-2rem))] overflow-hidden rounded-[24px] border border-slate-200/90 bg-white/98 shadow-[0_30px_70px_-35px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-slate-700/70 dark:bg-slate-950/96">
+        <div className="absolute right-0 top-[calc(100%+0.75rem)] z-[85] w-[min(420px,calc(100vw-2rem))] overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_36px_90px_-38px_rgba(15,23,42,0.35)] dark:border-slate-800 dark:bg-slate-950 dark:shadow-[0_42px_90px_-42px_rgba(0,0,0,0.82)]">
           <div className="border-b border-slate-200/80 px-4 py-3 dark:border-slate-800/90">
             <p className="text-sm font-semibold text-slate-900 dark:text-white">Búsqueda global</p>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Encuentra información clave del sistema y navega rápidamente al módulo correspondiente.</p>

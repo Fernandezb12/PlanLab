@@ -15,13 +15,13 @@ type NotificationItem = {
 };
 
 const typeStyles: Record<NotificationItem["type"], string> = {
-  activity_pending: "border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200",
-  group_alert: "border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-200",
-  student_alert: "border-orange-300 bg-orange-50 text-orange-700 dark:border-orange-500/30 dark:bg-orange-500/10 dark:text-orange-200",
-  report_created: "border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-200",
-  plan_ai: "border-violet-300 bg-violet-50 text-violet-700 dark:border-violet-500/30 dark:bg-violet-500/10 dark:text-violet-200",
-  document_exported: "border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200",
-  review_reminder: "border-slate-300 bg-slate-50 text-slate-700 dark:border-white/15 dark:bg-white/[0.05] dark:text-slate-200"
+  activity_pending: "border-amber-300 bg-amber-50 text-amber-800 dark:border-amber-500/30 dark:bg-amber-950/70 dark:text-amber-200",
+  group_alert: "border-rose-300 bg-rose-50 text-rose-800 dark:border-rose-500/30 dark:bg-rose-950/70 dark:text-rose-200",
+  student_alert: "border-orange-300 bg-orange-50 text-orange-800 dark:border-orange-500/30 dark:bg-orange-950/70 dark:text-orange-200",
+  report_created: "border-blue-300 bg-blue-50 text-blue-800 dark:border-blue-500/30 dark:bg-blue-950/70 dark:text-blue-200",
+  plan_ai: "border-violet-300 bg-violet-50 text-violet-800 dark:border-violet-500/30 dark:bg-violet-950/70 dark:text-violet-200",
+  document_exported: "border-emerald-300 bg-emerald-50 text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-950/70 dark:text-emerald-200",
+  review_reminder: "border-slate-300 bg-slate-50 text-slate-800 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
 };
 
 const formatRelativeDate = (dateString: string) => {
@@ -180,7 +180,7 @@ export const NotificationsPopover = () => {
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-[380px] overflow-hidden rounded-[24px] border border-slate-200 bg-white/98 shadow-[0_30px_70px_-35px_rgba(15,23,42,0.45)] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/96">
+        <div className="absolute right-0 top-[calc(100%+0.75rem)] z-[90] w-[380px] overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-[0_36px_90px_-38px_rgba(15,23,42,0.38)] dark:border-slate-800 dark:bg-slate-950 dark:shadow-[0_42px_90px_-42px_rgba(0,0,0,0.82)]">
           <div className="flex items-center justify-between border-b border-slate-200/80 px-4 py-3 dark:border-slate-800/90">
             <div>
               <p className="text-sm font-semibold text-slate-900 dark:text-white">Notificaciones</p>
@@ -194,7 +194,7 @@ export const NotificationsPopover = () => {
               type="button"
               onClick={markAllAsRead}
               disabled={!hasUnread || !persistenceEnabled}
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-900"
+              className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               <CheckCheck className="h-3.5 w-3.5" />
               Marcar todo
@@ -212,7 +212,7 @@ export const NotificationsPopover = () => {
                 <p className="mt-1 text-xs text-amber-700 dark:text-amber-200">{errorMessage}</p>
               </div>
             ) : notifications.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center dark:border-white/10 dark:bg-white/[0.03]">
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center dark:border-slate-700 dark:bg-slate-900">
                 <p className="text-sm font-medium text-slate-800 dark:text-slate-100">No hay notificaciones por ahora</p>
                 <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Cuando surjan recordatorios o alertas del sistema, aparecerán en este espacio.</p>
               </div>
@@ -222,7 +222,7 @@ export const NotificationsPopover = () => {
                   const content = (
                     <div
                       className={`rounded-2xl border px-3 py-3 transition hover:bg-slate-100 dark:hover:bg-white/[0.06] ${
-                        notification.is_read ? "border-slate-200 bg-white/70 dark:border-white/10 dark:bg-white/[0.03]" : typeStyles[notification.type]
+                        notification.is_read ? "border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900" : typeStyles[notification.type]
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -239,7 +239,7 @@ export const NotificationsPopover = () => {
                               event.stopPropagation();
                               markAsRead(notification.id);
                             }}
-                            className="shrink-0 rounded-lg border border-current/20 px-2 py-1 text-[11px] font-medium transition hover:bg-white/30 dark:hover:bg-white/10"
+                            className="shrink-0 rounded-lg border border-current/20 bg-white/70 px-2 py-1 text-[11px] font-medium transition hover:bg-white dark:bg-slate-950/40 dark:hover:bg-slate-900"
                           >
                             Leída
                           </button>

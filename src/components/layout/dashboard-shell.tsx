@@ -125,7 +125,7 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
                   </button>
 
                   {isProfileMenuOpen ? (
-                    <div className="absolute right-0 top-12 w-56 rounded-2xl border border-slate-200 bg-white/98 p-2 shadow-[0_24px_50px_-30px_rgba(15,23,42,0.45)] backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/95">
+                    <div className="absolute right-0 top-12 z-[90] w-56 rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_36px_90px_-38px_rgba(15,23,42,0.38)] dark:border-slate-800 dark:bg-slate-950 dark:shadow-[0_42px_90px_-42px_rgba(0,0,0,0.82)]">
                       <p className="px-3 pb-2 pt-1 text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Mi cuenta</p>
                       <div className="px-3 pb-2">
                         <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{userProfile.fullName ?? "Docente PlanLab"}</p>
@@ -134,14 +134,14 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
                       <Link
                         href="/perfil"
                         onClick={() => setIsProfileMenuOpen(false)}
-                        className="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10"
+                        className="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-900"
                       >
                         Mi perfil
                       </Link>
                       <Link
                         href="/perfil#configuracion"
                         onClick={() => setIsProfileMenuOpen(false)}
-                        className="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/10"
+                        className="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-900"
                       >
                         Configuración
                       </Link>
@@ -157,7 +157,7 @@ export const DashboardShell = ({ children, userProfile }: DashboardShellProps) =
                           setIsSigningOut(false);
                         }}
                         disabled={isSigningOut}
-                        className="mt-1 w-full rounded-xl px-3 py-2 text-left text-sm text-rose-600 transition hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-500/10"
+                        className="mt-1 w-full rounded-xl px-3 py-2 text-left text-sm text-rose-600 transition hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-950/60"
                       >
                         {isSigningOut ? "Cerrando sesión..." : "Cerrar sesión"}
                       </button>
