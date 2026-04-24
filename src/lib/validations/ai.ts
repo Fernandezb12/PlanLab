@@ -15,19 +15,32 @@ export const timeDistributionSchema = z.object({
   cierre: z.coerce.number().int().min(1)
 });
 
+export const lessonMomentSchema = z.object({
+  momento: z.string().trim().min(2).max(40),
+  tiempo_min: z.coerce.number().int().min(1).max(240),
+  nombre_actividad: z.string().trim().min(3).max(180),
+  descripcion: boundedText("la descripción", 10, 2400),
+  tecnica: z.string().trim().min(3).max(180)
+});
+
 export const lessonPlanAISchema = z.object({
   title: boundedText("el título", 5, 160),
   subject: boundedText("el área", 2, 120),
   topic: boundedText("el tema", 2, 160),
   duration_minutes: z.coerce.number().int().min(10).max(240),
   objective: boundedText("el objetivo", 10, 800),
+  objetivo: boundedText("el objetivo", 10, 800).optional(),
   evaluation_type: evaluationTypeSchema,
   resources: boundedText("los recursos", 2, 800),
   inicio: boundedText("el inicio", 10, 2000),
   desarrollo: boundedText("el desarrollo", 10, 3000),
   cierre: boundedText("el cierre", 10, 2000),
   distribucion_tiempo: timeDistributionSchema,
+  momentos: z.array(lessonMomentSchema).min(1).optional(),
+  criterio_evaluacion: z.string().trim().max(1200).optional().default(""),
+  recursos_sugeridos: z.array(z.string().trim().min(1).max(160)).max(12).optional().default([]),
   observaciones_docente: z.string().trim().max(1200).optional().default(""),
+  observaciones_docentes: z.string().trim().max(1200).optional().default(""),
   sugerencias_metodologicas: z.string().trim().max(1200).optional().default("")
 });
 

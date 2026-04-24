@@ -87,7 +87,11 @@ const emptyGeneratedPlan = (values: GeneratePlanAIInput): LessonPlanAI => ({
     desarrollo: Math.max(10, Math.round(values.durationMinutes * 0.6)),
     cierre: Math.max(5, values.durationMinutes - Math.max(5, Math.round(values.durationMinutes * 0.2)) - Math.max(10, Math.round(values.durationMinutes * 0.6)))
   },
+  momentos: [],
+  criterio_evaluacion: "",
+  recursos_sugeridos: values.resources ? [values.resources] : [],
   observaciones_docente: "",
+  observaciones_docentes: "",
   sugerencias_metodologicas: ""
 });
 

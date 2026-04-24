@@ -14,40 +14,34 @@ import {
 const lessonPlanJsonSchema = {
   type: "object",
   required: [
-    "title",
-    "subject",
-    "topic",
-    "duration_minutes",
-    "objective",
-    "evaluation_type",
-    "resources",
-    "inicio",
-    "desarrollo",
-    "cierre",
-    "distribucion_tiempo"
+    "objetivo",
+    "momentos",
+    "criterio_evaluacion",
+    "recursos_sugeridos",
+    "observaciones_docentes"
   ],
   properties: {
-    title: { type: "string" },
-    subject: { type: "string" },
-    topic: { type: "string" },
-    duration_minutes: { type: "integer" },
-    objective: { type: "string" },
-    evaluation_type: { type: "string" },
-    resources: { type: "string" },
-    inicio: { type: "string" },
-    desarrollo: { type: "string" },
-    cierre: { type: "string" },
-    distribucion_tiempo: {
-      type: "object",
-      required: ["inicio", "desarrollo", "cierre"],
-      properties: {
-        inicio: { type: "integer" },
-        desarrollo: { type: "integer" },
-        cierre: { type: "integer" }
+    objetivo: { type: "string" },
+    momentos: {
+      type: "array",
+      items: {
+        type: "object",
+        required: ["momento", "tiempo_min", "nombre_actividad", "descripcion", "tecnica"],
+        properties: {
+          momento: { type: "string" },
+          tiempo_min: { type: "integer" },
+          nombre_actividad: { type: "string" },
+          descripcion: { type: "string" },
+          tecnica: { type: "string" }
+        }
       }
     },
-    observaciones_docente: { type: "string" },
-    sugerencias_metodologicas: { type: "string" }
+    criterio_evaluacion: { type: "string" },
+    recursos_sugeridos: {
+      type: "array",
+      items: { type: "string" }
+    },
+    observaciones_docentes: { type: "string" }
   }
 } as const;
 
@@ -84,6 +78,79 @@ const reinforcementJsonSchema = {
     recomendaciones_docente: { type: "string" }
   }
 } as const;
+
+type GeminiPlanMoment = {
+  momento: string;
+  tiempo_min: number;
+  nombre_actividad: string;
+  descripcion: string;
+  tecnica: string;
+};
+
+type GeminiLessonPlanResponse = {
+  objetivo: string;
+  momentos: GeminiPlanMoment[];
+  criterio_evaluacion: string;
+  recursos_sugeridos: string[];
+  observaciones_docentes: string;
+};
+
+const adjustMomentsDistribution = (moments: GeminiPlanMoment[], targetMinutes: number) => {
+  const normalizedMoments = moments.length
+    ? moments
+    : [
+        {
+          momento: "Desarrollo",
+          tiempo_min: targetMinutes,
+          nombre_actividad: "Actividad central",
+          descripcion: "Desarrollo guiado del propósito de aprendizaje.",
+          tecnica: "Trabajo guiado"
+        }
+      ];
+  const total = normalizedMoments.reduce((sum, moment) => sum + moment.tiempo_min, 0);
+  const difference = targetMinutes - total;
+  const developmentIndex = normalizedMoments.findIndex((moment) => moment.momento.toLowerCase().includes("desarrollo"));
+  const targetIndex = developmentIndex >= 0 ? developmentIndex : Math.min(1, normalizedMoments.length - 1);
+
+  return normalizedMoments.map((moment, index) => ({
+    ...moment,
+    tiempo_min: index === targetIndex ? Math.max(1, moment.tiempo_min + difference) : Math.max(1, moment.tiempo_min)
+  }));
+};
+
+const buildLegacyPlanFromGemini = (data: GeminiLessonPlanResponse, input: GeneratePlanAIInput): LessonPlanAI => {
+  const moments = adjustMomentsDistribution(data.momentos, input.durationMinutes);
+  const findMoment = (name: string) => moments.find((moment) => moment.momento.toLowerCase().includes(name));
+  const inicio = findMoment("inicio") ?? moments[0];
+  const desarrollo = findMoment("desarrollo") ?? moments[1] ?? moments[0];
+  const cierre = findMoment("cierre") ?? moments[2] ?? moments[moments.length - 1];
+  const resources = data.recursos_sugeridos.length ? data.recursos_sugeridos.join(", ") : input.resources || "Recursos definidos por el docente";
+
+  return {
+    title: input.topic ? `Plan de clase: ${input.topic}` : "Plan de clase",
+    subject: input.subject,
+    topic: input.topic,
+    duration_minutes: input.durationMinutes,
+    objective: data.objetivo,
+    objetivo: data.objetivo,
+    evaluation_type: input.evaluationType,
+    resources,
+    inicio: `${inicio.nombre_actividad}: ${inicio.descripcion}`,
+    desarrollo: `${desarrollo.nombre_actividad}: ${desarrollo.descripcion}`,
+    cierre: `${cierre.nombre_actividad}: ${cierre.descripcion}`,
+    distribucion_tiempo: {
+      inicio: inicio.tiempo_min,
+      desarrollo: desarrollo.tiempo_min,
+      cierre: cierre.tiempo_min
+    },
+    momentos: moments,
+    criterio_evaluacion: data.criterio_evaluacion,
+    recursos_sugeridos: data.recursos_sugeridos,
+    observaciones_docente: data.observaciones_docentes,
+    observaciones_docentes: data.observaciones_docentes,
+    sugerencias_metodologicas: data.criterio_evaluacion
+  };
+};
 
 const adjustTimeDistribution = <T extends { duration_minutes?: number; distribucion_tiempo: { inicio: number; desarrollo: number; cierre: number } }>(
   data: T,
@@ -238,18 +305,20 @@ Contexto del docente:
 
 Instrucciones:
 - Devuelve un plan coherente con el grupo y el tiempo disponible.
-- El campo "evaluation_type" debe usar exactamente uno de estos valores internos: diagnostica, formativa, sumativa, observacion, otra.
-- "inicio", "desarrollo" y "cierre" deben ser redactados como bloques pedagógicos utilizables.
-- "resources" debe ser un texto breve, claro y útil.
-- Si agregas observaciones o sugerencias, manténlas concisas.
+- Responde solo con los campos: "objetivo", "momentos", "criterio_evaluacion", "recursos_sugeridos", "observaciones_docentes".
+- "momentos" debe incluir Inicio, Desarrollo y Cierre.
+- Cada momento debe tener "momento", "tiempo_min", "nombre_actividad", "descripcion" y "tecnica".
+- Cada actividad debe tener un nombre concreto y una técnica didáctica clara.
+- Los tiempos deben sumar exactamente ${parsedInput.durationMinutes} minutos.
+- Usa lenguaje profesional, claro y adecuado para docentes colombianos.
 `.trim();
 
-  const rawPlan = await requestStructuredGemini<LessonPlanAI>({
+  const rawPlan = await requestStructuredGemini<GeminiLessonPlanResponse>({
     prompt,
     responseJsonSchema: lessonPlanJsonSchema
   });
 
-  const validatedPlan = lessonPlanAISchema.parse(normalizeLessonPlanResponse(rawPlan));
+  const validatedPlan = lessonPlanAISchema.parse(normalizeLessonPlanResponse(buildLegacyPlanFromGemini(rawPlan, parsedInput)));
   return adjustTimeDistribution(validatedPlan, parsedInput.durationMinutes);
 };
 
@@ -283,16 +352,20 @@ Instrucciones:
 - Mejora la claridad pedagógica y la secuencia didáctica.
 - Ajusta las actividades al tiempo disponible.
 - Mantén una estructura utilizable por el docente.
-- El campo "evaluation_type" debe usar exactamente uno de estos valores internos: diagnostica, formativa, sumativa, observacion, otra.
-- No agregues explicaciones fuera del JSON.
+- Responde solo con los campos: "objetivo", "momentos", "criterio_evaluacion", "recursos_sugeridos", "observaciones_docentes".
+- "momentos" debe incluir Inicio, Desarrollo y Cierre.
+- Cada momento debe tener "momento", "tiempo_min", "nombre_actividad", "descripcion" y "tecnica".
+- Cada actividad debe tener un nombre concreto y una técnica didáctica clara.
+- Los tiempos deben sumar exactamente ${parsedInput.durationMinutes} minutos.
+- No agregues markdown ni explicaciones fuera del JSON.
 `.trim();
 
-  const rawPlan = await requestStructuredGemini<LessonPlanAI>({
+  const rawPlan = await requestStructuredGemini<GeminiLessonPlanResponse>({
     prompt,
     responseJsonSchema: lessonPlanJsonSchema
   });
 
-  const validatedPlan = lessonPlanAISchema.parse(normalizeLessonPlanResponse(rawPlan));
+  const validatedPlan = lessonPlanAISchema.parse(normalizeLessonPlanResponse(buildLegacyPlanFromGemini(rawPlan, parsedInput)));
   return adjustTimeDistribution(validatedPlan, parsedInput.durationMinutes);
 };
 

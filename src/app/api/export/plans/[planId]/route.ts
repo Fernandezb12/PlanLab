@@ -68,7 +68,14 @@ export async function POST(_: Request, context: { params: Promise<{ planId: stri
         distribution: normalizedPlan.distribution,
         observations: normalizedPlan.observations,
         suggestions: normalizedPlan.suggestions,
-        aiAssisted: normalizedPlan.aiAssisted
+        aiAssisted: normalizedPlan.aiAssisted,
+        moments: normalizedPlan.moments,
+        resourceTags: normalizedPlan.resourceTags,
+        evaluationCriteria: normalizedPlan.evaluationCriteria,
+        diagnosis: normalizedPlan.diagnosis,
+        teacherRecommendations: normalizedPlan.teacherRecommendations,
+        isReinforcement: normalizedPlan.isReinforcement,
+        modality: normalizedPlan.modality
       }
     });
 
