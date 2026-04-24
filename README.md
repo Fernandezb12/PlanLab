@@ -51,7 +51,6 @@ En muchos contextos educativos, la planeación, el seguimiento y los reportes se
 
 ## 🧭 Flujo principal del sistema
 
-```text
 Grupos → Estudiantes → Planes → Actividades → Resultados → Reportes
 ## 🚀 Características principales
 
