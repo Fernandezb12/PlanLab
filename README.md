@@ -158,7 +158,6 @@ Construye reportes académicos a partir de la información real del sistema y fa
 
 ## 🏗️ Arquitectura del proyecto
 
-```text
 src/
 ├── app/           # Rutas, layouts, route handlers y middleware
 ├── components/    # Componentes globales de UI, layout y utilitarios
@@ -248,7 +247,6 @@ Estas exportaciones están pensadas para facilitar el uso institucional, la revi
 
 Crea un archivo `.env.local` en la raíz del proyecto con esta estructura:
 
-```env
 NEXT_PUBLIC_SUPABASE_URL=tu_url_aqui
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu_anon_key_aqui
 GEMINI_API_KEY=tu_api_key_de_google_aqui
@@ -278,12 +276,10 @@ Asegúrate de tener lo siguiente correctamente configurado:
 
 ### 1. Clonar el repositorio
 
-```bash
 git clone TU_REPOSITORIO
 cd planlab
 ### 2. Instalar dependencias
 
-```bash
 npm install
 
 3. Ejecutar en desarrollo
@@ -294,7 +290,7 @@ La aplicación estará disponible en:
 http://localhost:3000
 
 ### 📜 Scripts útiles
-```bash
+
 npm run dev
 npm run typecheck
 npm run lint
@@ -303,11 +299,10 @@ Recomendación de verificación antes de desplegar
 
 ## Validación recomendada antes de publicar
 
-```bash
 npm run typecheck
 npm run lint
 npm run build
-```
+
 
 ## Autoría
 
