@@ -56,7 +56,7 @@ export const PlanDetailsDialog = ({ isOpen, plan, onClose }: PlanDetailsDialogPr
 
           <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.04]">
-              <p className="text-xs uppercase tracking-[0.16em] text-slate-500">Área</p>
+              <p className="text-xs uppercase tracking-[0.16em] text-slate-500">Área o asignatura</p>
           <p className="mt-2 text-sm font-semibold text-slate-950 dark:text-white">{plan.subject}</p>
             </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.04]">

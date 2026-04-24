@@ -1,12 +1,18 @@
 import { z } from "zod";
 
+import { normalizeEducationLevel } from "@/lib/constants/education";
+
 export const studentStatuses = ["activo", "seguimiento", "inactivo"] as const;
 
 export const groupSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().trim().min(2, "Ingresa un nombre de grupo"),
-  level: z.string().trim().min(2, "Ingresa el nivel educativo"),
-  subject: z.string().trim().min(2, "Ingresa el área"),
+  level: z
+    .string()
+    .trim()
+    .min(1, "Selecciona el nivel educativo")
+    .refine((value) => Boolean(normalizeEducationLevel(value)), "Selecciona el nivel educativo"),
+  subject: z.string().trim().min(2, "Ingresa el área o asignatura"),
   period: z.string().trim().max(80, "El período es demasiado largo").optional().or(z.literal(""))
 });
 

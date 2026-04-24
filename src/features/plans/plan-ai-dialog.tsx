@@ -2,14 +2,16 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle, Save, Sparkles, Wand2 } from "lucide-react";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
 import { Modal } from "@/components/ui/modal";
+import { Combobox } from "@/components/ui/combobox";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ToastMessage } from "@/components/ui/toast-message";
 import { createPlanAction, type PlanActionResult, updatePlanAction } from "@/features/plans/actions";
 import { generatePlanWithAIAction, improvePlanWithAIAction } from "@/features/plans/ai-actions";
+import { getSubjectOptionsForLevel, isPreschoolLevel } from "@/lib/constants/education";
 import { evaluationTypeLabels, evaluationTypes, normalizeEvaluationType, type PlanInput } from "@/lib/validations/plans";
 import {
   generatePlanAIInputSchema,
@@ -22,6 +24,7 @@ type GroupOption = {
   id: string;
   name: string;
   level: string | null;
+  subject: string | null;
 };
 
 type PlanRecord = {
@@ -55,7 +58,7 @@ const buildDefaultPromptValues = (groups: GroupOption[], plan?: PlanRecord | nul
     groupId: fallbackGroupId,
     groupName: selectedGroup?.name ?? "",
     educationLevel: selectedGroup?.level ?? "",
-    subject: plan?.subject ?? "",
+    subject: plan?.subject ?? selectedGroup?.subject ?? "",
     topic: plan?.topic ?? "",
     durationMinutes: plan?.duration_minutes ?? 45,
     objective: plan?.objective ?? "",
@@ -139,6 +142,7 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
   const [generatedPlan, setGeneratedPlan] = useState<LessonPlanAI | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [generationError, setGenerationError] = useState<string | null>(null);
+  const lastAutoSubjectRef = useRef<string | null>(null);
 
   const defaultValues = useMemo(() => buildDefaultPromptValues(groups, plan), [groups, plan]);
 
@@ -157,9 +161,11 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
     setSaveError(null);
     setGenerationError(null);
     setToast(null);
-  }, [defaultValues, isOpen, promptForm]);
+    lastAutoSubjectRef.current = plan ? null : defaultValues.subject.trim() || null;
+  }, [defaultValues, isOpen, plan, promptForm]);
 
   const selectedGroup = groups.find((group) => group.id === promptForm.watch("groupId"));
+  const subjectOptions = getSubjectOptionsForLevel(selectedGroup?.level);
 
   useEffect(() => {
     if (!selectedGroup) {
@@ -168,7 +174,17 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
 
     promptForm.setValue("groupName", selectedGroup.name, { shouldValidate: false });
     promptForm.setValue("educationLevel", selectedGroup.level ?? "", { shouldValidate: false });
-  }, [promptForm, selectedGroup]);
+
+    if (!plan && selectedGroup.subject) {
+      const currentSubject = promptForm.getValues("subject").trim();
+      const nextSubject = selectedGroup.subject.trim();
+
+      if (!currentSubject || currentSubject === lastAutoSubjectRef.current) {
+        promptForm.setValue("subject", nextSubject, { shouldDirty: true, shouldValidate: true });
+        lastAutoSubjectRef.current = nextSubject;
+      }
+    }
+  }, [plan, promptForm, selectedGroup]);
 
   const runGeneration = promptForm.handleSubmit((values) => {
     setSaveError(null);
@@ -310,8 +326,13 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
 
                   <div className="mt-4 grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                      <label className={fieldLabelClassName}>Área</label>
-                      <input className={fieldInputClassName} placeholder="Ciencias Naturales" {...promptForm.register("subject")} />
+                      <label className={fieldLabelClassName}>Área o asignatura</label>
+                      <Combobox
+                        value={promptForm.watch("subject")}
+                        options={subjectOptions}
+                        onChange={(value) => promptForm.setValue("subject", value, { shouldDirty: true, shouldValidate: true })}
+                        placeholder={isPreschoolLevel(selectedGroup?.level) ? "Selecciona o escribe una dimensión" : "Selecciona o escribe un área"}
+                      />
                       <p className="text-xs text-rose-400">{promptForm.formState.errors.subject?.message}</p>
                     </div>
 
@@ -410,11 +431,13 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
                     </div>
 
                     <div className="space-y-2">
-                      <label className={fieldLabelClassName}>Área</label>
-                      <input
+                      <label className={fieldLabelClassName}>Área o asignatura</label>
+                      <Combobox
                         value={generatedPlan.subject}
-                        onChange={(event) => handleGeneratedPlanChange("subject", event.target.value)}
-                        className={fieldInputClassName}
+                        options={subjectOptions}
+                        onChange={(value) => handleGeneratedPlanChange("subject", value)}
+                        placeholder={isPreschoolLevel(selectedGroup?.level) ? "Selecciona o escribe una dimensión" : "Selecciona o escribe un área"}
+                        inputClassName={fieldInputClassName}
                       />
                     </div>
                   </div>

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { createClient } from "@/lib/supabase/server";
+import { normalizeEducationLevel } from "@/lib/constants/education";
 import {
   groupSchema,
   importStudentsInputSchema,
@@ -45,7 +46,7 @@ const getAuthenticatedSupabase = async () => {
 const buildGroupPayload = (values: GroupInput, userId: string) => ({
   user_id: userId,
   name: values.name,
-  level: values.level,
+  level: normalizeEducationLevel(values.level) ?? values.level,
   subject: values.subject,
   period: values.period?.trim() ? values.period.trim() : null
 });
@@ -134,7 +135,7 @@ export const updateGroupAction = async (input: GroupInput): Promise<ActionResult
       .from("groups")
       .update({
         name: parsed.data.name,
-        level: parsed.data.level,
+        level: normalizeEducationLevel(parsed.data.level) ?? parsed.data.level,
         subject: parsed.data.subject,
         period: parsed.data.period?.trim() ? parsed.data.period.trim() : null
       })

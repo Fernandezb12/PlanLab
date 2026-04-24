@@ -24,7 +24,7 @@ export default async function PlanesPage({ searchParams }: PlanesPageProps) {
     { data: groupsData, error: groupsError },
     { data: plansData, error: plansError }
   ] = await Promise.all([
-    supabase.from("groups").select("id,name,level").order("created_at", { ascending: false }),
+    supabase.from("groups").select("id,name,level,subject").order("created_at", { ascending: false }),
     supabase
       .from("lesson_plans")
       .select("id,group_id,title,subject,topic,duration_minutes,objective,resources,evaluation_type,status,created_at,plan_json,groups(name,level)")

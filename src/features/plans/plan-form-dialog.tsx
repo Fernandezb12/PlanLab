@@ -2,11 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BookOpenText, ClipboardCheck, LoaderCircle, Save } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
+import { Combobox } from "@/components/ui/combobox";
 import { Modal } from "@/components/ui/modal";
 import { type PlanActionResult } from "@/features/plans/actions";
+import { getSubjectOptionsForLevel, isPreschoolLevel } from "@/lib/constants/education";
 import {
   evaluationTypes,
   evaluationTypeLabels,
@@ -21,6 +23,7 @@ type GroupOption = {
   id: string;
   name: string;
   level: string | null;
+  subject: string | null;
 };
 
 type PlanRecord = {
@@ -61,19 +64,22 @@ const buildEmptyValues = (groups: GroupOption[]): PlanInput => ({
 export const PlanFormDialog = ({ isOpen, groups, plan, onClose, onCompleted, createPlanAction, updatePlanAction }: PlanFormDialogProps) => {
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
+  const lastAutoSubjectRef = useRef<string | null>(null);
   const form = useForm<PlanInput>({
     resolver: zodResolver(planSchema),
     defaultValues: buildEmptyValues(groups)
   });
+  const selectedGroupId = form.watch("groupId");
+  const selectedGroup = groups.find((group) => group.id === selectedGroupId);
+  const subjectOptions = getSubjectOptionsForLevel(selectedGroup?.level);
 
   useEffect(() => {
     if (!isOpen) {
       return;
     }
 
-    form.reset(
-      plan
-        ? {
+    const nextValues = plan
+      ? {
             id: plan.id,
             groupId: plan.group_id ?? "",
             title: plan.title,
@@ -85,10 +91,26 @@ export const PlanFormDialog = ({ isOpen, groups, plan, onClose, onCompleted, cre
             evaluationType: normalizeEvaluationType(plan.evaluation_type) ?? "formativa",
             status: (planStatuses.includes(plan.status as (typeof planStatuses)[number]) ? plan.status : "draft") as PlanInput["status"]
           }
-        : buildEmptyValues(groups)
-    );
+      : buildEmptyValues(groups);
+
+    form.reset(nextValues);
+    lastAutoSubjectRef.current = plan ? null : groups.find((group) => group.id === nextValues.groupId)?.subject?.trim() ?? null;
     setServerError(null);
   }, [form, groups, isOpen, plan]);
+
+  useEffect(() => {
+    if (!isOpen || plan || !selectedGroup?.subject) {
+      return;
+    }
+
+    const currentSubject = form.getValues("subject").trim();
+    const nextSubject = selectedGroup.subject.trim();
+
+    if (!currentSubject || currentSubject === lastAutoSubjectRef.current) {
+      form.setValue("subject", nextSubject, { shouldDirty: true, shouldValidate: true });
+      lastAutoSubjectRef.current = nextSubject;
+    }
+  }, [form, isOpen, plan, selectedGroup]);
 
   const onSubmit = form.handleSubmit((values) => {
     setServerError(null);
@@ -200,11 +222,12 @@ export const PlanFormDialog = ({ isOpen, groups, plan, onClose, onCompleted, cre
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Área</label>
-                  <input
-                    className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
-                    placeholder="Ciencias Naturales"
-                    {...form.register("subject")}
+                  <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Área o asignatura</label>
+                  <Combobox
+                    value={form.watch("subject")}
+                    options={subjectOptions}
+                    onChange={(value) => form.setValue("subject", value, { shouldDirty: true, shouldValidate: true })}
+                    placeholder={isPreschoolLevel(selectedGroup?.level) ? "Selecciona o escribe una dimensión" : "Selecciona o escribe un área"}
                   />
                   <p className="text-xs text-rose-400">{form.formState.errors.subject?.message}</p>
                 </div>

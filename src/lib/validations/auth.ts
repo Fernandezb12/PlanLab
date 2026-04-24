@@ -1,12 +1,8 @@
 import { z } from "zod";
 
-export const educationLevels = [
-  "Básica Primaria",
-  "Básica Secundaria",
-  "Educación Media",
-  "Educación Superior",
-  "Otro"
-] as const;
+import { educationLevels } from "@/lib/constants/education";
+
+export { educationLevels };
 
 export const loginSchema = z.object({
   email: z.string().email("Ingresa un correo válido"),

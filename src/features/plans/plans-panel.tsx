@@ -19,6 +19,7 @@ type GroupOption = {
   id: string;
   name: string;
   level: string | null;
+  subject: string | null;
 };
 
 type PlanRecord = {
@@ -66,7 +67,7 @@ export const PlansPanel = ({ groups, plans, initialAIOpen = false }: PlansPanelP
   const [selectedPlan, setSelectedPlan] = useState<PlanRecord | null>(null);
   const [aiPlan, setAIPlan] = useState<PlanRecord | null>(null);
 
-  const groupedOptions = useMemo(() => groups.map((group) => ({ id: group.id, name: group.name, level: group.level })), [groups]);
+  const groupedOptions = useMemo(() => groups.map((group) => ({ id: group.id, name: group.name, level: group.level, subject: group.subject })), [groups]);
 
   useEffect(() => {
     if (initialAIOpen) {

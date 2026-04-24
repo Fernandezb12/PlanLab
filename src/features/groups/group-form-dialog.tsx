@@ -5,8 +5,10 @@ import { LoaderCircle, Save } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 
+import { Combobox } from "@/components/ui/combobox";
 import { Modal } from "@/components/ui/modal";
 import { type ActionResult } from "@/features/groups/actions";
+import { educationLevels, getSubjectOptionsForLevel, isPreschoolLevel, normalizeEducationLevel } from "@/lib/constants/education";
 import { groupSchema, type GroupInput } from "@/lib/validations/groups";
 
 type GroupRecord = {
@@ -41,6 +43,9 @@ export const GroupFormDialog = ({ isOpen, group, onClose, onCompleted, createGro
     defaultValues: emptyValues
   });
 
+  const selectedLevel = form.watch("level");
+  const subjectOptions = getSubjectOptionsForLevel(selectedLevel);
+
   useEffect(() => {
     if (!isOpen) {
       return;
@@ -51,7 +56,7 @@ export const GroupFormDialog = ({ isOpen, group, onClose, onCompleted, createGro
         ? {
             id: group.id,
             name: group.name,
-            level: group.level ?? "",
+            level: normalizeEducationLevel(group.level) ?? "",
             subject: group.subject ?? "",
             period: group.period ?? ""
           }
@@ -100,10 +105,10 @@ export const GroupFormDialog = ({ isOpen, group, onClose, onCompleted, createGro
       <form onSubmit={onSubmit} className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Nombre del grupo</label>
+            <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Grupo o curso</label>
             <input
               className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
-              placeholder="7A, Matemáticas 10B..."
+              placeholder="Ej: Transición A, 301, 6B, 1002"
               {...form.register("name")}
             />
             <p className="text-xs text-rose-400">{form.formState.errors.name?.message}</p>
@@ -111,22 +116,29 @@ export const GroupFormDialog = ({ isOpen, group, onClose, onCompleted, createGro
 
           <div className="space-y-2">
             <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Nivel educativo</label>
-            <input
-              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
-              placeholder="Básica Secundaria"
+            <select
+              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20 dark:border-white/10 dark:bg-slate-900 dark:text-white"
               {...form.register("level")}
-            />
+            >
+              <option value="">Selecciona una opción</option>
+              {educationLevels.map((level) => (
+                <option key={level} value={level}>
+                  {level}
+                </option>
+              ))}
+            </select>
             <p className="text-xs text-rose-400">{form.formState.errors.level?.message}</p>
           </div>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Área</label>
-            <input
-              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-violet-400 focus:ring-2 focus:ring-violet-500/20 dark:border-white/10 dark:bg-white/5 dark:text-white"
-              placeholder="Matemáticas, Lengua..."
-              {...form.register("subject")}
+            <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Área o asignatura</label>
+            <Combobox
+              value={form.watch("subject")}
+              options={subjectOptions}
+              onChange={(value) => form.setValue("subject", value, { shouldDirty: true, shouldValidate: true })}
+              placeholder={isPreschoolLevel(selectedLevel) ? "Selecciona o escribe una dimensión" : "Selecciona o escribe un área"}
             />
             <p className="text-xs text-rose-400">{form.formState.errors.subject?.message}</p>
           </div>
