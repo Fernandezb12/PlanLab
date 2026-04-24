@@ -148,6 +148,10 @@ body {
   animation: badgeFloat 3.2s ease-in-out infinite;
 }
 
+.typing-cursor {
+  animation: typingCursorBlink 1s steps(2, start) infinite;
+}
+
 .reveal-up {
   opacity: 0;
   transform: translateY(28px);
@@ -188,5 +192,22 @@ body {
   }
   50% {
     box-shadow: 0 12px 32px -18px rgba(99, 102, 241, 0.35);
+  }
+}
+
+@keyframes typingCursorBlink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  46%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typing-cursor {
+    animation: none;
   }
 }

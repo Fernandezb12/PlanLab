@@ -16,6 +16,7 @@ import { PlanLabBrand } from "@/components/branding/planlab-brand";
 import { CountUp } from "@/components/landing/count-up";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { SectionTitle } from "@/components/landing/section-title";
+import { TypingWord } from "@/components/landing/typing-word";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 
 const benefits = [
@@ -114,8 +115,8 @@ export default function LandingPage() {
             Nueva generación de planificación docente
           </p>
 
-          <h1 className="mt-7 text-5xl font-extrabold leading-[1.05] tracking-tight md:text-7xl">
-            Tu laboratorio pedagógico <span className="gradient-text">inteligente</span>.
+          <h1 className="mt-7 max-w-4xl text-5xl font-extrabold leading-[1.05] tracking-tight md:text-7xl">
+            Tu laboratorio pedagógico <TypingWord />.
           </h1>
 
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-300">
