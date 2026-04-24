@@ -161,7 +161,6 @@ Construye reportes académicos a partir de la información real del sistema y fa
 
 El código está organizado siguiendo principios de diseño modular (Feature-Sliced Design), separando responsabilidades para escalar sin fricción.
 
-```text
 src/
  ├── app/           # Rutas (App Router), layouts, route handlers y middleware
  ├── components/    # Componentes globales de UI, layout y utilitarios
@@ -251,7 +250,6 @@ Estas exportaciones están pensadas para facilitar el uso institucional, la revi
 
 Crea un archivo `.env.local` en la raíz del proyecto con esta estructura:
 
-```env
 NEXT_PUBLIC_SUPABASE_URL=tu_url_aqui
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu_anon_key_aqui
 GEMINI_API_KEY=tu_api_key_de_google_aqui
@@ -285,15 +283,17 @@ cd planlab
 
 ### 2. Instalar dependencias
 
-```bash
 npm install
 
 3. Ejecutar en desarrollo
+   
 npm run dev
+---
 
 La aplicación estará disponible en:
 
 http://localhost:3000
+---
 
 ### 📜 Scripts útiles
 ```bash
@@ -305,11 +305,11 @@ Recomendación de verificación antes de desplegar
 
 ## Validación recomendada antes de publicar
 
-```bash
 npm run typecheck
 npm run lint
 npm run build
-```
+---
+
 
 ## Autoría
 
