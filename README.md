@@ -1,192 +1,306 @@
-# PlanLab
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./public/branding/planlab-logo-dark.png" />
+    <source media="(prefers-color-scheme: light)" srcset="./public/branding/planlab-logo-light.png" />
+    <img src="./public/branding/planlab-logo-dark.png" alt="PlanLab Logo" width="340" />
+  </picture>
+</p>
 
-PlanLab es una plataforma pedagógica para docentes que integra planificación de clase, gestión de grupos, actividades, resultados, reportes y apoyo con IA en un solo flujo de trabajo.
+<h1 align="center">PlanLab</h1>
 
-## Qué resuelve
+<p align="center">
+  <strong>Tu laboratorio pedagógico inteligente</strong>
+</p>
 
-PlanLab organiza el proceso docente de punta a punta:
+<p align="center">
+  Plataforma EdTech para planificar clases, gestionar grupos, programar actividades, registrar resultados, generar reportes y fortalecer decisiones pedagógicas con Inteligencia Artificial.
+</p>
 
-- Crear y mejorar planes de clase.
-- Programar actividades por grupo.
-- Registrar asistencia, notas y observaciones por estudiante.
-- Detectar alertas pedagógicas tempranas.
-- Generar reportes y exportaciones académicas.
-- Apoyar decisiones con propuestas estructuradas de IA.
+<p align="center">
+  <img src="https://img.shields.io/badge/Estado-En%20desarrollo%20avanzado-7C3AED?style=for-the-badge" alt="Estado del proyecto" />
+  <img src="https://img.shields.io/badge/Enfoque-EdTech-2563EB?style=for-the-badge" alt="Enfoque EdTech" />
+  <img src="https://img.shields.io/badge/UI-Responsive-0EA5E9?style=for-the-badge" alt="UI Responsive" />
+  <img src="https://img.shields.io/badge/IA-Integrada-F59E0B?style=for-the-badge" alt="IA Integrada" />
+</p>
 
-## Flujo principal del producto
+---
+
+## ✨ ¿Qué es PlanLab?
+
+**PlanLab** es una plataforma pedagógica moderna diseñada para centralizar el flujo de trabajo docente en un solo entorno.  
+Permite organizar el proceso académico desde la planeación hasta el seguimiento de resultados, integrando herramientas de gestión, exportación documental y apoyo con Inteligencia Artificial.
+
+Su objetivo es transformar un flujo disperso y manual en una experiencia más clara, estructurada y útil para el docente.
+
+---
+
+## 🎯 Propósito del proyecto
+
+En muchos contextos educativos, la planeación, el seguimiento y los reportes se realizan en múltiples formatos, plataformas o documentos aislados.  
+**PlanLab** busca resolver ese problema integrando en una sola solución:
+
+- Planeación de clases
+- Gestión de grupos y estudiantes
+- Programación de actividades
+- Registro de asistencia, notas y observaciones
+- Análisis de resultados
+- Generación de reportes
+- Asistencia pedagógica con IA
+
+---
+
+## 🧭 Flujo principal del sistema
 
 ```text
-Grupos -> Estudiantes -> Planes -> Actividades -> Resultados -> Reportes
-```
+Grupos → Estudiantes → Planes → Actividades → Resultados → Reportes
+## 🚀 Características principales
 
-## Funcionalidades actuales
+PlanLab reúne las herramientas esenciales para acompañar el trabajo docente desde la planeación hasta el análisis de resultados.
 
-### Base académica
+### 📚 Gestión académica
 
-- Autenticación real con Supabase.
-- Protección de rutas privadas.
-- Perfil docente real.
-- CRUD de grupos y estudiantes.
-- Importación masiva de estudiantes.
-- CRUD de planes de clase.
+- Autenticación real con protección de rutas privadas.
+- Gestión de perfil docente.
+- CRUD de grupos.
+- CRUD de estudiantes.
+- CRUD de planes.
 - CRUD de actividades.
-- Registro por estudiante en actividades.
-- Resultados reales con métricas básicas.
-- Dashboard real del docente.
-- Reportes base conectados a datos reales.
+- Registro de resultados por estudiante.
+- Reportes académicos generados desde datos reales.
 
-### Capa inteligente
+### 🤖 Inteligencia Artificial aplicada
 
-- Generación de planes con IA.
+- Generación estructurada de planes de clase.
 - Mejora de planes existentes con IA.
-- Estrategias de refuerzo desde resultados.
-- Validación estricta con Zod para respuestas IA.
+- Estrategias de refuerzo basadas en resultados.
+- Validación estricta con esquemas tipados.
+- Respuestas controladas en formato estructurado.
 
-### Exportación
+### 📄 Exportación documental
 
-- Exportación PDF en backend.
-- Exportación Word editable para planes.
-- Nombres de archivo legibles y consistentes.
+- Exportación de planes en PDF.
+- Exportación de planes en Word editable `.docx`.
+- Exportación de reportes en PDF.
+- Organización y descarga de documentos académicos.
 
-### Experiencia de producto
+### 🎨 Experiencia de usuario
 
-- Interfaz premium en modo oscuro.
-- Modo claro adaptado.
+- Interfaz moderna.
+- Modo oscuro y modo claro.
+- Diseño responsive.
 - Buscador global.
-- Centro de notificaciones.
-- Skeletons, toasts y estados vacíos consistentes.
+- Notificaciones del sistema.
+- Estados vacíos, skeletons y feedback visual.
+- Navegación modular clara y consistente.
 
-## Stack técnico
+---
+
+## 🧩 Módulos del sistema
+
+### 1. Grupos y Estudiantes
+
+Permite organizar los cursos y administrar la base de estudiantes por grupo.  
+Incluye edición individual e importación masiva para agilizar la carga inicial de información.
+
+### 2. Planes
+
+Espacio para crear, editar, duplicar y enriquecer planes de clase.  
+Integra asistencia con IA para generar propuestas pedagógicas mejoradas y estructuradas.
+
+### 3. Actividades
+
+Permite programar actividades específicas a partir de un plan, asociarlas a un grupo, definir fecha, estado y realizar seguimiento académico.
+
+### 4. Resultados
+
+Consolida asistencia, notas y observaciones por estudiante.  
+También genera indicadores por grupo y alertas pedagógicas para facilitar la toma de decisiones.
+
+### 5. Reportes
+
+Construye reportes académicos a partir de la información real del sistema y facilita su exportación formal en documentos listos para consulta o entrega.
+
+---
+
+## 🛠️ Tecnologías utilizadas
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-0F172A?style=for-the-badge&logo=tailwind-css&logoColor=38BDF8" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Supabase-0F172A?style=for-the-badge&logo=supabase&logoColor=3ECF8E" alt="Supabase" />
+  <img src="https://img.shields.io/badge/Gemini_AI-1F2937?style=for-the-badge&logo=google&logoColor=F59E0B" alt="Gemini AI" />
+  <img src="https://img.shields.io/badge/Zod-1E293B?style=for-the-badge&logoColor=white" alt="Zod" />
+  <img src="https://img.shields.io/badge/React_Hook_Form-1F2937?style=for-the-badge&logo=reacthookform&logoColor=EC5990" alt="React Hook Form" />
+  <img src="https://img.shields.io/badge/PDF-7F1D1D?style=for-the-badge&logo=adobeacrobatreader&logoColor=white" alt="PDF" />
+  <img src="https://img.shields.io/badge/Word-1E3A8A?style=for-the-badge&logo=microsoftword&logoColor=white" alt="Word" />
+  <img src="https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel" />
+</p>
+
+### Resumen técnico
 
 | Capa | Tecnología |
-| --- | --- |
-| Frontend | Next.js App Router + React + TypeScript |
-| UI | Tailwind CSS + componentes modulares propios |
-| Datos | Supabase Database + Auth + Storage |
-| Validación | Zod + React Hook Form |
-| IA | Gemini mediante `@google/genai` |
-| Documentos | `@react-pdf/renderer` + `docx` |
+|------|------------|
+| Frontend | Next.js, React, TypeScript |
+| Estilos | Tailwind CSS |
+| Backend / BaaS | Supabase |
+| Base de datos | PostgreSQL vía Supabase |
+| Autenticación | Supabase Auth |
+| Storage | Supabase Storage |
+| Validación | Zod |
+| Formularios | React Hook Form |
+| IA | Gemini |
+| Exportación PDF | `@react-pdf/renderer` |
+| Exportación Word | `docx` |
+| Despliegue | Vercel |
 
-## Arquitectura del proyecto
+---
+
+## 🏗️ Arquitectura del proyecto
 
 ```text
 src/
-  app/
-    (public)/
-    (dashboard)/
-    api/
-  components/
-    layout/
-    pdf/
-    shared/
-    ui/
-  features/
-    activities/
-    auth/
-    dashboard/
-    groups/
-    plans/
-    profile/
-    reports/
-    results/
-  lib/
-    gemini/
-    notifications/
-    pdf/
-    plans/
-    supabase/
-    validations/
-    word/
-  styles/
-```
+├── app/           # Rutas, layouts, route handlers y middleware
+├── components/    # Componentes globales de UI, layout y utilitarios
+├── features/      # Módulos por dominio: auth, plans, activities, results...
+├── lib/           # Utilidades core: supabase, gemini, export, validaciones
+└── styles/        # Estilos globales
 
-## Variables de entorno
+## 📌 Filosofía de diseño
 
-Crea un archivo `.env.local` con estas variables:
+PlanLab está pensado como una plataforma académica con lógica de producto real, no solo como una demo visual.  
+Cada módulo fue estructurado para que el docente pueda trabajar de forma clara, rápida y organizada, manteniendo una experiencia moderna y coherente.
 
-```bash
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
-GEMINI_API_KEY=
+### Principios del sistema
+
+- **Claridad pedagógica:** la información se presenta de forma comprensible y orientada al trabajo docente.
+- **Flujo estructurado:** el sistema sigue una secuencia natural: grupos, estudiantes, planes, actividades, resultados y reportes.
+- **Interfaz limpia:** la experiencia visual prioriza legibilidad, orden y facilidad de uso.
+- **Datos reales persistidos:** la información se almacena y consulta desde una base de datos real.
+- **IA integrada con control:** la Inteligencia Artificial apoya el proceso, pero no reemplaza la decisión docente.
+- **Exportación institucional:** los documentos generados están pensados para uso académico y presentación formal.
+- **Escalabilidad modular:** cada módulo puede crecer o mejorarse sin afectar todo el sistema.
+
+---
+
+## 🔐 Seguridad y control
+
+El proyecto implementa una estructura pensada para proteger la información del usuario, controlar el acceso a los datos y mantener la consistencia del sistema.
+
+### Consideraciones clave
+
+- Protección de rutas privadas.
+- Uso de autenticación real.
+- Validación de datos en frontend y backend.
+- Aislamiento de información por usuario autenticado.
+- Row Level Security `RLS` en Supabase.
+- Uso de Server Actions y Route Handlers para tareas sensibles.
+- Claves privadas protegidas mediante variables de entorno.
+- Separación entre lógica de cliente y lógica de servidor.
+
+---
+
+## 🤖 Enfoque de la Inteligencia Artificial
+
+La IA en PlanLab no se plantea como un chatbot libre, sino como una herramienta integrada al flujo pedagógico.  
+Esto permite que las respuestas generadas sean estructuradas, validadas y útiles dentro del contexto académico.
+
+### Esto permite que las respuestas sean
+
+- útiles,
+- estructuradas,
+- validadas,
+- coherentes con el contexto educativo,
+- seguras para integrarse al sistema.
+
+### Usos actuales de la IA
+
+- Generación de planes de clase.
+- Mejora de planes ya existentes.
+- Propuestas pedagógicas estructuradas.
+- Estrategias de refuerzo por resultados.
+- Apoyo en la organización de actividades y tiempos.
+
+---
+
+## 📄 Exportaciones del sistema
+
+PlanLab permite generar documentos académicos a partir de la información real registrada en la plataforma.  
+Estas exportaciones están pensadas para facilitar el uso institucional, la revisión docente y la presentación formal de la información.
+
+### Exportaciones disponibles
+
+- Plan de clase en PDF.
+- Plan de clase en Word editable.
+- Reportes en PDF.
+- Documentos organizados por módulo y contexto.
+
+### Objetivo de estas exportaciones
+
+- Facilitar el uso institucional.
+- Permitir edición posterior cuando sea necesario.
+- Ofrecer documentos claros, formales y listos para impresión.
+- Reducir la carga manual en la elaboración de reportes académicos.
+
+---
+
+## ⚙️ Variables de entorno
+
+Crea un archivo `.env.local` en la raíz del proyecto con esta estructura:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=tu_url_aqui
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu_anon_key_aqui
+GEMINI_API_KEY=tu_api_key_de_google_aqui
 GEMINI_MODEL=gemini-3-flash-preview
 SUPABASE_DOCUMENTS_BUCKET=documents
-```
+> Las claves privadas no deben subirse al repositorio.  
+> El archivo `.env.local` debe permanecer fuera del control de versiones.
 
-## Puesta en marcha
+---
+
+## 🧱 Requisitos de Supabase
+
+Asegúrate de tener lo siguiente correctamente configurado:
+
+- Proyecto activo en Supabase.
+- Autenticación por correo habilitada.
+- Tablas del sistema creadas.
+- Row Level Security activa.
+- Policies adecuadas por usuario autenticado.
+- Bucket de documentos creado.
+- Tabla de notificaciones disponible si se usa el centro de notificaciones.
+- Variables de conexión correctamente configuradas en el entorno local o en producción.
+
+---
+
+## ▶️ Instalación del proyecto
+
+### 1. Clonar el repositorio
+
+```bash
+git clone TU_REPOSITORIO
+cd planlab
+### 2. Instalar dependencias
 
 ```bash
 npm install
+
+3. Ejecutar en desarrollo
 npm run dev
-```
 
-La aplicación quedará disponible en:
+La aplicación estará disponible en:
 
-```bash
 http://localhost:3000
-```
 
-## Scripts útiles
-
+### 📜 Scripts útiles
 ```bash
 npm run dev
 npm run typecheck
 npm run lint
 npm run build
-```
-
-## Requisitos de Supabase
-
-PlanLab espera estas capacidades activas:
-
-- Auth por correo electrónico.
-- RLS habilitado en tablas por `auth.uid()`.
-- Bucket para documentos exportados.
-- Esquema base del proyecto ya creado.
-
-### Tabla de notificaciones
-
-Si vas a usar notificaciones persistentes, ejecuta el SQL incluido en:
-
-- [supabase/notifications.sql](supabase/notifications.sql)
-
-Ese archivo crea:
-
-- tabla `public.notifications`
-- índices útiles
-- políticas RLS por usuario autenticado
-
-Si la tabla aún no existe, la app usa un fallback seguro basado en el estado actual del sistema para no romper la interfaz.
-
-## Exportaciones
-
-### PDF
-
-- Generación en backend.
-- Documentos blancos, legibles e imprimibles.
-- Uso de datos reales desde Supabase.
-
-### Word
-
-- Exportación editable para planes de clase.
-- Reutiliza la misma estructura normalizada que la vista previa y el PDF.
-
-## IA en PlanLab
-
-La integración con Gemini está diseñada para producto, no como chatbot:
-
-- Toda llamada ocurre del lado servidor.
-- La clave no se expone en frontend.
-- La salida estructurada se valida con Zod.
-- El docente revisa y aplica la propuesta antes de guardarla.
-
-## Estado actual
-
-PlanLab está orientado a uso real docente, con foco en:
-
-- estabilidad funcional
-- consistencia visual
-- claridad pedagógica
-- evolución incremental sin rehacer la arquitectura
+Recomendación de verificación antes de desplegar
 
 ## Validación recomendada antes de publicar
 

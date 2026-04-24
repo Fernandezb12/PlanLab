@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   BarChart3,
@@ -43,10 +44,30 @@ const benefits = [
 ];
 
 const flow = [
-  { step: "01", label: "Crear plan", detail: "Define objetivo, estrategias y evaluación." },
-  { step: "02", label: "Convertir en actividad", detail: "Lleva el plan a acciones concretas." },
-  { step: "03", label: "Registrar resultados", detail: "Consolida asistencia, evidencias y logros." },
-  { step: "04", label: "Analizar y reforzar", detail: "Aplica mejoras con foco en aprendizaje." }
+  {
+    step: "01",
+    label: "Crear plan",
+    detail: "Define objetivo, estrategias y evaluación.",
+    image: "/illustrations/how-it-works/create-plan.png"
+  },
+  {
+    step: "02",
+    label: "Convertir en actividad",
+    detail: "Lleva el plan a acciones concretas.",
+    image: "/illustrations/how-it-works/convert-activity.png"
+  },
+  {
+    step: "03",
+    label: "Registrar resultados",
+    detail: "Consolida asistencia, evidencias y logros.",
+    image: "/illustrations/how-it-works/register-results.png"
+  },
+  {
+    step: "04",
+    label: "Analizar y reforzar",
+    detail: "Aplica mejoras con foco en aprendizaje.",
+    image: "/illustrations/how-it-works/analyze-reinforce.png"
+  }
 ];
 
 const modules = [
@@ -216,12 +237,23 @@ export default function LandingPage() {
         <div className="mt-10 grid gap-4 md:grid-cols-4">
           {flow.map((item) => (
             <ScrollReveal key={item.step}>
-              <article className="glass-card-plus rounded-2xl p-6 text-center">
+              <article className="glass-card-plus group flex min-h-[300px] flex-col rounded-2xl p-5 text-center sm:min-h-[320px] sm:p-6 md:min-h-[340px]">
                 <p className="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-violet-500/15 text-sm font-extrabold text-violet-700 dark:text-violet-300">
                   {item.step}
                 </p>
                 <h4 className="mt-4 font-bold">{item.label}</h4>
                 <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{item.detail}</p>
+                <div className="mt-auto pt-5">
+                  <div className="flex h-32 w-full items-center justify-center rounded-2xl border border-slate-200/80 bg-white/85 p-3 shadow-sm shadow-slate-200/60 transition duration-300 group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-violet-200/50 dark:border-white/10 dark:bg-white/[0.04] dark:shadow-none dark:group-hover:shadow-violet-950/20 sm:h-36 md:h-32 lg:h-36">
+                    <Image
+                      src={item.image}
+                      alt={`Ilustración de ${item.label.toLowerCase()}`}
+                      width={240}
+                      height={160}
+                      className="h-full w-full object-contain transition duration-300 group-hover:scale-[1.02]"
+                    />
+                  </div>
+                </div>
               </article>
             </ScrollReveal>
           ))}
