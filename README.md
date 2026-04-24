@@ -164,6 +164,7 @@ src/
 ├── features/      # Módulos por dominio: auth, plans, activities, results...
 ├── lib/           # Utilidades core: supabase, gemini, export, validaciones
 └── styles/        # Estilos globales
+---
 
 ## 📌 Filosofía de diseño
 
@@ -278,16 +279,20 @@ Asegúrate de tener lo siguiente correctamente configurado:
 
 git clone TU_REPOSITORIO
 cd planlab
+---
 ### 2. Instalar dependencias
 
 npm install
 
 3. Ejecutar en desarrollo
+   
 npm run dev
+---
 
 La aplicación estará disponible en:
 
 http://localhost:3000
+---
 
 ### 📜 Scripts útiles
 
@@ -295,6 +300,7 @@ npm run dev
 npm run typecheck
 npm run lint
 npm run build
+---
 Recomendación de verificación antes de desplegar
 
 ## Validación recomendada antes de publicar
@@ -302,6 +308,7 @@ Recomendación de verificación antes de desplegar
 npm run typecheck
 npm run lint
 npm run build
+---
 
 
 ## Autoría
