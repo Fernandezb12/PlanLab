@@ -49,10 +49,11 @@ En muchos contextos educativos, la planeación, el seguimiento y los reportes se
 
 ---
 
-## 🧭 Flujo principal del sistema
+### 🔄 Flujo Core del Producto
+`👥 Grupos` ➔ `🧑‍🎓 Estudiantes` ➔ `📝 Planes` ➔ `📅 Actividades` ➔ `📊 Resultados` ➔ `📑 Reportes`
 
-```text
-Grupos → Estudiantes → Planes → Actividades → Resultados → Reportes
+---
+
 ## 🚀 Características principales
 
 PlanLab reúne las herramientas esenciales para acompañar el trabajo docente desde la planeación hasta el análisis de resultados.
@@ -156,16 +157,17 @@ Construye reportes académicos a partir de la información real del sistema y fa
 | Despliegue | Vercel |
 
 ---
+## 🏗️ Arquitectura del Proyecto
 
-## 🏗️ Arquitectura del proyecto
+El código está organizado siguiendo principios de diseño modular (Feature-Sliced Design), separando responsabilidades para escalar sin fricción.
 
 ```text
 src/
-├── app/           # Rutas, layouts, route handlers y middleware
-├── components/    # Componentes globales de UI, layout y utilitarios
-├── features/      # Módulos por dominio: auth, plans, activities, results...
-├── lib/           # Utilidades core: supabase, gemini, export, validaciones
-└── styles/        # Estilos globales
+ ├── app/           # Rutas (App Router), layouts, route handlers y middleware
+ ├── components/    # Componentes globales de UI, layout y utilitarios
+ ├── features/      # Módulos por dominio: auth, plans, activities, results...
+ ├── lib/           # Utilidades core: supabase, gemini, export, validaciones
+ └── styles/        # Estilos globales
 
 ## 📌 Filosofía de diseño
 
@@ -255,8 +257,6 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=tu_anon_key_aqui
 GEMINI_API_KEY=tu_api_key_de_google_aqui
 GEMINI_MODEL=gemini-3-flash-preview
 SUPABASE_DOCUMENTS_BUCKET=documents
-> Las claves privadas no deben subirse al repositorio.  
-> El archivo `.env.local` debe permanecer fuera del control de versiones.
 
 ---
 
@@ -280,8 +280,9 @@ Asegúrate de tener lo siguiente correctamente configurado:
 ### 1. Clonar el repositorio
 
 ```bash
-git clone TU_REPOSITORIO
+git clone [https://github.com/Fernandezb12/PlanLab.git](https://github.com/Fernandezb12/PlanLab.git)
 cd planlab
+
 ### 2. Instalar dependencias
 
 ```bash
@@ -296,10 +297,10 @@ http://localhost:3000
 
 ### 📜 Scripts útiles
 ```bash
-npm run dev
-npm run typecheck
-npm run lint
-npm run build
+npm run typecheck   # Revisa tipado estricto
+npm run lint        # Revisa reglas de código
+npm run build       # Simula compilación de producción
+
 Recomendación de verificación antes de desplegar
 
 ## Validación recomendada antes de publicar
