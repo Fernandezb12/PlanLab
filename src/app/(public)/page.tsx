@@ -91,7 +91,6 @@ export default function LandingPage() {
           <Link href="/" className="flex items-center gap-3">
             <div className="min-w-0 py-1">
               <PlanLabBrand kind="full" priority className="max-w-[172px]" />
-              <p className="mt-2.5 pl-1 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Laboratorio pedagógico</p>
             </div>
           </Link>
 
@@ -116,7 +115,7 @@ export default function LandingPage() {
           </p>
 
           <h1 className="mt-7 max-w-4xl text-5xl font-extrabold leading-[1.05] tracking-tight md:text-7xl">
-            Tu laboratorio pedagógico <TypingWord />.
+            Tu laboratorio pedagógico <TypingWord />
           </h1>
 
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-600 dark:text-slate-300">

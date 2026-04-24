@@ -4,9 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 
 const words = ["inteligente", "adaptable", "innovador", "estratégico", "conectado"];
 
-const typeDelay = 82;
-const eraseDelay = 48;
-const pauseDelay = 1150;
+const typeDelay = 135;
+const eraseDelay = 80;
+const pauseDelay = 1850;
 
 const useReducedMotion = () => {
   const [reducedMotion, setReducedMotion] = useState(false);
@@ -76,10 +76,10 @@ export const TypingWord = () => {
   return (
     <span className="inline-grid min-h-[1.08em] min-w-[11ch] grid-cols-1 items-baseline whitespace-nowrap gradient-text" aria-label={currentWord}>
       <span aria-hidden="true" className="invisible col-start-1 row-start-1">
-        {longestWord}
+        {longestWord}.
       </span>
       <span className="col-start-1 row-start-1 inline-flex items-baseline">
-        {visibleWord}
+        {visibleWord}.
         <span className="typing-cursor ml-1 inline-block h-[0.86em] w-[0.08em] translate-y-[0.08em] rounded-full bg-violet-500 dark:bg-violet-300" aria-hidden="true" />
       </span>
     </span>
