@@ -74,16 +74,81 @@ const splitResourceTags = (value: string | null) =>
         .slice(0, 10)
     : [];
 
-const normalizeResourceTags = (planJson: Record<string, unknown> | null, fallback: string | null) => {
-  if (Array.isArray(planJson?.recursos_sugeridos)) {
-    return planJson.recursos_sugeridos
-      .map((item) => cleanText(item))
-      .filter((item): item is string => Boolean(item))
-      .slice(0, 10);
+const isUrl = (value: string) => /^https?:\/\//i.test(value.trim());
+
+const cleanResourceLabel = (value: string) => {
+  const resource = value.trim();
+
+  if (!resource) {
+    return null;
   }
 
-  return splitResourceTags(cleanText(planJson?.resources) ?? cleanText(planJson?.recursos) ?? fallback);
+  if (!isUrl(resource)) {
+    return resource;
+  }
+
+  try {
+    const url = new URL(resource);
+    const host = url.hostname.replace(/^www\./, "");
+    return `Recurso digital (${host})`;
+  } catch {
+    return "Recurso digital";
+  }
 };
+
+const dedupeValues = (values: string[]) => Array.from(new Set(values.map((value) => value.trim()).filter(Boolean)));
+
+const normalizeResourceTags = (planJson: Record<string, unknown> | null, fallback: string | null) => {
+  const values = Array.isArray(planJson?.recursos_sugeridos)
+    ? planJson.recursos_sugeridos.map((item) => cleanText(item)).filter((item): item is string => Boolean(item))
+    : splitResourceTags(cleanText(planJson?.resources) ?? cleanText(planJson?.recursos) ?? fallback);
+
+  return dedupeValues(values.map((item) => cleanResourceLabel(item)).filter((item): item is string => Boolean(item))).slice(0, 10);
+};
+
+const normalizeResourcesText = (planJson: Record<string, unknown> | null, fallback: string | null) => {
+  const resources = normalizeResourceTags(planJson, fallback);
+  return resources.length ? resources.join(", ") : fallback;
+};
+
+const defaultMethodologicalRecommendations =
+  "Usar apoyos visuales y códigos de color para diferenciar ideas clave; presentar ejemplos guiados antes del trabajo autónomo; combinar trabajo individual y colaborativo; registrar errores frecuentes durante la actividad; cerrar con una síntesis formativa y preguntas de verificación.";
+
+const normalizeSuggestions = ({
+  planJson,
+  evaluationCriteria,
+  objective,
+  resources
+}: {
+  planJson: Record<string, unknown> | null;
+  evaluationCriteria: string | null;
+  objective: string;
+  resources: string | null;
+}) => {
+  const suggestion =
+    cleanText(planJson?.sugerencias_metodologicas) ??
+    cleanText(planJson?.sugerencias_metodológicas) ??
+    cleanText(planJson?.recomendaciones_metodologicas) ??
+    cleanText(planJson?.recomendaciones_metodológicas);
+
+  if (!suggestion) {
+    return defaultMethodologicalRecommendations;
+  }
+
+  const normalizedSuggestion = suggestion.toLowerCase().trim();
+  const repeatedValues = [evaluationCriteria, objective, resources]
+    .map((value) => value?.toLowerCase().trim())
+    .filter((value): value is string => Boolean(value));
+
+  if (repeatedValues.some((value) => value === normalizedSuggestion)) {
+    return defaultMethodologicalRecommendations;
+  }
+
+  return suggestion;
+};
+
+const normalizeModality = (planJson: Record<string, unknown> | null) =>
+  cleanText(planJson?.modalidad) ?? cleanText(planJson?.modality) ?? "Presencial";
 
 const normalizeMomentsFromArray = (moments: unknown): PlanMomentExport[] => {
   if (!Array.isArray(moments)) {
@@ -254,12 +319,14 @@ export const normalizePlanForExport = (plan: RawPlanRecord): NormalizedPlanExpor
     cleanText(refuerzo?.objective_refuerzo) ??
     cleanText(planJson?.objective) ??
     plan.objective;
-  const resources = cleanText(planJson?.resources) ?? cleanText(planJson?.recursos) ?? plan.resources;
+  const rawResources = cleanText(planJson?.resources) ?? cleanText(planJson?.recursos) ?? plan.resources;
+  const resources = normalizeResourcesText(planJson, rawResources);
   const inicio = cleanText(planJson?.inicio) ?? "";
   const desarrollo = cleanText(planJson?.desarrollo) ?? "";
   const cierre = cleanText(planJson?.cierre) ?? "";
   const distribution = normalizeLegacyDistribution(planJson?.distribucion_tiempo) ?? buildSuggestedDistribution(durationMinutes);
   const momentsFromJson = normalizeMomentsFromArray(planJson?.momentos);
+  const evaluationCriteria = cleanText(planJson?.criterio_evaluacion) ?? cleanText(refuerzo?.criterio_evaluacion);
   const isReinforcement = Boolean(
     Boolean(refuerzo) ||
       cleanText(planJson?.objective_refuerzo) ||
@@ -283,7 +350,12 @@ export const normalizePlanForExport = (plan: RawPlanRecord): NormalizedPlanExpor
     cierre: cierre || "No registrado",
     distribution,
     observations: cleanText(planJson?.observaciones_docente) ?? cleanText(planJson?.observaciones_docentes),
-    suggestions: cleanText(planJson?.sugerencias_metodologicas),
+    suggestions: normalizeSuggestions({
+      planJson,
+      evaluationCriteria,
+      objective,
+      resources
+    }),
     aiAssisted: Boolean(planJson?.generated_with_ai || planJson?.ai_mode),
     groupName: group?.name ?? "Grupo",
     educationLevel: group?.level ?? null,
@@ -302,7 +374,7 @@ export const normalizePlanForExport = (plan: RawPlanRecord): NormalizedPlanExpor
             objective
           }),
     resourceTags: normalizeResourceTags(planJson, resources),
-    evaluationCriteria: cleanText(planJson?.criterio_evaluacion) ?? cleanText(refuerzo?.criterio_evaluacion),
+    evaluationCriteria,
     diagnosis: cleanText(planJson?.breve_diagnostico) ?? cleanText(planJson?.diagnostico_breve) ?? cleanText(refuerzo?.breve_diagnostico),
     teacherRecommendations:
       cleanText(planJson?.recomendaciones_docente) ??
@@ -310,6 +382,6 @@ export const normalizePlanForExport = (plan: RawPlanRecord): NormalizedPlanExpor
       cleanText(planJson?.observaciones_docentes) ??
       cleanText(planJson?.observaciones_docente),
     isReinforcement,
-    modality: planJson?.generated_with_ai || planJson?.ai_mode ? "Asistido por IA" : "Diseño docente"
+    modality: normalizeModality(planJson)
   };
 };
