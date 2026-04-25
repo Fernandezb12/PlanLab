@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle2, LoaderCircle } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -14,7 +14,6 @@ type RecoveryState = "checking" | "ready" | "invalid" | "success";
 
 export const UpdatePasswordForm = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [recoveryState, setRecoveryState] = useState<RecoveryState>("checking");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -29,35 +28,8 @@ export const UpdatePasswordForm = () => {
 
     const prepareRecoverySession = async () => {
       const supabase = createClient();
-      const code = searchParams.get("code");
-      const authError = searchParams.get("error");
-      const authErrorCode = searchParams.get("error_code");
 
       try {
-        if (authError || authErrorCode) {
-          console.error("Error real recibido desde enlace de recuperación:", { authError, authErrorCode });
-
-          if (mounted) {
-            setRecoveryState("invalid");
-          }
-
-          return;
-        }
-
-        if (code) {
-          const { error } = await supabase.auth.exchangeCodeForSession(code);
-
-          if (error) {
-            console.error("Error real intercambiando código de recuperación:", error);
-
-            if (mounted) {
-              setRecoveryState("invalid");
-            }
-
-            return;
-          }
-        }
-
         const {
           data: { session },
           error
@@ -84,7 +56,7 @@ export const UpdatePasswordForm = () => {
     return () => {
       mounted = false;
     };
-  }, [searchParams]);
+  }, []);
 
   const onSubmit = form.handleSubmit(async ({ password }) => {
     setIsSubmitting(true);
@@ -110,7 +82,7 @@ export const UpdatePasswordForm = () => {
       form.reset({ password: "", confirmPassword: "" });
 
       window.setTimeout(() => {
-        router.push("/auth/login?message=password-updated");
+        router.push("/auth/login?message=password_updated");
         router.refresh();
       }, 1800);
     } catch (error) {
@@ -132,7 +104,7 @@ export const UpdatePasswordForm = () => {
   if (recoveryState === "invalid") {
     return (
       <div className="space-y-5 rounded-2xl border border-amber-300 bg-amber-50 p-5 text-sm text-amber-950 dark:border-amber-500/25 dark:bg-amber-500/10 dark:text-amber-100">
-        <p className="font-semibold">El enlace no es válido o expiró.</p>
+        <p className="font-semibold">El enlace no es válido o expiró. Solicita uno nuevo.</p>
         <p>Solicita uno nuevo desde la pantalla de inicio de sesión.</p>
         <Link href="/auth/login" className="inline-flex rounded-xl bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-110">
           Volver al login

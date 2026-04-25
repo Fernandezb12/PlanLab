@@ -17,7 +17,8 @@ type LoginPageProps = {
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const nextPath = typeof resolvedSearchParams.next === "string" ? resolvedSearchParams.next : null;
-  const statusMessage = resolvedSearchParams.message === "password-updated" ? "Tu contraseña fue actualizada correctamente. Ya puedes iniciar sesión." : null;
+  const statusMessage = resolvedSearchParams.message === "password_updated" ? "Tu contraseña fue actualizada correctamente. Ya puedes iniciar sesión." : null;
+  const errorMessage = resolvedSearchParams.error === "recovery_failed" ? "El enlace no es válido o expiró. Solicita uno nuevo." : null;
 
   return (
     <main className="min-h-screen bg-slate-100 px-6 py-8 dark:bg-slate-950">
@@ -60,6 +61,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             {statusMessage ? (
               <div className="mb-5 rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-100">
                 {statusMessage}
+              </div>
+            ) : null}
+
+            {errorMessage ? (
+              <div className="mb-5 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/25 dark:bg-amber-500/10 dark:text-amber-100">
+                {errorMessage}
               </div>
             ) : null}
 

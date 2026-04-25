@@ -6,11 +6,11 @@ export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const next = requestUrl.searchParams.get("next") ?? "/auth/update-password";
-  const redirectUrl = request.nextUrl.clone();
+  const redirectUrl = new URL(request.url);
 
   if (!code) {
-    redirectUrl.pathname = "/auth/update-password";
-    redirectUrl.search = "error=access_denied&error_code=otp_expired";
+    redirectUrl.pathname = "/auth/login";
+    redirectUrl.search = "error=recovery_failed";
     return NextResponse.redirect(redirectUrl);
   }
 
@@ -19,8 +19,8 @@ export async function GET(request: NextRequest) {
 
   if (error) {
     console.error("Error real en callback de Supabase Auth:", error);
-    redirectUrl.pathname = "/auth/update-password";
-    redirectUrl.search = "error=access_denied&error_code=otp_expired";
+    redirectUrl.pathname = "/auth/login";
+    redirectUrl.search = "error=recovery_failed";
     return NextResponse.redirect(redirectUrl);
   }
 

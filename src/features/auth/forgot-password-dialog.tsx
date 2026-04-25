@@ -14,7 +14,7 @@ type ForgotPasswordDialogProps = {
   onClose: () => void;
 };
 
-const recoveryMessage = "Si el correo está registrado, recibirás un enlace para restablecer tu contraseña.";
+const recoveryMessage = "Te enviamos un enlace para restablecer tu contraseña. Revisa tu bandeja de entrada.";
 
 export const ForgotPasswordDialog = ({ isOpen, onClose }: ForgotPasswordDialogProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,7 +34,7 @@ export const ForgotPasswordDialog = ({ isOpen, onClose }: ForgotPasswordDialogPr
     try {
       const supabase = createClient();
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth/update-password`
+        redirectTo: `${window.location.origin}/auth/callback?next=/auth/update-password`
       });
 
       if (error) {
