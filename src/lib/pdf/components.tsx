@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Image, StyleSheet, Text, View } from "@react-pdf/renderer";
 import type { ReactNode } from "react";
 
 export type PlanPdfData = {
@@ -69,7 +69,7 @@ export const planPageStyle = {
 
 const styles = StyleSheet.create({
   header: {
-    marginBottom: 16
+    marginBottom: 15
   },
   headerTop: {
     flexDirection: "row",
@@ -79,18 +79,11 @@ const styles = StyleSheet.create({
   brandRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 5
+    marginBottom: 4
   },
-  logoMark: {
-    width: 18,
-    height: 18,
-    borderRadius: 5,
-    backgroundColor: colors.purple,
-    color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: 700,
-    textAlign: "center",
-    paddingTop: 2,
+  logoImage: {
+    width: 19,
+    height: 19,
     marginRight: 7
   },
   brandName: {
@@ -100,14 +93,9 @@ const styles = StyleSheet.create({
   },
   documentType: {
     color: colors.text,
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: 700,
     marginTop: 2
-  },
-  documentSubtitle: {
-    color: colors.secondary,
-    fontSize: 9.5,
-    marginTop: 3
   },
   headerMeta: {
     alignItems: "flex-end",
@@ -128,7 +116,7 @@ const styles = StyleSheet.create({
   },
   planTitle: {
     color: colors.text,
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: 700,
     lineHeight: 1.25
   },
@@ -177,8 +165,8 @@ const styles = StyleSheet.create({
   },
   metaCell: {
     width: "50%",
-    paddingHorizontal: 10,
-    paddingVertical: 8
+    paddingHorizontal: 9,
+    paddingVertical: 7
   },
   metaCellLeft: {
     borderRightWidth: 1,
@@ -247,7 +235,7 @@ const styles = StyleSheet.create({
     color: colors.secondary,
     fontSize: 8.7,
     paddingHorizontal: 8,
-    paddingVertical: 9,
+    paddingVertical: 10,
     lineHeight: 1.4
   },
   momentPill: {
@@ -290,6 +278,14 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginBottom: 10
   },
+  twoColumnSection: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 14
+  },
+  twoColumnCard: {
+    width: "48.5%"
+  },
   footer: {
     position: "absolute",
     bottom: 22,
@@ -314,6 +310,67 @@ const styles = StyleSheet.create({
 });
 
 const fallbackText = (value: string | null | undefined, fallback = "N/D") => (value?.trim() ? value.trim() : fallback);
+
+const displayCorrections: Record<string, string> = {
+  matematica: "Matemática",
+  matematicas: "Matemáticas",
+  trigonometria: "Trigonometría",
+  geometria: "Geometría",
+  estadistica: "Estadística",
+  fisica: "Física",
+  quimica: "Química",
+  biologia: "Biología",
+  espanol: "Español",
+  ingles: "Inglés",
+  diagnostica: "Diagnóstica",
+  formativa: "Formativa",
+  sumativa: "Sumativa",
+  observacion: "Observación",
+  otra: "Otra",
+  "basica primaria": "Básica primaria",
+  "basica secundaria": "Básica secundaria",
+  "educacion media": "Educación media",
+  "educacion superior": "Educación superior"
+};
+
+const displayKey = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+
+const formatDisplayText = (value: string | null | undefined, fallback = "N/D") => {
+  const cleaned = fallbackText(value, fallback);
+  const corrected = displayCorrections[displayKey(cleaned)];
+
+  if (corrected) {
+    return corrected;
+  }
+
+  if (cleaned === fallback) {
+    return cleaned;
+  }
+
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+};
+
+const getPlanDisplayTitle = (data: PlanPdfData) => {
+  const title = fallbackText(data.title, data.topic || "Plan de clase");
+  const titleWithoutPrefix = title.replace(/^plan\s+de\s+clase\s*[:\-–]?\s*/i, "").trim();
+
+  if (titleWithoutPrefix && titleWithoutPrefix.length < title.length) {
+    return formatDisplayText(titleWithoutPrefix, "Plan de clase");
+  }
+
+  if (displayKey(title) === "plan de clase" && data.topic) {
+    return formatDisplayText(data.topic);
+  }
+
+  return formatDisplayText(title, "Plan de clase");
+};
 
 const formatDate = (value: string) => {
   const date = new Date(value);
@@ -354,14 +411,14 @@ export const PdfHeader = ({ data }: { data: PlanPdfData }) => (
     <View style={styles.headerTop}>
       <View>
         <View style={styles.brandRow}>
-          <Text style={styles.logoMark}>P</Text>
+          {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf no expone alt para imágenes del documento. */}
+          <Image src={`${process.cwd()}/public/branding/planlab-icon.png`} style={styles.logoImage} />
           <Text style={styles.brandName}>PlanLab</Text>
         </View>
         <Text style={styles.documentType}>Plan de clase</Text>
-        <Text style={styles.documentSubtitle}>Documento académico generado desde PlanLab</Text>
       </View>
       <View style={styles.headerMeta}>
-        <Text style={styles.headerMetaText}>Docente: {fallbackText(data.teacherName)}</Text>
+        <Text style={styles.headerMetaText}>Docente: {formatDisplayText(data.teacherName)}</Text>
         <Text style={styles.headerMetaText}>Fecha: {formatDate(data.generatedAt)}</Text>
       </View>
     </View>
@@ -371,9 +428,9 @@ export const PdfHeader = ({ data }: { data: PlanPdfData }) => (
 
 export const PdfTitleBlock = ({ data }: { data: PlanPdfData }) => (
   <View style={styles.titleBlock} wrap={false}>
-    <Text style={styles.planTitle}>{fallbackText(data.title, "Plan de clase")}</Text>
+    <Text style={styles.planTitle}>{getPlanDisplayTitle(data)}</Text>
     <Text style={styles.planSubtitle}>
-      {fallbackText(data.subject)} · {fallbackText(data.educationLevel)} · {fallbackText(data.groupName)}
+      {formatDisplayText(data.subject)} · {formatDisplayText(data.educationLevel)} · {formatDisplayText(data.groupName)}
     </Text>
     {data.aiAssisted ? <Text style={styles.aiNote}>Propuesta pedagógica asistida por PlanLab AI Core</Text> : null}
   </View>
@@ -383,13 +440,13 @@ export const PdfSectionTitle = ({ children }: { children: ReactNode }) => <Text 
 
 export const PdfMetaGrid = ({ data }: { data: PlanPdfData }) => {
   const items = [
-    ["Grupo", data.groupName],
-    ["Nivel educativo", data.educationLevel],
-    ["Área/asignatura", data.subject],
-    ["Tema", data.topic],
+    ["Grupo", formatDisplayText(data.groupName)],
+    ["Nivel educativo", formatDisplayText(data.educationLevel)],
+    ["Área/asignatura", formatDisplayText(data.subject)],
+    ["Tema", formatDisplayText(data.topic)],
     ["Duración", formatDuration(data.durationMinutes)],
-    ["Tipo de evaluación", data.evaluationType],
-    ["Modalidad", data.modality || "Diseño docente"],
+    ["Tipo de evaluación", formatDisplayText(data.evaluationType)],
+    ["Modalidad", formatDisplayText(data.modality || "Diseño docente")],
     ["Fecha", formatDate(data.generatedAt)]
   ];
 
@@ -459,7 +516,7 @@ export const PdfTimeTable = ({ data }: { data: PlanPdfData }) => (
       {data.moments.map((moment, index) => (
         <View key={`${moment.moment}-${index}`} style={[styles.tableRow, { backgroundColor: index % 2 === 0 ? "#FFFFFF" : colors.rowAlt }]} wrap={false}>
           <View style={[styles.tableCell, { width: "16%" }]}>
-            <Text style={[styles.momentPill, getMomentPillStyle(moment.moment)]}>{fallbackText(moment.moment)}</Text>
+            <Text style={[styles.momentPill, getMomentPillStyle(moment.moment)]}>{formatDisplayText(moment.moment)}</Text>
           </View>
           <Text style={[styles.tableCell, { width: "12%", color: colors.text, fontWeight: 700 }]}>{formatMinutes(moment.minutes)}</Text>
           <View style={[styles.tableCell, { width: "52%" }]}>
@@ -479,8 +536,8 @@ export const PdfEvaluationSection = ({ data }: { data: PlanPdfData }) => (
     <View style={styles.accentBox}>
       <Text style={styles.paragraph}>
         {data.evaluationCriteria
-          ? `${fallbackText(data.evaluationType)}. ${data.evaluationCriteria}`
-          : `Tipo de evaluación: ${fallbackText(data.evaluationType)}`}
+          ? `${formatDisplayText(data.evaluationType)}. ${data.evaluationCriteria}`
+          : `Tipo de evaluación: ${formatDisplayText(data.evaluationType)}`}
       </Text>
     </View>
   </View>
@@ -510,14 +567,28 @@ export const PdfResourcesSection = ({ data }: { data: PlanPdfData }) => {
 };
 
 export const PdfTwoColumnSection = ({ data }: { data: PlanPdfData }) => (
-  <>
-    <PdfEvaluationSection data={data} />
-    <PdfResourcesSection data={data} />
-  </>
+  <View style={styles.twoColumnSection} wrap={false}>
+    <View style={styles.twoColumnCard}>
+      <PdfEvaluationSection data={data} />
+    </View>
+    <View style={styles.twoColumnCard}>
+      <PdfResourcesSection data={data} />
+    </View>
+  </View>
 );
 
-export const PdfRecommendationsBox = ({ recommendations, title = "Recomendaciones metodológicas" }: { recommendations: string | null; title?: string }) => {
-  if (!recommendations) {
+export const PdfRecommendationsBox = ({
+  recommendations,
+  title = "Recomendaciones metodológicas",
+  fallback,
+  alwaysRender = false
+}: {
+  recommendations: string | null;
+  title?: string;
+  fallback?: string;
+  alwaysRender?: boolean;
+}) => {
+  if (!recommendations && !alwaysRender) {
     return null;
   }
 
@@ -525,7 +596,7 @@ export const PdfRecommendationsBox = ({ recommendations, title = "Recomendacione
     <View style={styles.section} wrap={false}>
       <PdfSectionTitle>{title}</PdfSectionTitle>
       <View style={styles.noteBox}>
-        <Text style={styles.paragraphMuted}>{recommendations}</Text>
+        <Text style={styles.paragraphMuted}>{fallbackText(recommendations, fallback ?? "N/D")}</Text>
       </View>
     </View>
   );
@@ -533,7 +604,7 @@ export const PdfRecommendationsBox = ({ recommendations, title = "Recomendacione
 
 export const PdfFooter = () => (
   <View style={styles.footer} fixed>
-    <Text style={styles.footerText}>Plan generado por PlanLab · Tu laboratorio pedagógico inteligente</Text>
+    <Text style={styles.footerText}>Generado por PlanLab · Tu laboratorio pedagógico inteligente</Text>
     <Text style={styles.footerPage} render={({ pageNumber, totalPages }) => `Página ${pageNumber} de ${totalPages}`} fixed />
   </View>
 );

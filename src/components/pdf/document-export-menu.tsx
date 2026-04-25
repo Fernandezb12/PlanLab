@@ -18,12 +18,35 @@ type DocumentExportMenuProps = {
 type ExportPdfResponse = {
   message?: string;
   signedUrl?: string;
+  filename?: string;
+  path?: string;
 };
 
-const readFilenameFromHeaders = (headers: Headers) => {
+const readFilenameFromHeaders = (headers: Headers, fallback = "planlab.docx") => {
   const disposition = headers.get("content-disposition");
   const match = disposition?.match(/filename=\"?([^"]+)\"?/i);
-  return match?.[1] ?? "planlab.docx";
+  return match?.[1] ?? fallback;
+};
+
+const readFilenameFromUrl = (url: string, fallback = "planlab.pdf") => {
+  try {
+    const parsedUrl = new URL(url);
+    const lastSegment = parsedUrl.pathname.split("/").filter(Boolean).pop();
+    return lastSegment ? decodeURIComponent(lastSegment) : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const downloadBlob = (blob: Blob, filename: string) => {
+  const url = window.URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
 };
 
 export const DocumentExportMenu = ({
@@ -107,23 +130,29 @@ export const DocumentExportMenu = ({
       if (mode === "view") {
         window.open(payload.signedUrl, "_blank", "noopener,noreferrer");
       } else {
-        const link = document.createElement("a");
-        link.href = payload.signedUrl;
-        link.download = "";
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+        const pdfResponse = await fetch(payload.signedUrl);
+
+        if (!pdfResponse.ok) {
+          throw new Error("No fue posible preparar la descarga del PDF. Intenta nuevamente.");
+        }
+
+        const filename =
+          payload.filename ??
+          (payload.path ? payload.path.split("/").filter(Boolean).pop() : undefined) ??
+          readFilenameFromHeaders(pdfResponse.headers, readFilenameFromUrl(payload.signedUrl, "planlab.pdf"));
+
+        downloadBlob(await pdfResponse.blob(), filename);
       }
 
       setToast({
         tone: "success",
-        message: payload.message || "Documento generado correctamente."
+        message: mode === "view" ? "PDF abierto en una nueva pestaña." : "PDF descargado correctamente."
       });
     } catch (error) {
       console.error("Error real exportando documento PDF:", error);
       setToast({
         tone: "warning",
-        message: error instanceof Error ? error.message : "No fue posible generar el documento en este intento. Intenta nuevamente."
+        message: "No fue posible exportar el documento. Intenta nuevamente."
       });
     } finally {
       setIsLoading(null);
@@ -148,24 +177,17 @@ export const DocumentExportMenu = ({
 
       const blob = await response.blob();
       const filename = readFilenameFromHeaders(response.headers);
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      downloadBlob(blob, filename);
 
       setToast({
         tone: "success",
-        message: "Documento Word generado correctamente."
+        message: "Documento Word descargado correctamente."
       });
     } catch (error) {
       console.error("Error real exportando documento Word:", error);
       setToast({
         tone: "warning",
-        message: error instanceof Error ? error.message : "No fue posible exportar el documento editable en este intento."
+        message: "No fue posible exportar el documento. Intenta nuevamente."
       });
     } finally {
       setIsLoading(null);
@@ -206,7 +228,7 @@ export const DocumentExportMenu = ({
                   className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-800 transition hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-900"
                 >
                   <FileDown className="h-4 w-4 text-blue-500" />
-                  Ver PDF
+                  Abrir PDF
                 </button>
               </>
             ) : null}

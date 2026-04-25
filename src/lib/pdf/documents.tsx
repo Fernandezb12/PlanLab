@@ -285,7 +285,12 @@ export const PlanPdfDocument = ({ data }: { data: PlanPdfData }) => (
       <PdfTimeTable data={data} />
       <PdfTwoColumnSection data={data} />
       <PdfRecommendationsBox recommendations={data.observations} title="Observaciones docentes" />
-      <PdfRecommendationsBox recommendations={data.suggestions} title="Recomendaciones metodológicas" />
+      <PdfRecommendationsBox
+        recommendations={data.suggestions}
+        title="Recomendaciones metodológicas"
+        fallback="No se registraron recomendaciones adicionales."
+        alwaysRender
+      />
       {data.isReinforcement ? <PdfRecommendationsBox recommendations={data.teacherRecommendations} title="Recomendaciones docentes" /> : null}
       <PdfFooter />
     </Page>

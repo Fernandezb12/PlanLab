@@ -93,6 +93,7 @@ export async function POST(_: Request, context: { params: Promise<{ planId: stri
     return NextResponse.json({
       message: "Plan exportado correctamente.",
       signedUrl: upload.signedUrl,
+      filename: path.split("/").filter(Boolean).pop(),
       path: upload.path
     });
   } catch (error) {

@@ -43,10 +43,70 @@ const colors = {
   rowAlt: "F9FAFB"
 };
 
-const noneBorder = { style: BorderStyle.NONE, size: 0, color: colors.white };
 const softBorder = { style: BorderStyle.SINGLE, size: 4, color: colors.primaryBorder };
 
 const cleanText = (value: string | null | undefined, fallback = "N/D") => (value?.trim() ? value.trim() : fallback);
+
+const displayCorrections: Record<string, string> = {
+  matematica: "Matemática",
+  matematicas: "Matemáticas",
+  trigonometria: "Trigonometría",
+  geometria: "Geometría",
+  estadistica: "Estadística",
+  fisica: "Física",
+  quimica: "Química",
+  biologia: "Biología",
+  espanol: "Español",
+  ingles: "Inglés",
+  diagnostica: "Diagnóstica",
+  formativa: "Formativa",
+  sumativa: "Sumativa",
+  observacion: "Observación",
+  otra: "Otra",
+  "basica primaria": "Básica primaria",
+  "basica secundaria": "Básica secundaria",
+  "educacion media": "Educación media",
+  "educacion superior": "Educación superior"
+};
+
+const displayKey = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[_-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+
+const displayText = (value: string | null | undefined, fallback = "N/D") => {
+  const cleaned = cleanText(value, fallback);
+  const corrected = displayCorrections[displayKey(cleaned)];
+
+  if (corrected) {
+    return corrected;
+  }
+
+  if (cleaned === fallback) {
+    return cleaned;
+  }
+
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+};
+
+const planDisplayTitle = (plan: NormalizedPlanExport) => {
+  const title = cleanText(plan.title, plan.topic || "Plan de clase");
+  const titleWithoutPrefix = title.replace(/^plan\s+de\s+clase\s*[:\-–]?\s*/i, "").trim();
+
+  if (titleWithoutPrefix && titleWithoutPrefix.length < title.length) {
+    return displayText(titleWithoutPrefix, "Plan de clase");
+  }
+
+  if (displayKey(title) === "plan de clase" && plan.topic) {
+    return displayText(plan.topic);
+  }
+
+  return displayText(title, "Plan de clase");
+};
 
 const dateLabel = (value: string) => {
   const date = new Date(value);
@@ -58,11 +118,11 @@ const bodyRun = (text: string, color = colors.text) => new TextRun({ text, color
 const sectionTitle = (text: string, color = colors.primary) =>
   new Paragraph({
     heading: HeadingLevel.HEADING_2,
-    spacing: { before: 260, after: 120 },
+    spacing: { before: 280, after: 120 },
     border: {
       bottom: { style: BorderStyle.SINGLE, size: 4, color: colors.primaryBorder }
     },
-    children: [new TextRun({ text, color, bold: true, size: 24, allCaps: true })]
+    children: [new TextRun({ text, color, bold: true, size: 23 })]
   });
 
 const metadataLabelCell = (text: string) =>
@@ -86,7 +146,7 @@ const metadataValueCell = (text: string) =>
     width: { size: 32, type: WidthType.PERCENTAGE },
     children: [
       new Paragraph({
-        children: [new TextRun({ text: cleanText(text), color: colors.text, bold: true, size: 20 })]
+        children: [new TextRun({ text: displayText(text), color: colors.text, bold: true, size: 20 })]
       })
     ]
   });
@@ -97,18 +157,32 @@ const metadataRow = (leftLabel: string, leftValue: string, rightLabel: string, r
   });
 
 const highlightedBox = ({ text, accent, fill }: { text: string; accent: string; fill: string }) => [
-  new Paragraph({
-    shading: { type: ShadingType.CLEAR, fill },
-    border: {
-      left: { style: BorderStyle.SINGLE, size: 24, color: accent },
-      top: noneBorder,
-      bottom: noneBorder,
-      right: noneBorder
-    },
-    spacing: { before: 80, after: 180 },
-    indent: { left: 180 },
-    children: [bodyRun(cleanText(text), colors.text)]
-  })
+  new Table({
+    width: { size: 100, type: WidthType.PERCENTAGE },
+    rows: [
+      new TableRow({
+        children: [
+          new TableCell({
+            shading: { type: ShadingType.CLEAR, fill },
+            borders: {
+              top: softBorder,
+              bottom: softBorder,
+              left: { style: BorderStyle.SINGLE, size: 18, color: accent },
+              right: softBorder
+            },
+            margins: { top: 150, bottom: 150, left: 180, right: 180 },
+            children: [
+              new Paragraph({
+                spacing: { after: 0 },
+                children: [bodyRun(cleanText(text), colors.text)]
+              })
+            ]
+          })
+        ]
+      })
+    ]
+  }),
+  new Paragraph({ spacing: { after: 80 } })
 ];
 
 const momentColor = (moment: string) => {
@@ -164,7 +238,7 @@ const distributionTable = (moments: PlanMomentExport[]) =>
         return new TableRow({
           children: [
             tableBodyCell([new Paragraph({ children: [new TextRun({ text: timeLabel(moment.minutes), bold: true, color: colors.text, size: 19 })] })], fill),
-            tableBodyCell([new Paragraph({ children: [new TextRun({ text: moment.moment, bold: true, color: momentColor(moment.moment), size: 19 })] })], fill),
+            tableBodyCell([new Paragraph({ children: [new TextRun({ text: displayText(moment.moment), bold: true, color: momentColor(moment.moment), size: 19 })] })], fill),
             tableBodyCell(
               [
                 new Paragraph({ spacing: { after: 60 }, children: [new TextRun({ text: cleanText(moment.activityName), bold: true, color: colors.text, size: 19 })] }),
@@ -184,7 +258,7 @@ const footer = new Footer({
     new Paragraph({
       alignment: AlignmentType.RIGHT,
       children: [
-      new TextRun({ text: "Plan generado por PlanLab · Tu laboratorio pedagógico inteligente    |    Página ", color: colors.textSecondary, size: 18 }),
+        new TextRun({ text: "Plan generado por PlanLab · Tu laboratorio pedagógico inteligente    |    Página ", color: colors.textSecondary, size: 18 }),
         new TextRun({ children: [PageNumber.CURRENT], color: colors.text, size: 18 }),
         new TextRun({ text: " de ", color: colors.textSecondary, size: 18 }),
         new TextRun({ children: [PageNumber.TOTAL_PAGES], color: colors.text, size: 18 })
@@ -194,30 +268,46 @@ const footer = new Footer({
 });
 
 export const buildPlanWordBuffer = async ({ teacherName, generatedAt, plan }: BuildPlanWordDocumentInput) => {
+  const documentTitle = plan.isReinforcement ? "Plan de clase · Refuerzo" : "Plan de clase";
+  const readablePlanTitle = planDisplayTitle(plan);
+
   const document = new Document({
     creator: "PlanLab AI Core",
-    title: `Plan de clase · ${plan.subject}`,
-    subject: `Plan de clase · ${plan.topic}`,
+    title: `${documentTitle} · ${readablePlanTitle}`,
+    subject: `${displayText(plan.subject)} · ${displayText(plan.topic)}`,
     description: "Documento académico editable generado desde PlanLab.",
     sections: [
       {
         footers: { default: footer },
-        properties: {},
+        properties: {
+          page: {
+            margin: {
+              top: 900,
+              right: 900,
+              bottom: 900,
+              left: 900
+            }
+          }
+        },
         children: [
           new Paragraph({
             heading: HeadingLevel.TITLE,
-            spacing: { after: 100 },
+            spacing: { after: 60 },
             children: [new TextRun({ text: "PlanLab", color: colors.primary, bold: true, size: 34 })]
           }),
           new Paragraph({
             heading: HeadingLevel.HEADING_1,
-            spacing: { after: 180 },
-            children: [new TextRun({ text: plan.isReinforcement ? "Plan de clase · Refuerzo" : "Plan de clase", color: colors.text, bold: true, size: 30 })]
+            spacing: { after: 80 },
+            children: [new TextRun({ text: documentTitle, color: colors.text, bold: true, size: 30 })]
+          }),
+          new Paragraph({
+            spacing: { after: 140 },
+            children: [new TextRun({ text: readablePlanTitle, color: colors.text, bold: true, size: 25 })]
           }),
           new Paragraph({
             spacing: { after: 220 },
             children: [
-              new TextRun({ text: `Docente: ${teacherName}`, bold: true, color: colors.text, size: 20 }),
+              new TextRun({ text: `Docente: ${displayText(teacherName)}`, bold: true, color: colors.text, size: 20 }),
               new TextRun({ text: `  ·  Fecha de generación: ${dateLabel(generatedAt)}`, color: colors.textSecondary, size: 20 })
             ]
           }),
@@ -226,10 +316,10 @@ export const buildPlanWordBuffer = async ({ teacherName, generatedAt, plan }: Bu
             layout: TableLayoutType.FIXED,
             columnWidths: [1600, 3400, 1600, 3400],
             rows: [
-              metadataRow("Grupo", `${plan.groupName}${plan.educationLevel ? ` · ${plan.educationLevel}` : ""}`, "Área", plan.subject),
-              metadataRow("Tema", plan.topic, "Duración", durationLabel(plan.durationMinutes)),
-              metadataRow("Evaluación", plan.evaluationType, "Modalidad", plan.modality),
-              metadataRow("Nivel educativo", plan.educationLevel ?? "N/D", "Fecha", dateLabel(generatedAt))
+              metadataRow("Grupo", `${displayText(plan.groupName)}${plan.educationLevel ? ` · ${displayText(plan.educationLevel)}` : ""}`, "Área", displayText(plan.subject)),
+              metadataRow("Tema", displayText(plan.topic), "Duración", durationLabel(plan.durationMinutes)),
+              metadataRow("Evaluación", displayText(plan.evaluationType), "Modalidad", displayText(plan.modality)),
+              metadataRow("Nivel educativo", displayText(plan.educationLevel), "Fecha", dateLabel(generatedAt))
             ]
           }),
           sectionTitle("Objetivo de aprendizaje"),
@@ -240,12 +330,23 @@ export const buildPlanWordBuffer = async ({ teacherName, generatedAt, plan }: Bu
           sectionTitle("Desarrollo de la clase"),
           distributionTable(plan.moments),
           sectionTitle("Evaluación"),
-          ...highlightedBox({ text: plan.evaluationCriteria ? `${plan.evaluationType}. ${plan.evaluationCriteria}` : `Tipo de evaluación: ${plan.evaluationType}`, accent: colors.primary, fill: colors.primaryLight }),
+          ...highlightedBox({
+            text: plan.evaluationCriteria ? `${displayText(plan.evaluationType)}. ${plan.evaluationCriteria}` : `Tipo de evaluación: ${displayText(plan.evaluationType)}`,
+            accent: colors.primary,
+            fill: colors.primaryLight
+          }),
           sectionTitle("Recursos"),
           ...highlightedBox({
             text: plan.resourceTags.length ? plan.resourceTags.join(", ") : plan.resources || "N/D",
             accent: colors.green,
             fill: colors.greenBg
+          }),
+          ...(plan.observations ? [sectionTitle("Observaciones docentes", colors.blue), ...highlightedBox({ text: plan.observations, accent: colors.blue, fill: colors.blueBg })] : []),
+          sectionTitle("Recomendaciones metodológicas", colors.blue),
+          ...highlightedBox({
+            text: plan.suggestions || "No se registraron recomendaciones adicionales.",
+            accent: colors.blue,
+            fill: colors.blueBg
           }),
           ...(plan.isReinforcement && plan.teacherRecommendations
             ? [
