@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import {
   PdfDiagnosticBox,
   PdfFooter,
-  PdfHeader,
   PdfMetaGrid,
   PdfObjectiveBox,
   PdfRecommendationsBox,
@@ -277,7 +276,6 @@ const BaseDocument = ({ documentTitle, subject, teacherName, generatedAt, aiAssi
 export const PlanPdfDocument = ({ data }: { data: PlanPdfData }) => (
   <Document title={data.title} author="PlanLab" subject={`Plan de clase · ${data.subject}`} creator="PlanLab AI Core">
     <Page size="A4" style={planPageStyle}>
-      <PdfHeader data={data} />
       <PdfTitleBlock data={data} />
       <PdfMetaGrid data={data} />
       <PdfObjectiveBox objective={data.objective} />

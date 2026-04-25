@@ -462,6 +462,10 @@ export const GroupsStudentsPanel = ({ groups, students }: GroupsStudentsPanelPro
       <ImportStudentsDialog
         isOpen={importModalOpen}
         groups={groupOptions}
+        existingStudents={students.map((student) => ({
+          groupId: student.group_id,
+          studentCode: student.student_code
+        }))}
         onClose={() => setImportModalOpen(false)}
         onCompleted={handleCompleted}
       />

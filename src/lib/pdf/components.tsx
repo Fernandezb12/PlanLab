@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { StyleSheet, Text, View } from "@react-pdf/renderer";
 import type { ReactNode } from "react";
 
 export type PlanPdfData = {
@@ -68,49 +68,6 @@ export const planPageStyle = {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    marginBottom: 15
-  },
-  headerTop: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start"
-  },
-  brandRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 4
-  },
-  logoImage: {
-    width: 19,
-    height: 19,
-    marginRight: 7
-  },
-  brandName: {
-    color: colors.text,
-    fontSize: 12,
-    fontWeight: 700
-  },
-  documentType: {
-    color: colors.text,
-    fontSize: 17,
-    fontWeight: 700,
-    marginTop: 2
-  },
-  headerMeta: {
-    alignItems: "flex-end",
-    maxWidth: "44%"
-  },
-  headerMetaText: {
-    color: colors.secondary,
-    fontSize: 9,
-    marginBottom: 3
-  },
-  headerRule: {
-    borderBottomWidth: 1.2,
-    borderBottomColor: colors.purple,
-    marginTop: 13
-  },
   titleBlock: {
     marginBottom: 14
   },
@@ -362,14 +319,23 @@ const getPlanDisplayTitle = (data: PlanPdfData) => {
   const titleWithoutPrefix = title.replace(/^plan\s+de\s+clase\s*[:\-–]?\s*/i, "").trim();
 
   if (titleWithoutPrefix && titleWithoutPrefix.length < title.length) {
-    return formatDisplayText(titleWithoutPrefix, "Plan de clase");
+    return `Plan de clase: ${formatDisplayText(titleWithoutPrefix, "Plan de clase")}`;
   }
 
   if (displayKey(title) === "plan de clase" && data.topic) {
-    return formatDisplayText(data.topic);
+    return `Plan de clase: ${formatDisplayText(data.topic)}`;
+  }
+
+  if (data.topic) {
+    return `Plan de clase: ${formatDisplayText(data.topic)}`;
   }
 
   return formatDisplayText(title, "Plan de clase");
+};
+
+const formatGroupLabel = (groupName: string | null | undefined) => {
+  const group = formatDisplayText(groupName);
+  return displayKey(group).startsWith("grupo") ? group : `Grupo ${group}`;
 };
 
 const formatDate = (value: string) => {
@@ -406,31 +372,11 @@ const splitResources = (resources: string | null) =>
         .filter(Boolean)
     : [];
 
-export const PdfHeader = ({ data }: { data: PlanPdfData }) => (
-  <View style={styles.header} wrap={false}>
-    <View style={styles.headerTop}>
-      <View>
-        <View style={styles.brandRow}>
-          {/* eslint-disable-next-line jsx-a11y/alt-text -- react-pdf no expone alt para imágenes del documento. */}
-          <Image src={`${process.cwd()}/public/branding/planlab-icon.png`} style={styles.logoImage} />
-          <Text style={styles.brandName}>PlanLab</Text>
-        </View>
-        <Text style={styles.documentType}>Plan de clase</Text>
-      </View>
-      <View style={styles.headerMeta}>
-        <Text style={styles.headerMetaText}>Docente: {formatDisplayText(data.teacherName)}</Text>
-        <Text style={styles.headerMetaText}>Fecha: {formatDate(data.generatedAt)}</Text>
-      </View>
-    </View>
-    <View style={styles.headerRule} />
-  </View>
-);
-
 export const PdfTitleBlock = ({ data }: { data: PlanPdfData }) => (
   <View style={styles.titleBlock} wrap={false}>
     <Text style={styles.planTitle}>{getPlanDisplayTitle(data)}</Text>
     <Text style={styles.planSubtitle}>
-      {formatDisplayText(data.subject)} · {formatDisplayText(data.educationLevel)} · {formatDisplayText(data.groupName)}
+      {formatDisplayText(data.subject)} · {formatDisplayText(data.educationLevel)} · {formatGroupLabel(data.groupName)}
     </Text>
     {data.aiAssisted ? <Text style={styles.aiNote}>Propuesta pedagógica asistida por PlanLab AI Core</Text> : null}
   </View>

@@ -98,14 +98,23 @@ const planDisplayTitle = (plan: NormalizedPlanExport) => {
   const titleWithoutPrefix = title.replace(/^plan\s+de\s+clase\s*[:\-–]?\s*/i, "").trim();
 
   if (titleWithoutPrefix && titleWithoutPrefix.length < title.length) {
-    return displayText(titleWithoutPrefix, "Plan de clase");
+    return `Plan de clase: ${displayText(titleWithoutPrefix, "Plan de clase")}`;
   }
 
   if (displayKey(title) === "plan de clase" && plan.topic) {
-    return displayText(plan.topic);
+    return `Plan de clase: ${displayText(plan.topic)}`;
+  }
+
+  if (plan.topic) {
+    return `Plan de clase: ${displayText(plan.topic)}`;
   }
 
   return displayText(title, "Plan de clase");
+};
+
+const groupLabel = (groupName: string | null | undefined) => {
+  const group = displayText(groupName);
+  return displayKey(group).startsWith("grupo") ? group : `Grupo ${group}`;
 };
 
 const dateLabel = (value: string) => {
@@ -267,13 +276,13 @@ const footer = new Footer({
   ]
 });
 
-export const buildPlanWordBuffer = async ({ teacherName, generatedAt, plan }: BuildPlanWordDocumentInput) => {
-  const documentTitle = plan.isReinforcement ? "Plan de clase · Refuerzo" : "Plan de clase";
+export const buildPlanWordBuffer = async ({ generatedAt, plan }: BuildPlanWordDocumentInput) => {
   const readablePlanTitle = planDisplayTitle(plan);
+  const planSubtitle = `${displayText(plan.subject)} · ${displayText(plan.educationLevel)} · ${groupLabel(plan.groupName)}`;
 
   const document = new Document({
     creator: "PlanLab AI Core",
-    title: `${documentTitle} · ${readablePlanTitle}`,
+    title: readablePlanTitle,
     subject: `${displayText(plan.subject)} · ${displayText(plan.topic)}`,
     description: "Documento académico editable generado desde PlanLab.",
     sections: [
@@ -291,25 +300,13 @@ export const buildPlanWordBuffer = async ({ teacherName, generatedAt, plan }: Bu
         },
         children: [
           new Paragraph({
-            heading: HeadingLevel.TITLE,
-            spacing: { after: 60 },
-            children: [new TextRun({ text: "PlanLab", color: colors.primary, bold: true, size: 34 })]
-          }),
-          new Paragraph({
             heading: HeadingLevel.HEADING_1,
             spacing: { after: 80 },
-            children: [new TextRun({ text: documentTitle, color: colors.text, bold: true, size: 30 })]
-          }),
-          new Paragraph({
-            spacing: { after: 140 },
-            children: [new TextRun({ text: readablePlanTitle, color: colors.text, bold: true, size: 25 })]
+            children: [new TextRun({ text: readablePlanTitle, color: colors.text, bold: true, size: 30 })]
           }),
           new Paragraph({
             spacing: { after: 220 },
-            children: [
-              new TextRun({ text: `Docente: ${displayText(teacherName)}`, bold: true, color: colors.text, size: 20 }),
-              new TextRun({ text: `  ·  Fecha de generación: ${dateLabel(generatedAt)}`, color: colors.textSecondary, size: 20 })
-            ]
+            children: [new TextRun({ text: planSubtitle, color: colors.textSecondary, size: 21 })]
           }),
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE },
