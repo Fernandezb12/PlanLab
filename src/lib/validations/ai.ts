@@ -16,7 +16,7 @@ export const timeDistributionSchema = z.object({
 });
 
 export const lessonMomentSchema = z.object({
-  momento: z.string().trim().min(2).max(40),
+  momento: z.enum(["Inicio", "Desarrollo", "Cierre", "Evaluación"]),
   tiempo_min: z.coerce.number().int().min(1).max(240),
   nombre_actividad: z.string().trim().min(3).max(180),
   descripcion: boundedText("la descripción", 10, 2400),
@@ -36,7 +36,7 @@ export const lessonPlanAISchema = z.object({
   desarrollo: boundedText("el desarrollo", 10, 3000),
   cierre: boundedText("el cierre", 10, 2000),
   distribucion_tiempo: timeDistributionSchema,
-  momentos: z.array(lessonMomentSchema).min(1).optional(),
+  momentos: z.array(lessonMomentSchema).min(3).max(4).optional(),
   criterio_evaluacion: z.string().trim().max(1200).optional().default(""),
   recursos_sugeridos: z.array(z.string().trim().min(1).max(160)).max(12).optional().default([]),
   observaciones_docente: z.string().trim().max(1200).optional().default(""),

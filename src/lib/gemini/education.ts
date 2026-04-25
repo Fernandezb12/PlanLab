@@ -28,7 +28,7 @@ const lessonPlanJsonSchema = {
         type: "object",
         required: ["momento", "tiempo_min", "nombre_actividad", "descripcion", "tecnica"],
         properties: {
-          momento: { type: "string" },
+          momento: { type: "string", enum: ["Inicio", "Desarrollo", "Cierre", "Evaluación"] },
           tiempo_min: { type: "integer" },
           nombre_actividad: { type: "string" },
           descripcion: { type: "string" },
@@ -80,7 +80,7 @@ const reinforcementJsonSchema = {
 } as const;
 
 type GeminiPlanMoment = {
-  momento: string;
+  momento: "Inicio" | "Desarrollo" | "Cierre" | "Evaluación";
   tiempo_min: number;
   nombre_actividad: string;
   descripcion: string;
@@ -96,20 +96,24 @@ type GeminiLessonPlanResponse = {
 };
 
 const adjustMomentsDistribution = (moments: GeminiPlanMoment[], targetMinutes: number) => {
-  const normalizedMoments = moments.length
-    ? moments
-    : [
-        {
-          momento: "Desarrollo",
-          tiempo_min: targetMinutes,
-          nombre_actividad: "Actividad central",
-          descripcion: "Desarrollo guiado del propósito de aprendizaje.",
-          tecnica: "Trabajo guiado"
-        }
-      ];
+  const requiredMoments: Array<GeminiPlanMoment["momento"]> = ["Inicio", "Desarrollo", "Cierre"];
+  const normalizedMoments = [...moments];
+
+  requiredMoments.forEach((requiredMoment) => {
+    if (!normalizedMoments.some((moment) => moment.momento === requiredMoment)) {
+      normalizedMoments.push({
+        momento: requiredMoment,
+        tiempo_min: requiredMoment === "Desarrollo" ? targetMinutes : 1,
+        nombre_actividad: requiredMoment === "Desarrollo" ? "Actividad central" : `${requiredMoment} de la clase`,
+        descripcion: requiredMoment === "Desarrollo" ? "Desarrollo guiado del propósito de aprendizaje." : "Momento pedagógico complementario.",
+        tecnica: requiredMoment === "Desarrollo" ? "Trabajo guiado" : "Conversación pedagógica"
+      });
+    }
+  });
+
   const total = normalizedMoments.reduce((sum, moment) => sum + moment.tiempo_min, 0);
   const difference = targetMinutes - total;
-  const developmentIndex = normalizedMoments.findIndex((moment) => moment.momento.toLowerCase().includes("desarrollo"));
+  const developmentIndex = normalizedMoments.findIndex((moment) => moment.momento === "Desarrollo");
   const targetIndex = developmentIndex >= 0 ? developmentIndex : Math.min(1, normalizedMoments.length - 1);
 
   return normalizedMoments.map((moment, index) => ({
@@ -284,12 +288,40 @@ const requestStructuredGemini = async <T>({
 export const generateLessonPlanWithGemini = async (input: GeneratePlanAIInput): Promise<LessonPlanAI> => {
   const parsedInput = generatePlanAIInputSchema.parse(input);
   const prompt = `
-Eres un asistente pedagógico de PlanLab.
-Genera un plan de clase formal, claro y aplicable para un docente.
+Eres un asistente pedagógico especializado en educación colombiana. Genera un plan de clase estructurado para docentes de básica y media.
 
-Debes responder exclusivamente con JSON válido y sin texto adicional.
-Usa español neutro y tono profesional.
-La distribución del tiempo debe sumar exactamente ${parsedInput.durationMinutes} minutos.
+Responde ÚNICAMENTE con un objeto JSON válido, sin texto adicional, sin backticks, sin markdown.
+
+La estructura debe ser exactamente:
+{
+  "objetivo": "string con el objetivo de aprendizaje completo",
+  "momentos": [
+    {
+      "momento": "Inicio",
+      "tiempo_min": número entero,
+      "nombre_actividad": "nombre concreto de la actividad",
+      "descripcion": "descripción detallada de la actividad",
+      "tecnica": "nombre de la técnica didáctica utilizada"
+    },
+    {
+      "momento": "Desarrollo",
+      "tiempo_min": número entero,
+      "nombre_actividad": "...",
+      "descripcion": "...",
+      "tecnica": "..."
+    },
+    {
+      "momento": "Cierre",
+      "tiempo_min": número entero,
+      "nombre_actividad": "...",
+      "descripcion": "...",
+      "tecnica": "..."
+    }
+  ],
+  "criterio_evaluacion": "descripción del criterio de evaluación",
+  "recursos_sugeridos": ["recurso1", "recurso2", "recurso3"],
+  "observaciones_docentes": "recomendaciones pedagógicas para el docente"
+}
 
 Contexto del docente:
 - Grupo: ${parsedInput.groupName}
@@ -304,13 +336,13 @@ Contexto del docente:
 - Contexto adicional: ${parsedInput.context || "Sin contexto adicional"}
 
 Instrucciones:
-- Devuelve un plan coherente con el grupo y el tiempo disponible.
-- Responde solo con los campos: "objetivo", "momentos", "criterio_evaluacion", "recursos_sugeridos", "observaciones_docentes".
-- "momentos" debe incluir Inicio, Desarrollo y Cierre.
-- Cada momento debe tener "momento", "tiempo_min", "nombre_actividad", "descripcion" y "tecnica".
-- Cada actividad debe tener un nombre concreto y una técnica didáctica clara.
-- Los tiempos deben sumar exactamente ${parsedInput.durationMinutes} minutos.
-- Usa lenguaje profesional, claro y adecuado para docentes colombianos.
+- Los tiempo_min de los tres momentos deben sumar exactamente ${parsedInput.durationMinutes} minutos.
+- Si no suman, ajusta el tiempo del Desarrollo.
+- Cada actividad debe tener un nombre descriptivo y concreto.
+- Cada técnica debe ser una técnica didáctica reconocida.
+- El lenguaje debe ser profesional, claro y adecuado para docentes colombianos.
+- NO uses markdown en ninguna parte de la respuesta.
+- NO agregues texto fuera del JSON.
 `.trim();
 
   const rawPlan = await requestStructuredGemini<GeminiLessonPlanResponse>({
@@ -325,12 +357,40 @@ Instrucciones:
 export const improveLessonPlanWithGemini = async (input: GeneratePlanAIInput): Promise<LessonPlanAI> => {
   const parsedInput = generatePlanAIInputSchema.parse(input);
   const prompt = `
-Eres un asistente pedagógico de PlanLab.
-Vas a mejorar un plan de clase existente manteniendo su intención pedagógica, pero optimizando redacción, secuencia y distribución del tiempo.
+Eres un asistente pedagógico especializado en educación colombiana. Mejora un plan de clase existente para docentes de básica y media.
 
-Debes responder exclusivamente con JSON válido y sin texto adicional.
-Usa español neutro y tono profesional.
-La distribución del tiempo debe sumar exactamente ${parsedInput.durationMinutes} minutos.
+Responde ÚNICAMENTE con un objeto JSON válido, sin texto adicional, sin backticks, sin markdown.
+
+La estructura debe ser exactamente:
+{
+  "objetivo": "string con el objetivo de aprendizaje completo",
+  "momentos": [
+    {
+      "momento": "Inicio",
+      "tiempo_min": número entero,
+      "nombre_actividad": "nombre concreto de la actividad",
+      "descripcion": "descripción detallada de la actividad",
+      "tecnica": "nombre de la técnica didáctica utilizada"
+    },
+    {
+      "momento": "Desarrollo",
+      "tiempo_min": número entero,
+      "nombre_actividad": "...",
+      "descripcion": "...",
+      "tecnica": "..."
+    },
+    {
+      "momento": "Cierre",
+      "tiempo_min": número entero,
+      "nombre_actividad": "...",
+      "descripcion": "...",
+      "tecnica": "..."
+    }
+  ],
+  "criterio_evaluacion": "descripción del criterio de evaluación",
+  "recursos_sugeridos": ["recurso1", "recurso2", "recurso3"],
+  "observaciones_docentes": "recomendaciones pedagógicas para el docente"
+}
 
 Contexto del plan:
 - Grupo: ${parsedInput.groupName}
@@ -352,12 +412,13 @@ Instrucciones:
 - Mejora la claridad pedagógica y la secuencia didáctica.
 - Ajusta las actividades al tiempo disponible.
 - Mantén una estructura utilizable por el docente.
-- Responde solo con los campos: "objetivo", "momentos", "criterio_evaluacion", "recursos_sugeridos", "observaciones_docentes".
-- "momentos" debe incluir Inicio, Desarrollo y Cierre.
-- Cada momento debe tener "momento", "tiempo_min", "nombre_actividad", "descripcion" y "tecnica".
-- Cada actividad debe tener un nombre concreto y una técnica didáctica clara.
-- Los tiempos deben sumar exactamente ${parsedInput.durationMinutes} minutos.
-- No agregues markdown ni explicaciones fuera del JSON.
+- Los tiempo_min de los tres momentos deben sumar exactamente ${parsedInput.durationMinutes} minutos.
+- Si no suman, ajusta el tiempo del Desarrollo.
+- Cada actividad debe tener un nombre descriptivo y concreto.
+- Cada técnica debe ser una técnica didáctica reconocida.
+- El lenguaje debe ser profesional, claro y adecuado para docentes colombianos.
+- NO uses markdown en ninguna parte de la respuesta.
+- NO agregues texto fuera del JSON.
 `.trim();
 
   const rawPlan = await requestStructuredGemini<GeminiLessonPlanResponse>({

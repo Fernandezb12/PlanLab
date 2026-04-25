@@ -52,7 +52,18 @@ export type NormalizedPlanExport = {
 
 const cleanText = (value: unknown) => (typeof value === "string" && value.trim() ? value.trim() : null);
 
-const cleanNumber = (value: unknown) => (typeof value === "number" && Number.isFinite(value) ? value : null);
+const cleanNumber = (value: unknown) => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === "string" && value.trim()) {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  return null;
+};
 
 const splitResourceTags = (value: string | null) =>
   value
@@ -118,6 +129,40 @@ const normalizeLegacyDistribution = (value: unknown) => {
   return { inicio, desarrollo, cierre };
 };
 
+const buildSuggestedDistribution = (durationMinutes: number | null) => {
+  if (!durationMinutes || durationMinutes <= 0) {
+    return null;
+  }
+
+  const inicio = Math.max(1, Math.round(durationMinutes * 0.2));
+  const cierre = Math.max(1, Math.round(durationMinutes * 0.2));
+  const desarrollo = Math.max(1, durationMinutes - inicio - cierre);
+
+  return { inicio, desarrollo, cierre };
+};
+
+const getMinutesForMoment = (moment: string, distribution: NormalizedPlanExport["distribution"]) => {
+  if (!distribution) {
+    return null;
+  }
+
+  const normalizedMoment = moment.toLowerCase();
+
+  if (normalizedMoment.includes("inicio")) {
+    return distribution.inicio;
+  }
+
+  if (normalizedMoment.includes("desarrollo")) {
+    return distribution.desarrollo;
+  }
+
+  if (normalizedMoment.includes("cierre")) {
+    return distribution.cierre;
+  }
+
+  return null;
+};
+
 const normalizeMomentsFromLegacy = ({
   inicio,
   desarrollo,
@@ -132,29 +177,67 @@ const normalizeMomentsFromLegacy = ({
   distribution: NormalizedPlanExport["distribution"];
   topic: string;
   objective: string;
-}): PlanMomentExport[] => [
-  {
-    moment: "Inicio",
-    minutes: distribution?.inicio ?? null,
-    activityName: `Activación: ${topic}`,
-    description: inicio,
-    technique: "Exploración de saberes previos"
-  },
-  {
-    moment: "Desarrollo",
-    minutes: distribution?.desarrollo ?? null,
-    activityName: `Construcción del aprendizaje`,
-    description: desarrollo,
-    technique: "Trabajo guiado y práctica"
-  },
-  {
-    moment: "Cierre",
-    minutes: distribution?.cierre ?? null,
-    activityName: "Síntesis y verificación",
-    description: cierre || objective,
-    technique: "Socialización y retroalimentación"
+}): PlanMomentExport[] => {
+  const rows: PlanMomentExport[] = [];
+
+  if (inicio.trim()) {
+    rows.push({
+      moment: "Inicio",
+      minutes: distribution?.inicio ?? null,
+      activityName: "Activación de saberes",
+      description: inicio,
+      technique: "N/D"
+    });
   }
-].filter((moment) => moment.description.trim());
+
+  if (desarrollo.trim()) {
+    rows.push({
+      moment: "Desarrollo",
+      minutes: distribution?.desarrollo ?? null,
+      activityName: "Construcción del aprendizaje",
+      description: desarrollo,
+      technique: "N/D"
+    });
+  }
+
+  if (cierre.trim()) {
+    rows.push({
+      moment: "Cierre",
+      minutes: distribution?.cierre ?? null,
+      activityName: "Síntesis y verificación",
+      description: cierre,
+      technique: "N/D"
+    });
+  }
+
+  if (rows.length > 0) {
+    return rows;
+  }
+
+  return [
+    {
+      moment: "Inicio",
+      minutes: null,
+      activityName: "Inicio de la clase",
+      description: "No registrado",
+      technique: "N/D"
+    },
+    {
+      moment: "Desarrollo",
+      minutes: null,
+      activityName: topic ? `Desarrollo: ${topic}` : "Desarrollo de la clase",
+      description: objective || "No registrado",
+      technique: "N/D"
+    },
+    {
+      moment: "Cierre",
+      minutes: null,
+      activityName: "Cierre de la clase",
+      description: "No registrado",
+      technique: "N/D"
+    }
+  ];
+};
 
 export const normalizePlanForExport = (plan: RawPlanRecord): NormalizedPlanExport => {
   const group = Array.isArray(plan.groups) ? plan.groups[0] : plan.groups;
@@ -165,17 +248,24 @@ export const normalizePlanForExport = (plan: RawPlanRecord): NormalizedPlanExpor
   const subject = cleanText(planJson?.subject) ?? plan.subject;
   const topic = cleanText(planJson?.topic) ?? plan.topic;
   const durationMinutes = cleanNumber(planJson?.duration_minutes) ?? plan.duration_minutes;
-  const objective = cleanText(planJson?.objetivo) ?? cleanText(planJson?.objective_refuerzo) ?? cleanText(planJson?.objective) ?? plan.objective;
+  const objective =
+    cleanText(planJson?.objetivo) ??
+    cleanText(planJson?.objective_refuerzo) ??
+    cleanText(refuerzo?.objective_refuerzo) ??
+    cleanText(planJson?.objective) ??
+    plan.objective;
   const resources = cleanText(planJson?.resources) ?? cleanText(planJson?.recursos) ?? plan.resources;
   const inicio = cleanText(planJson?.inicio) ?? "";
   const desarrollo = cleanText(planJson?.desarrollo) ?? "";
   const cierre = cleanText(planJson?.cierre) ?? "";
-  const distribution = normalizeLegacyDistribution(planJson?.distribucion_tiempo);
+  const distribution = normalizeLegacyDistribution(planJson?.distribucion_tiempo) ?? buildSuggestedDistribution(durationMinutes);
   const momentsFromJson = normalizeMomentsFromArray(planJson?.momentos);
   const isReinforcement = Boolean(
-    refuerzo ||
+    Boolean(refuerzo) ||
       cleanText(planJson?.objective_refuerzo) ||
+      cleanText(refuerzo?.objective_refuerzo) ||
       cleanText(planJson?.breve_diagnostico) ||
+      cleanText(planJson?.diagnostico_breve) ||
       title.toLowerCase().includes("refuerzo") ||
       topic.toLowerCase().includes("refuerzo")
   );
@@ -188,9 +278,9 @@ export const normalizePlanForExport = (plan: RawPlanRecord): NormalizedPlanExpor
     objective,
     evaluationType: getEvaluationTypeLabel(normalizedEvaluationType),
     resources,
-    inicio: inicio || objective,
-    desarrollo: desarrollo || `Desarrollar actividades guiadas sobre ${topic}.`,
-    cierre: cierre || "Cerrar con socialización, verificación de aprendizajes y acuerdos de seguimiento.",
+    inicio: inicio || "No registrado",
+    desarrollo: desarrollo || "No registrado",
+    cierre: cierre || "No registrado",
     distribution,
     observations: cleanText(planJson?.observaciones_docente) ?? cleanText(planJson?.observaciones_docentes),
     suggestions: cleanText(planJson?.sugerencias_metodologicas),
@@ -199,19 +289,26 @@ export const normalizePlanForExport = (plan: RawPlanRecord): NormalizedPlanExpor
     educationLevel: group?.level ?? null,
     moments:
       momentsFromJson.length > 0
-        ? momentsFromJson
+        ? momentsFromJson.map((moment) => ({
+            ...moment,
+            minutes: moment.minutes ?? getMinutesForMoment(moment.moment, distribution)
+          }))
         : normalizeMomentsFromLegacy({
-            inicio: inicio || objective,
-            desarrollo: desarrollo || `Desarrollar actividades guiadas sobre ${topic}.`,
-            cierre: cierre || "Cerrar con socialización, verificación de aprendizajes y acuerdos de seguimiento.",
+            inicio,
+            desarrollo,
+            cierre,
             distribution,
             topic,
             objective
           }),
     resourceTags: normalizeResourceTags(planJson, resources),
     evaluationCriteria: cleanText(planJson?.criterio_evaluacion) ?? cleanText(refuerzo?.criterio_evaluacion),
-    diagnosis: cleanText(planJson?.breve_diagnostico) ?? cleanText(refuerzo?.breve_diagnostico),
-    teacherRecommendations: cleanText(planJson?.recomendaciones_docente) ?? cleanText(refuerzo?.recomendaciones_docente),
+    diagnosis: cleanText(planJson?.breve_diagnostico) ?? cleanText(planJson?.diagnostico_breve) ?? cleanText(refuerzo?.breve_diagnostico),
+    teacherRecommendations:
+      cleanText(planJson?.recomendaciones_docente) ??
+      cleanText(refuerzo?.recomendaciones_docente) ??
+      cleanText(planJson?.observaciones_docentes) ??
+      cleanText(planJson?.observaciones_docente),
     isReinforcement,
     modality: planJson?.generated_with_ai || planJson?.ai_mode ? "Asistido por IA" : "Diseño docente"
   };
