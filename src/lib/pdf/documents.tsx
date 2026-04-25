@@ -13,6 +13,7 @@ import {
   planPageStyle,
   type PlanPdfData
 } from "@/lib/pdf/components";
+import type { ReportExportData } from "@/lib/reports/export";
 
 type BaseDocumentProps = {
   documentTitle: string;
@@ -21,20 +22,6 @@ type BaseDocumentProps = {
   generatedAt: string;
   aiAssisted?: boolean;
   children: ReactNode;
-};
-
-type ReportPdfData = {
-  teacherName: string;
-  generatedAt: string;
-  reportType: string;
-  groupName: string;
-  educationLevel: string | null;
-  activityTitle: string | null;
-  averageScore: number | null;
-  attendanceAverage: number | null;
-  alerts: string[];
-  observations: string[];
-  executiveSummary: string;
 };
 
 type ResultsPdfData = {
@@ -130,6 +117,23 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     marginBottom: 8
   },
+  reportTitle: {
+    fontSize: 20,
+    fontWeight: 700,
+    color: colors.ink
+  },
+  reportSubtitle: {
+    marginTop: 4,
+    color: colors.accent,
+    fontSize: 11,
+    fontWeight: 700
+  },
+  reportMetaLine: {
+    marginTop: 7,
+    color: colors.soft,
+    fontSize: 9.2,
+    lineHeight: 1.45
+  },
   accentPanel: {
     borderWidth: 1,
     borderColor: "#DDD6FE",
@@ -209,6 +213,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     fontSize: 9.3
   },
+  tableCellSmall: {
+    paddingHorizontal: 7,
+    paddingVertical: 7,
+    fontSize: 8.4,
+    lineHeight: 1.35
+  },
   subtleTableCell: {
     paddingHorizontal: 10,
     paddingVertical: 9,
@@ -238,6 +248,10 @@ const styles = StyleSheet.create({
 const formatDate = (value: string) => new Date(value).toLocaleDateString("es-CO", { dateStyle: "long" });
 const formatScore = (value: number | null, fallback = "Sin datos") => (value === null ? fallback : value.toFixed(1));
 const formatPercent = (value: number | null, fallback = "Sin datos") => (value === null ? fallback : `${Math.round(value)}%`);
+const formatReportDate = (value: string) => {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "N/D" : date.toLocaleDateString("es-CO", { dateStyle: "long" });
+};
 const hyphenationCallback = (word: string | null) => [word ?? ""];
 Font.registerHyphenationCallback(hyphenationCallback);
 
@@ -295,71 +309,130 @@ export const PlanPdfDocument = ({ data }: { data: PlanPdfData }) => (
   </Document>
 );
 
-export const ReportPdfDocument = ({ data }: { data: ReportPdfData }) => (
-  <BaseDocument
-    documentTitle="Reporte pedagógico"
-    subject={`Reporte ${data.reportType}`}
-    teacherName={data.teacherName}
-    generatedAt={data.generatedAt}
-  >
-    <View style={[styles.accentPanel, { marginBottom: 14 }]} wrap={false}>
-      <Text style={[styles.sectionTitle, { color: colors.accent, marginBottom: 4 }]}>Resumen ejecutivo</Text>
-      <Text style={styles.paragraph}>{data.executiveSummary}</Text>
-    </View>
+export const ReportPdfDocument = ({ data }: { data: ReportExportData }) => (
+  <Document title="Reporte pedagógico" author="PlanLab" subject={`Reporte ${data.reportType}`} creator="PlanLab AI Core">
+    <Page size="A4" style={styles.page}>
+      <View style={styles.section} wrap={false}>
+        <Text style={styles.reportTitle}>Reporte pedagógico</Text>
+        <Text style={styles.reportSubtitle}>{data.reportSubtitle}</Text>
+        <Text style={styles.reportMetaLine}>
+          Docente: {data.teacherName} · Fecha: {formatReportDate(data.generatedAt)} · Grupo: {data.groupName}
+          {data.educationLevel ? ` · ${data.educationLevel}` : ""} · Actividad: {data.activityTitle || "Reporte general del grupo"}
+        </Text>
+      </View>
 
-    <View style={[styles.sectionCard, { marginBottom: 14 }]} wrap={false}>
-      <View style={styles.infoGrid}>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Tipo de reporte</Text>
-          <Text style={styles.infoValue}>{data.reportType}</Text>
-        </View>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Grupo</Text>
-          <Text style={styles.infoValue}>
-            {data.groupName}
-            {data.educationLevel ? ` · ${data.educationLevel}` : ""}
-          </Text>
-        </View>
-        <View style={styles.infoItem}>
-          <Text style={styles.infoLabel}>Actividad asociada</Text>
-          <Text style={styles.infoValue}>{data.activityTitle || "Reporte general del grupo"}</Text>
+      <View style={[styles.sectionCard, { marginBottom: 14 }]} wrap={false}>
+        <Text style={styles.sectionTitle}>Ficha del reporte</Text>
+        <View style={styles.infoGrid}>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoLabel}>Tipo de reporte</Text>
+            <Text style={styles.infoValue}>{data.reportType}</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoLabel}>Grupo</Text>
+            <Text style={styles.infoValue}>{data.groupName}</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoLabel}>Nivel educativo</Text>
+            <Text style={styles.infoValue}>{data.educationLevel || "N/D"}</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoLabel}>Actividad asociada</Text>
+            <Text style={styles.infoValue}>{data.activityTitle || "Reporte general del grupo"}</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoLabel}>Fecha</Text>
+            <Text style={styles.infoValue}>{formatReportDate(data.generatedAt)}</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Text style={styles.infoLabel}>Estudiantes analizados</Text>
+            <Text style={styles.infoValue}>{data.totalStudents}</Text>
+          </View>
         </View>
       </View>
-    </View>
 
-    <View style={styles.sectionCard} wrap={false}>
-      <Text style={styles.sectionTitle}>Indicadores principales</Text>
-      <View style={[styles.grid, { justifyContent: "space-between" }]}>
-        <View style={[styles.statCard, { width: "32%" }]}>
-          <Text style={styles.statLabel}>Promedio general</Text>
-          <Text style={styles.statValue}>{formatScore(data.averageScore)}</Text>
-        </View>
-        <View style={[styles.statCard, { width: "32%" }]}>
-          <Text style={styles.statLabel}>Asistencia promedio</Text>
-          <Text style={styles.statValue}>{formatPercent(data.attendanceAverage)}</Text>
-        </View>
-        <View style={[styles.statCard, { width: "32%" }]}>
-          <Text style={styles.statLabel}>Alertas</Text>
-          <Text style={styles.statValue}>{data.alerts.length}</Text>
+      <View style={[styles.accentPanel, { marginBottom: 14 }]} wrap={false}>
+        <Text style={[styles.sectionTitle, { color: colors.accent, marginBottom: 4 }]}>Resumen ejecutivo</Text>
+        <Text style={styles.paragraph}>{data.executiveSummary}</Text>
+      </View>
+
+      <View style={[styles.sectionCard, { marginBottom: 14 }]} wrap={false}>
+        <Text style={styles.sectionTitle}>Indicadores principales</Text>
+        <View style={[styles.grid, { justifyContent: "space-between" }]}>
+          <View style={[styles.statCard, { width: "24%" }]}>
+            <Text style={styles.statLabel}>Promedio general</Text>
+            <Text style={styles.statValue}>{formatScore(data.averageScore)}</Text>
+          </View>
+          <View style={[styles.statCard, { width: "24%" }]}>
+            <Text style={styles.statLabel}>Asistencia</Text>
+            <Text style={styles.statValue}>{formatPercent(data.attendanceAverage)}</Text>
+          </View>
+          <View style={[styles.statCard, { width: "24%" }]}>
+            <Text style={styles.statLabel}>Con alerta</Text>
+            <Text style={styles.statValue}>{data.students.filter((student) => student.statusLabel !== "Estable").length}</Text>
+          </View>
+          <View style={[styles.statCard, { width: "24%" }]}>
+            <Text style={styles.statLabel}>Registros</Text>
+            <Text style={styles.statValue}>{data.recordsAnalyzed}</Text>
+          </View>
         </View>
       </View>
-    </View>
 
-    <View style={[styles.grid, { justifyContent: "space-between", marginTop: 14 }]}>
-      <View style={[styles.sectionCard, { width: "48.5%" }]} wrap={false}>
-        <Text style={styles.sectionTitle}>Alertas detectadas</Text>
-        {data.alerts.length ? (
-          data.alerts.map((alert, index) => (
-            <Text key={index} style={styles.listItem}>
-              • {alert}
-            </Text>
-          ))
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Detalle por estudiante</Text>
+        {data.students.length && data.recordsAnalyzed ? (
+          <View style={styles.table}>
+            <View style={styles.tableHeader} wrap={false}>
+              <Text style={[styles.tableCellSmall, { width: "24%", fontWeight: 700 }]}>Estudiante</Text>
+              <Text style={[styles.tableCellSmall, { width: "13%", fontWeight: 700 }]}>Código</Text>
+              <Text style={[styles.tableCellSmall, { width: "13%", fontWeight: 700 }]}>Asistencia</Text>
+              <Text style={[styles.tableCellSmall, { width: "12%", fontWeight: 700 }]}>Promedio</Text>
+              <Text style={[styles.tableCellSmall, { width: "24%", fontWeight: 700 }]}>Observación</Text>
+              <Text style={[styles.tableCellSmall, { width: "14%", fontWeight: 700 }]}>Estado</Text>
+            </View>
+            {data.students.map((student, index) => (
+              <View key={student.id} style={[styles.tableRow, { backgroundColor: index % 2 === 0 ? colors.white : "#F9FAFB" }]} wrap={false}>
+                <Text style={[styles.tableCellSmall, { width: "24%" }]}>{student.studentName}</Text>
+                <Text style={[styles.tableCellSmall, { width: "13%" }]}>{student.studentCode || "N/D"}</Text>
+                <Text style={[styles.tableCellSmall, { width: "13%" }]}>{formatPercent(student.attendanceAverage, "N/D")}</Text>
+                <Text style={[styles.tableCellSmall, { width: "12%" }]}>{formatScore(student.averageScore, "N/D")}</Text>
+                <Text style={[styles.tableCellSmall, { width: "24%" }]}>{student.observation || "Sin observación"}</Text>
+                <Text style={[styles.tableCellSmall, { width: "14%" }]}>{student.statusLabel}</Text>
+              </View>
+            ))}
+          </View>
         ) : (
-          <Text style={styles.paragraph}>No se detectaron alertas activas en este corte.</Text>
+          <View style={styles.sectionCard} wrap={false}>
+            <Text style={styles.paragraph}>No hay registros individuales suficientes para consolidar una tabla de estudiantes.</Text>
+          </View>
         )}
       </View>
 
-      <View style={[styles.sectionCard, { width: "48.5%" }]} wrap={false}>
+      <View style={[styles.grid, { justifyContent: "space-between", marginTop: 4 }]}>
+        <View style={[styles.sectionCard, { width: "48.5%" }]} wrap={false}>
+          <Text style={styles.sectionTitle}>Alertas detectadas</Text>
+          {data.alerts.length ? (
+            data.alerts.map((alert, index) => (
+              <Text key={index} style={styles.listItem}>
+                • {alert}
+              </Text>
+            ))
+          ) : (
+            <Text style={styles.paragraph}>No se detectaron alertas activas en este corte.</Text>
+          )}
+        </View>
+
+        <View style={[styles.sectionCard, { width: "48.5%" }]} wrap={false}>
+          <Text style={styles.sectionTitle}>Recomendaciones docentes</Text>
+          {data.recommendations.map((recommendation, index) => (
+            <Text key={index} style={styles.listItem}>
+              • {recommendation}
+            </Text>
+          ))}
+        </View>
+      </View>
+
+      <View style={[styles.sectionCard, { marginTop: 14 }]} wrap={false}>
         <Text style={styles.sectionTitle}>Observaciones generales</Text>
         {data.observations.length ? (
           data.observations.map((observation, index) => (
@@ -371,8 +444,13 @@ export const ReportPdfDocument = ({ data }: { data: ReportPdfData }) => (
           <Text style={styles.paragraph}>No se registraron observaciones adicionales para este reporte.</Text>
         )}
       </View>
-    </View>
-  </BaseDocument>
+
+      <View style={styles.footer} fixed>
+        <Text style={styles.footerText}>Generado desde PlanLab</Text>
+        <Text style={styles.footerText} render={({ pageNumber, totalPages }) => `Página ${pageNumber} de ${totalPages}`} />
+      </View>
+    </Page>
+  </Document>
 );
 
 export const ResultsPdfDocument = ({ data }: { data: ResultsPdfData }) => (

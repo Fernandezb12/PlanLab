@@ -160,9 +160,9 @@ export const ReportsPanel = ({ groups, activities, reports }: ReportsPanelProps)
                     </button>
                     <DocumentExportMenu
                       pdfEndpoint={`/api/export/reports/${report.id}`}
+                      wordEndpoint={`/api/export/reports/${report.id}/word`}
                       tone="primary"
                       preferredSide="top"
-                      showViewPdf={false}
                     />
                     <button
                       type="button"

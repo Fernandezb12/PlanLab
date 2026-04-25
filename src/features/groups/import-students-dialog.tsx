@@ -61,7 +61,8 @@ const acceptedHeaderAliases: Record<string, ImportField> = {
   note: "notes"
 };
 
-const templateRows = [
+const templateHeaders = ["Nombre completo", "Código", "Estado", "Observación"];
+const exampleRows = [
   ["Nombre completo", "Código", "Estado", "Observación"],
   ["Ana Martínez", "STU004", "activo", "Buen progreso"],
   ["Carlos Rodríguez", "STU003", "inactivo", "Retiro temporal"]
@@ -110,9 +111,10 @@ const normalizeStatus = (value: string): StudentStatus | null => {
 const buildMessage = (count: number, singular: string, plural: string) => (count === 1 ? singular : plural.replace("{count}", String(count)));
 
 const downloadTemplate = () => {
-  const worksheet = XLSX.utils.aoa_to_sheet(templateRows);
+  const worksheet = XLSX.utils.aoa_to_sheet([templateHeaders]);
   const workbook = XLSX.utils.book_new();
   worksheet["!cols"] = [{ wch: 26 }, { wch: 16 }, { wch: 14 }, { wch: 28 }];
+  worksheet["!freeze"] = { xSplit: 0, ySplit: 1 };
   XLSX.utils.book_append_sheet(workbook, worksheet, "Estudiantes");
   XLSX.writeFile(workbook, "plantilla-estudiantes-planlab.xlsx");
 };
@@ -493,7 +495,7 @@ export const ImportStudentsDialog = ({ isOpen, groups, existingStudents, onClose
                   <table className="w-full min-w-[680px] text-sm">
                     <thead className="bg-slate-100 text-slate-700 dark:bg-slate-900 dark:text-slate-200">
                       <tr>
-                        {templateRows[0].map((header) => (
+                        {exampleRows[0].map((header) => (
                           <th key={header} className="px-4 py-3 text-left font-semibold">
                             {header}
                           </th>
@@ -501,7 +503,7 @@ export const ImportStudentsDialog = ({ isOpen, groups, existingStudents, onClose
                       </tr>
                     </thead>
                     <tbody>
-                      {templateRows.slice(1).map((row) => (
+                      {exampleRows.slice(1).map((row) => (
                         <tr key={row[1]} className="border-t border-slate-100 text-slate-700 dark:border-white/5 dark:text-slate-200">
                           {row.map((cell) => (
                             <td key={cell} className="px-4 py-3">

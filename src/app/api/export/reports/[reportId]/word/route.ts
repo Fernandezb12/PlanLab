@@ -1,14 +1,10 @@
 import { NextResponse } from "next/server";
-import { createElement } from "react";
 
-import { createNotification } from "@/lib/notifications/server";
-import { ReportPdfDocument } from "@/lib/pdf/documents";
-import { buildReportPdfPath } from "@/lib/pdf/filenames";
-import { renderPdfToBuffer } from "@/lib/pdf/render";
-import { uploadPdfToStorage } from "@/lib/pdf/storage";
+import { buildReportWordFilename } from "@/lib/pdf/filenames";
 import { buildReportExportData } from "@/lib/reports/export";
 import { createClient } from "@/lib/supabase/server";
 import { reportTypeLabels } from "@/lib/validations/reports";
+import { buildReportWordBuffer } from "@/lib/word/report-document";
 
 export const runtime = "nodejs";
 
@@ -27,7 +23,7 @@ export async function POST(_: Request, context: { params: Promise<{ reportId: st
     const [{ data: report, error: reportError }, { data: profile, error: profileError }] = await Promise.all([
       supabase
         .from("reports")
-        .select("id,group_id,activity_id,report_type,file_url,groups(name,level),activities(title)")
+        .select("id,group_id,activity_id,report_type,groups(name,level),activities(title)")
         .eq("id", reportId)
         .eq("user_id", user.id)
         .maybeSingle(),
@@ -35,12 +31,12 @@ export async function POST(_: Request, context: { params: Promise<{ reportId: st
     ]);
 
     if (reportError) {
-      console.error("Error real consultando reporte para PDF:", reportError);
+      console.error("Error real consultando reporte para Word:", reportError);
       return NextResponse.json({ message: `No fue posible cargar el reporte: ${reportError.message}` }, { status: 500 });
     }
 
     if (profileError) {
-      console.error("Error real consultando perfil para PDF:", profileError);
+      console.error("Error real consultando perfil para Word del reporte:", profileError);
       return NextResponse.json({ message: `No fue posible cargar el perfil docente: ${profileError.message}` }, { status: 500 });
     }
 
@@ -62,15 +58,7 @@ export async function POST(_: Request, context: { params: Promise<{ reportId: st
             .eq("activities.group_id", report.group_id)
     ]);
 
-    const activityRecords = (records ?? []).map((record) => ({
-      attended: record.attended,
-      result_score: record.result_score,
-      observation: record.observation,
-      student_id: record.student_id,
-      activity_id: record.activity_id
-    }));
-
-    const reportExportData = buildReportExportData({
+    const reportData = buildReportExportData({
       teacherName: profile?.full_name ?? "Docente",
       generatedAt: new Date().toISOString(),
       reportType: report.report_type,
@@ -79,44 +67,31 @@ export async function POST(_: Request, context: { params: Promise<{ reportId: st
       educationLevel: group?.level ?? null,
       activityTitle: activity?.title ?? null,
       students: students ?? [],
-      records: activityRecords,
+      records: (records ?? []).map((record) => ({
+        attended: record.attended,
+        result_score: record.result_score,
+        observation: record.observation,
+        student_id: record.student_id,
+        activity_id: record.activity_id
+      })),
       activitiesAnalyzed: report.activity_id ? 1 : activities?.length ?? 0
     });
 
-    const document = createElement(ReportPdfDocument, {
-      data: reportExportData
-    });
+    const buffer = await buildReportWordBuffer({ data: reportData });
+    const filename = buildReportWordFilename(report.report_type, group?.name ?? "grupo", activity?.title ?? null);
 
-    const buffer = await renderPdfToBuffer(document);
-    const path = buildReportPdfPath(report.report_type, group?.name ?? "grupo", activity?.title ?? null);
-    const upload = await uploadPdfToStorage({ supabase, path, buffer });
-
-    const { error: updateError } = await supabase.from("reports").update({ file_url: upload.path }).eq("id", report.id).eq("user_id", user.id);
-
-    if (updateError) {
-      console.error("Error real actualizando file_url del reporte:", updateError);
-      return NextResponse.json({ message: `Se generó el documento, pero no fue posible registrar la ruta: ${updateError.message}` }, { status: 500 });
-    }
-
-    await createNotification(supabase, {
-      userId: user.id,
-      type: "document_exported",
-      title: "Reporte exportado",
-      message: `El reporte ${reportTypeLabels[report.report_type as keyof typeof reportTypeLabels] ?? report.report_type} ya está disponible en PDF.`,
-      href: "/reportes"
-    });
-
-    return NextResponse.json({
-      message: "Reporte exportado correctamente.",
-      signedUrl: upload.signedUrl,
-      filename: path.split("/").filter(Boolean).pop(),
-      path: upload.path
+    return new NextResponse(new Uint8Array(buffer), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "Content-Disposition": `attachment; filename="${filename}"`
+      }
     });
   } catch (error) {
-    console.error("Excepción generando PDF de reporte:", error);
+    console.error("Excepción generando Word de reporte:", error);
     return NextResponse.json(
       {
-        message: error instanceof Error ? error.message : "No fue posible generar el documento en este intento. Intenta nuevamente."
+        message: error instanceof Error ? error.message : "No fue posible exportar el documento editable en este intento."
       },
       { status: 500 }
     );
