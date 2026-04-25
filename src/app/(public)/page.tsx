@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import {
   BarChart3,
   Bot,
@@ -101,7 +102,29 @@ const tech = [
   }
 ];
 
-export default function LandingPage() {
+type LandingPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function LandingPage({ searchParams }: LandingPageProps) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const authError = typeof resolvedSearchParams.error === "string" ? resolvedSearchParams.error : null;
+  const authErrorCode = typeof resolvedSearchParams.error_code === "string" ? resolvedSearchParams.error_code : null;
+
+  if (authError || authErrorCode) {
+    const params = new URLSearchParams();
+
+    if (authError) {
+      params.set("error", authError);
+    }
+
+    if (authErrorCode) {
+      params.set("error_code", authErrorCode);
+    }
+
+    redirect(`/auth/update-password?${params.toString()}`);
+  }
+
   return (
     <main className="scroll-smooth bg-slate-100 text-slate-900 dark:bg-[#06070f] dark:text-slate-100">
       <div className="glow-orb glow-orb-top" />

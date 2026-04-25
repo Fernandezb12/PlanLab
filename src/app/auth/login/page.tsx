@@ -17,6 +17,7 @@ type LoginPageProps = {
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const nextPath = typeof resolvedSearchParams.next === "string" ? resolvedSearchParams.next : null;
+  const statusMessage = resolvedSearchParams.message === "password-updated" ? "Tu contraseña fue actualizada correctamente. Ya puedes iniciar sesión." : null;
 
   return (
     <main className="min-h-screen bg-slate-100 px-6 py-8 dark:bg-slate-950">
@@ -55,6 +56,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-600">Login</p>
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Accede a tu espacio</h2>
             <p className="mb-8 mt-2 text-sm text-slate-500">Tu panel te espera con planes, actividades y reportes listos para trabajar.</p>
+
+            {statusMessage ? (
+              <div className="mb-5 rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3 text-sm text-emerald-900 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-100">
+                {statusMessage}
+              </div>
+            ) : null}
 
             <LoginForm nextPath={nextPath} />
 

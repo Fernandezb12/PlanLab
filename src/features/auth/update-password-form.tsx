@@ -30,13 +30,31 @@ export const UpdatePasswordForm = () => {
     const prepareRecoverySession = async () => {
       const supabase = createClient();
       const code = searchParams.get("code");
+      const authError = searchParams.get("error");
+      const authErrorCode = searchParams.get("error_code");
 
       try {
+        if (authError || authErrorCode) {
+          console.error("Error real recibido desde enlace de recuperación:", { authError, authErrorCode });
+
+          if (mounted) {
+            setRecoveryState("invalid");
+          }
+
+          return;
+        }
+
         if (code) {
           const { error } = await supabase.auth.exchangeCodeForSession(code);
 
           if (error) {
             console.error("Error real intercambiando código de recuperación:", error);
+
+            if (mounted) {
+              setRecoveryState("invalid");
+            }
+
+            return;
           }
         }
 
@@ -82,11 +100,17 @@ export const UpdatePasswordForm = () => {
         return;
       }
 
+      const { error: signOutError } = await supabase.auth.signOut();
+
+      if (signOutError) {
+        console.error("Error real cerrando sesión después de actualizar contraseña:", signOutError);
+      }
+
       setRecoveryState("success");
       form.reset({ password: "", confirmPassword: "" });
 
       window.setTimeout(() => {
-        router.push("/auth/login");
+        router.push("/auth/login?message=password-updated");
         router.refresh();
       }, 1800);
     } catch (error) {

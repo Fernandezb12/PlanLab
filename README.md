@@ -208,6 +208,14 @@ Para que los enlaces de recuperación funcionen en producción y desarrollo loca
 - **Site URL:** `https://plan-lab-flame.vercel.app`
 - **Redirect URL:** `https://plan-lab-flame.vercel.app/auth/update-password`
 - **Redirect URL:** `http://localhost:3000/auth/update-password`
+- **Redirect URL:** `https://plan-lab-flame.vercel.app/auth/callback`
+- **Redirect URL:** `http://localhost:3000/auth/callback`
+
+En la plantilla de correo de recuperación de contraseña, el botón debe apuntar a:
+
+- `{{ .ConfirmationURL }}`
+
+No debe apuntar a `{{ .SiteURL }}`, porque enviaría al inicio de la app y no al flujo seguro de actualización.
 
 ---
 
