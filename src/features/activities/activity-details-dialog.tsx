@@ -29,12 +29,12 @@ export const ActivityDetailsDialog = ({ isOpen, activity, onClose }: ActivityDet
       onClose={onClose}
       title={activity?.title ?? "Detalle de la actividad"}
       description="Consulta los datos básicos de la actividad sin salir del módulo."
-      contentClassName="max-w-3xl max-h-[95dvh] md:max-h-[90vh] p-0"
-      bodyClassName="min-h-0 flex-1 p-0"
+      contentClassName="max-w-3xl p-0"
+      bodyClassName="min-h-0 flex flex-1 flex-col overflow-hidden p-0"
     >
       {activity ? (
         <div className="flex min-h-0 flex-1 flex-col">
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-10 pt-5 scroll-smooth [scrollbar-color:rgba(148,163,184,0.42)_transparent] [scrollbar-width:thin] sm:px-6 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300/70 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700/70">
             <div className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.04]">
@@ -81,7 +81,7 @@ export const ActivityDetailsDialog = ({ isOpen, activity, onClose }: ActivityDet
             </div>
           </div>
 
-          <div className="shrink-0 border-t border-slate-200 bg-white/96 px-6 py-4 backdrop-blur-md dark:border-white/10 dark:bg-slate-950/95">
+          <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-4 sm:px-6 dark:border-white/10 dark:bg-slate-950">
             <div className="flex justify-end">
               <button
                 type="button"

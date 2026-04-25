@@ -205,11 +205,11 @@ export const ReinforcementDialog = ({ isOpen, input, onClose, onCompleted }: Rei
         }}
         title={dialogTitle}
         description="La propuesta se genera desde resultados reales y queda lista para revisión docente."
-        contentClassName="max-w-5xl max-h-[95dvh] md:max-h-[90vh] p-0"
-        bodyClassName="min-h-0 flex-1 p-0"
+        contentClassName="max-w-none p-0 md:w-[min(1080px,calc(100vw-48px))]"
+        bodyClassName="min-h-0 flex flex-1 flex-col overflow-hidden p-0"
       >
         <div className="flex min-h-0 flex-1 flex-col">
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-10 pt-5 scroll-smooth [scrollbar-color:rgba(148,163,184,0.42)_transparent] [scrollbar-width:thin] sm:px-6 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300/70 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700/70">
             {isGenerating ? (
               <div className="space-y-4">
                 <Skeleton className="h-8 w-44" />
@@ -290,7 +290,7 @@ export const ReinforcementDialog = ({ isOpen, input, onClose, onCompleted }: Rei
             )}
           </div>
 
-          <div className="shrink-0 border-t border-slate-200 bg-white/96 px-6 py-4 shadow-[0_-18px_40px_-28px_rgba(15,23,42,0.12)] backdrop-blur-md dark:border-white/10 dark:bg-slate-950/95 dark:shadow-[0_-18px_40px_-28px_rgba(0,0,0,0.75)]">
+          <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-4 shadow-[0_-18px_40px_-28px_rgba(15,23,42,0.12)] sm:px-6 dark:border-white/10 dark:bg-slate-950 dark:shadow-[0_-18px_40px_-28px_rgba(0,0,0,0.75)]">
             <div className="flex flex-wrap items-center justify-end gap-3">
               {saveError ? <p className="mr-auto text-sm text-rose-400">{saveError}</p> : null}
               <button

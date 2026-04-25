@@ -287,11 +287,11 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
         }}
         title={plan ? "Mejorar plan con IA" : "Generar plan con IA"}
         description="Completa la información pedagógica y revisa la propuesta antes de guardarla."
-        contentClassName="w-[calc(100vw-24px)] max-w-[min(1400px,96vw)] max-h-[95dvh] md:max-h-[90vh] p-0"
-        bodyClassName="min-h-0 flex-1 overflow-hidden p-0"
+        contentClassName="max-w-none p-0 md:w-[min(1200px,calc(100vw-48px))]"
+        bodyClassName="min-h-0 flex flex-1 flex-col overflow-hidden p-0"
       >
         <div className="flex min-h-0 flex-1 flex-col">
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-5 lg:p-0">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-10 pt-4 scroll-smooth [scrollbar-color:rgba(148,163,184,0.42)_transparent] [scrollbar-width:thin] sm:px-6 sm:py-5 lg:p-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300/70 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700/70">
             <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(360px,0.88fr)_minmax(0,1.12fr)] lg:gap-0">
               <form id="plan-ai-form" className="min-w-0 space-y-5 lg:border-r lg:border-slate-200 lg:px-6 lg:py-5 dark:lg:border-white/10" onSubmit={runGeneration}>
                 <div className="rounded-[26px] border border-slate-200 bg-slate-50/80 p-5 dark:border-white/10 dark:bg-white/[0.04]">
@@ -600,7 +600,7 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
             </div>
           </div>
 
-          <div className="shrink-0 border-t border-slate-200 bg-white/96 px-4 py-3 shadow-[0_-18px_40px_-28px_rgba(15,23,42,0.12)] backdrop-blur-md sm:px-6 sm:py-4 dark:border-white/10 dark:bg-slate-950/95 dark:shadow-[0_-18px_40px_-28px_rgba(0,0,0,0.75)]">
+          <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-3 shadow-[0_-18px_40px_-28px_rgba(15,23,42,0.12)] sm:px-6 sm:py-4 dark:border-white/10 dark:bg-slate-950 dark:shadow-[0_-18px_40px_-28px_rgba(0,0,0,0.75)]">
             <div className="grid gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-end">
               {saveError ? <p className="text-sm text-rose-400 sm:mr-auto">{saveError}</p> : null}
               <button

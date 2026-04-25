@@ -136,8 +136,8 @@ export const ActivityRecordsDialog = ({ isOpen, activity, students, existingReco
       }}
       title={activity ? `Registro de ${activity.title}` : "Registro de resultados"}
       description="Registra asistencia, nota y observaciones de los estudiantes del grupo en una sola acción."
-      contentClassName="max-w-6xl max-h-[95dvh] md:max-h-[90vh] p-0"
-      bodyClassName="min-h-0 flex-1 p-0"
+      contentClassName="max-w-none p-0 md:w-[min(1200px,calc(100vw-48px))]"
+      bodyClassName="min-h-0 flex flex-1 flex-col overflow-hidden p-0"
     >
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="border-b border-slate-200 px-6 py-5 dark:border-white/10">
@@ -162,7 +162,7 @@ export const ActivityRecordsDialog = ({ isOpen, activity, students, existingReco
           </div>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-auto overscroll-contain px-6 py-5">
+        <div className="min-h-0 flex-1 overflow-auto overscroll-contain px-4 pb-10 pt-5 scroll-smooth [scrollbar-color:rgba(148,163,184,0.42)_transparent] [scrollbar-width:thin] sm:px-6 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300/70 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700/70">
           {!activity?.group_id ? (
             <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
               Esta actividad no tiene un grupo asociado. No es posible abrir este registro por ahora.
@@ -240,7 +240,7 @@ export const ActivityRecordsDialog = ({ isOpen, activity, students, existingReco
           )}
         </div>
 
-        <div className="border-t border-slate-200 bg-white/96 px-6 py-4 backdrop-blur-md dark:border-white/10 dark:bg-slate-950/95">
+        <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-4 sm:px-6 dark:border-white/10 dark:bg-slate-950">
           <div className="flex flex-wrap items-center justify-end gap-3">
             {serverError ? <p className="mr-auto text-sm text-rose-400">{serverError}</p> : null}
             <button

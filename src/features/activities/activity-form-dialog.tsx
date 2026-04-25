@@ -153,11 +153,11 @@ export const ActivityFormDialog = ({
       }}
       title={activity ? "Editar actividad" : "Crear actividad"}
       description="Programa una actividad a partir de uno de tus planes existentes."
-      contentClassName="max-w-4xl max-h-[95dvh] md:max-h-[90vh] p-0"
-      bodyClassName="min-h-0 flex-1 p-0"
+      contentClassName="max-w-4xl p-0 md:w-[min(960px,calc(100vw-48px))]"
+      bodyClassName="min-h-0 flex flex-1 flex-col overflow-hidden p-0"
     >
       <div className="flex min-h-0 flex-1 flex-col">
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-10 pt-5 scroll-smooth [scrollbar-color:rgba(148,163,184,0.42)_transparent] [scrollbar-width:thin] sm:px-6 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300/70 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700/70">
           <form id="activity-form" onSubmit={onSubmit} className="space-y-5 pb-2">
             <div className="rounded-[26px] border border-slate-200 bg-slate-50/80 p-5 dark:border-white/10 dark:bg-white/[0.04]">
               <div className="mb-4 flex items-center gap-3">
@@ -265,7 +265,7 @@ export const ActivityFormDialog = ({
           </form>
         </div>
 
-        <div className="sticky bottom-0 shrink-0 border-t border-slate-200 bg-white/96 px-6 py-4 shadow-[0_-18px_40px_-28px_rgba(15,23,42,0.12)] backdrop-blur-md dark:border-white/10 dark:bg-slate-950/95 dark:shadow-[0_-18px_40px_-28px_rgba(0,0,0,0.75)]">
+        <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-4 shadow-[0_-18px_40px_-28px_rgba(15,23,42,0.12)] sm:px-6 dark:border-white/10 dark:bg-slate-950 dark:shadow-[0_-18px_40px_-28px_rgba(0,0,0,0.75)]">
           <div className="flex flex-wrap items-center justify-end gap-3">
             {serverError ? <p className="mr-auto text-sm text-rose-400">{serverError}</p> : null}
             <button

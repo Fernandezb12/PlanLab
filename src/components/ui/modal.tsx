@@ -5,6 +5,9 @@ import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { cn } from "@/lib/utils/cn";
 
+const scrollAreaClassName =
+  "scroll-smooth [scrollbar-color:rgba(148,163,184,0.42)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300/70 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700/70";
+
 type ModalProps = {
   isOpen: boolean;
   title: string;
@@ -63,7 +66,7 @@ export const Modal = ({
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-start justify-center overflow-hidden overscroll-contain bg-slate-950/46 px-3 py-3 backdrop-blur-[3px] sm:px-4 sm:py-5 md:items-center md:px-6 md:py-8 dark:bg-slate-950/74 dark:backdrop-blur-sm"
+      className="fixed inset-0 z-[80] flex items-start justify-center overflow-hidden overscroll-none bg-slate-950/46 px-3 py-3 backdrop-blur-[3px] sm:px-4 sm:py-5 md:items-center md:px-6 md:py-8 dark:bg-slate-950/74 dark:backdrop-blur-sm"
       onClick={() => {
         if (closeOnOverlayClick) {
           onClose();
@@ -72,7 +75,7 @@ export const Modal = ({
     >
       <div
         className={cn(
-          "flex max-h-[95dvh] min-h-0 w-[calc(100vw-24px)] max-w-2xl flex-col overflow-hidden overscroll-contain rounded-[24px] border border-slate-200/95 bg-white shadow-[0_36px_90px_-38px_rgba(15,23,42,0.42)] sm:rounded-[30px] md:max-h-[90vh] dark:border-white/10 dark:bg-slate-950/95 dark:shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)]",
+          "flex max-h-[94dvh] min-h-0 w-[calc(100vw-24px)] max-w-2xl flex-col overflow-hidden overscroll-contain rounded-[24px] border border-slate-200/95 bg-white shadow-[0_36px_90px_-38px_rgba(15,23,42,0.42)] sm:rounded-[30px] md:max-h-[90dvh] dark:border-white/10 dark:bg-slate-950/95 dark:shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)]",
           contentClassName
         )}
         onClick={(event) => event.stopPropagation()}
@@ -97,7 +100,15 @@ export const Modal = ({
           </button>
         </div>
 
-        <div className={cn("min-h-0 flex-1 overflow-y-auto overscroll-contain bg-slate-50/55 px-4 py-4 sm:px-6 sm:py-5 dark:bg-transparent", bodyClassName)}>{children}</div>
+        <div
+          className={cn(
+            "flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain bg-slate-50/55 px-4 py-4 sm:px-6 sm:py-5 dark:bg-transparent",
+            scrollAreaClassName,
+            bodyClassName
+          )}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );

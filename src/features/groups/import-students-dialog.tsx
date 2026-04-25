@@ -284,8 +284,8 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
       }}
       title="Importar estudiantes"
       description="Carga un archivo .xlsx o .csv, revisa la previsualización y confirma antes de guardar."
-      contentClassName="max-w-6xl max-h-[95dvh] md:max-h-[90vh] p-0"
-      bodyClassName="min-h-0 flex-1 p-0"
+      contentClassName="max-w-none p-0 md:w-[min(1200px,calc(100vw-48px))]"
+      bodyClassName="min-h-0 flex flex-1 flex-col overflow-hidden p-0"
     >
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="shrink-0 border-b border-slate-200 px-6 pb-5 pt-6 dark:border-white/10">
@@ -355,7 +355,7 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
           </div>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-10 pt-5 scroll-smooth [scrollbar-color:rgba(148,163,184,0.42)_transparent] [scrollbar-width:thin] sm:px-6 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300/70 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700/70">
           <div className="space-y-5">
             {parseError ? (
               <div className="rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-900 dark:border-rose-500/25 dark:bg-rose-500/10 dark:text-rose-200">
@@ -399,7 +399,7 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
                     <h3 className="text-sm font-semibold text-slate-950 dark:text-white">Vista previa de importación</h3>
                     <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Revisa las filas detectadas antes de confirmar el guardado en Supabase.</p>
                   </div>
-                  <div className="max-h-[34vh] overflow-auto">
+                  <div className="max-h-[34dvh] overflow-auto overscroll-contain [scrollbar-color:rgba(148,163,184,0.42)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-slate-300/70 dark:[&::-webkit-scrollbar-thumb]:bg-slate-700/70">
                     <table className="w-full min-w-[920px] text-sm">
                       <thead className="sticky top-0 z-10 bg-slate-100 dark:bg-slate-950">
                         <tr className="border-b border-slate-200 text-slate-600 dark:border-white/10 dark:text-slate-300">
@@ -441,7 +441,7 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
           </div>
         </div>
 
-        <div className="sticky bottom-0 shrink-0 border-t border-slate-200 bg-white/96 px-6 py-4 backdrop-blur-md dark:border-white/10 dark:bg-slate-950/95">
+        <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-4 sm:px-6 dark:border-white/10 dark:bg-slate-950">
           <div className="flex flex-wrap items-center justify-end gap-3">
             <button
               type="button"
