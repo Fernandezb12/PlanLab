@@ -153,10 +153,10 @@ export const ActivityFormDialog = ({
       }}
       title={activity ? "Editar actividad" : "Crear actividad"}
       description="Programa una actividad a partir de uno de tus planes existentes."
-      contentClassName="max-w-4xl max-h-[85vh] overflow-hidden p-0"
+      contentClassName="max-w-4xl max-h-[95dvh] md:max-h-[90vh] p-0"
       bodyClassName="min-h-0 flex-1 p-0"
     >
-      <div className="flex h-[85vh] max-h-[85vh] min-h-0 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col">
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5">
           <form id="activity-form" onSubmit={onSubmit} className="space-y-5 pb-2">
             <div className="rounded-[26px] border border-slate-200 bg-slate-50/80 p-5 dark:border-white/10 dark:bg-white/[0.04]">

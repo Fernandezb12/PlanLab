@@ -284,9 +284,10 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
       }}
       title="Importar estudiantes"
       description="Carga un archivo .xlsx o .csv, revisa la previsualización y confirma antes de guardar."
-      contentClassName="max-w-6xl max-h-[85vh] overflow-hidden p-0"
+      contentClassName="max-w-6xl max-h-[95dvh] md:max-h-[90vh] p-0"
+      bodyClassName="min-h-0 flex-1 p-0"
     >
-      <div className="flex max-h-[85vh] min-h-0 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col">
         <div className="shrink-0 border-b border-slate-200 px-6 pb-5 pt-6 dark:border-white/10">
           <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
             <div className="space-y-2">
@@ -354,7 +355,7 @@ export const ImportStudentsDialog = ({ isOpen, groups, onClose, onCompleted }: I
           </div>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5">
           <div className="space-y-5">
             {parseError ? (
               <div className="rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm text-rose-900 dark:border-rose-500/25 dark:bg-rose-500/10 dark:text-rose-200">

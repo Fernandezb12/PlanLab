@@ -136,10 +136,10 @@ export const ActivityRecordsDialog = ({ isOpen, activity, students, existingReco
       }}
       title={activity ? `Registro de ${activity.title}` : "Registro de resultados"}
       description="Registra asistencia, nota y observaciones de los estudiantes del grupo en una sola acción."
-      contentClassName="max-w-6xl p-0"
+      contentClassName="max-w-6xl max-h-[95dvh] md:max-h-[90vh] p-0"
       bodyClassName="min-h-0 flex-1 p-0"
     >
-      <div className="flex max-h-[88vh] min-h-[70vh] flex-col">
+      <div className="flex min-h-0 flex-1 flex-col">
         <div className="border-b border-slate-200 px-6 py-5 dark:border-white/10">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
@@ -162,7 +162,7 @@ export const ActivityRecordsDialog = ({ isOpen, activity, students, existingReco
           </div>
         </div>
 
-        <div className="min-h-0 flex-1 overflow-auto px-6 py-5">
+        <div className="min-h-0 flex-1 overflow-auto overscroll-contain px-6 py-5">
           {!activity?.group_id ? (
             <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
               Esta actividad no tiene un grupo asociado. No es posible abrir este registro por ahora.

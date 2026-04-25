@@ -33,6 +33,16 @@ export const Modal = ({
       return;
     }
 
+    const previousOverflow = document.body.style.overflow;
+    const previousPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+    document.body.style.overflow = "hidden";
+
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
@@ -40,7 +50,11 @@ export const Modal = ({
     };
 
     window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
+    return () => {
+      window.removeEventListener("keydown", closeOnEscape);
+      document.body.style.overflow = previousOverflow;
+      document.body.style.paddingRight = previousPaddingRight;
+    };
   }, [isOpen, onClose]);
 
   if (!isOpen) {
@@ -49,7 +63,7 @@ export const Modal = ({
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-start justify-center bg-slate-950/46 px-3 py-4 backdrop-blur-[3px] sm:px-4 sm:py-5 md:items-center md:px-6 md:py-8 dark:bg-slate-950/74 dark:backdrop-blur-sm"
+      className="fixed inset-0 z-[80] flex items-start justify-center overflow-hidden overscroll-contain bg-slate-950/46 px-3 py-3 backdrop-blur-[3px] sm:px-4 sm:py-5 md:items-center md:px-6 md:py-8 dark:bg-slate-950/74 dark:backdrop-blur-sm"
       onClick={() => {
         if (closeOnOverlayClick) {
           onClose();
@@ -58,14 +72,14 @@ export const Modal = ({
     >
       <div
         className={cn(
-          "flex max-h-[calc(100vh-2rem)] min-h-0 w-full max-w-2xl flex-col overflow-hidden rounded-[24px] border border-slate-200/95 bg-white shadow-[0_36px_90px_-38px_rgba(15,23,42,0.42)] sm:max-h-[calc(100vh-2.5rem)] sm:rounded-[30px] dark:border-white/10 dark:bg-slate-950/95 dark:shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)]",
+          "flex max-h-[95dvh] min-h-0 w-[calc(100vw-24px)] max-w-2xl flex-col overflow-hidden overscroll-contain rounded-[24px] border border-slate-200/95 bg-white shadow-[0_36px_90px_-38px_rgba(15,23,42,0.42)] sm:rounded-[30px] md:max-h-[90vh] dark:border-white/10 dark:bg-slate-950/95 dark:shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)]",
           contentClassName
         )}
         onClick={(event) => event.stopPropagation()}
       >
         <div
           className={cn(
-            "flex items-start justify-between gap-4 border-b border-slate-200 bg-white px-4 py-4 sm:px-6 sm:py-5 dark:border-white/10 dark:bg-slate-950/95",
+            "shrink-0 flex items-start justify-between gap-4 border-b border-slate-200 bg-white px-4 py-4 sm:px-6 sm:py-5 dark:border-white/10 dark:bg-slate-950/95",
             headerClassName
           )}
         >
@@ -83,7 +97,7 @@ export const Modal = ({
           </button>
         </div>
 
-        <div className={cn("min-h-0 bg-slate-50/55 px-4 py-4 sm:px-6 sm:py-5 dark:bg-transparent", bodyClassName)}>{children}</div>
+        <div className={cn("min-h-0 flex-1 overflow-y-auto overscroll-contain bg-slate-50/55 px-4 py-4 sm:px-6 sm:py-5 dark:bg-transparent", bodyClassName)}>{children}</div>
       </div>
     </div>
   );

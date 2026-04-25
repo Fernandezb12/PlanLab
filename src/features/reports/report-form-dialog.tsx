@@ -110,72 +110,78 @@ export const ReportFormDialog = ({ isOpen, groups, activities, onClose, onComple
       }}
       title="Crear reporte"
       description="Registra la base del reporte y deja preparado el proceso de consolidación."
-      contentClassName="max-w-3xl"
+      contentClassName="max-w-3xl max-h-[95dvh] md:max-h-[90vh] p-0"
+      bodyClassName="min-h-0 flex-1 p-0"
     >
-      <form onSubmit={onSubmit} className="space-y-5">
-        <div className="rounded-[26px] border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-white/[0.04]">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-2xl bg-slate-500/15 text-slate-100">
-              <FilePlus2 className="h-5 w-5" />
-            </div>
-            <div>
-              <h3 className="text-sm font-semibold text-slate-950 dark:text-white">Configuración del reporte</h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Selecciona el grupo, el tipo de reporte y, si corresponde, una actividad asociada.</p>
-            </div>
-          </div>
+      <div className="flex min-h-0 flex-1 flex-col">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5">
+          <form id="report-form" onSubmit={onSubmit} className="space-y-5">
+            <div className="rounded-[26px] border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-white/[0.04]">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="grid h-10 w-10 place-items-center rounded-2xl bg-slate-500/15 text-slate-100">
+                  <FilePlus2 className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-950 dark:text-white">Configuración del reporte</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-400">Selecciona el grupo, el tipo de reporte y, si corresponde, una actividad asociada.</p>
+                </div>
+              </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Grupo</label>
-              <select
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-400/20 dark:border-white/10 dark:bg-slate-900 dark:text-white"
-                {...form.register("groupId")}
-              >
-                <option value="">Selecciona un grupo</option>
-                {groups.map((group) => (
-                  <option key={group.id} value={group.id}>
-                    {group.name} {group.level ? `· ${group.level}` : ""}
-                  </option>
-                ))}
-              </select>
-              <p className="text-xs text-rose-400">{form.formState.errors.groupId?.message}</p>
-            </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Grupo</label>
+                  <select
+                    className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-400/20 dark:border-white/10 dark:bg-slate-900 dark:text-white"
+                    {...form.register("groupId")}
+                  >
+                    <option value="">Selecciona un grupo</option>
+                    {groups.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {group.name} {group.level ? `· ${group.level}` : ""}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-rose-400">{form.formState.errors.groupId?.message}</p>
+                </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Tipo de reporte</label>
-              <select
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-400/20 dark:border-white/10 dark:bg-slate-900 dark:text-white"
-                {...form.register("reportType")}
-              >
-                {reportTypes.map((reportType) => (
-                  <option key={reportType} value={reportType}>
-                    {reportTypeLabels[reportType]}
-                  </option>
-                ))}
-              </select>
-              <p className="text-xs text-rose-400">{form.formState.errors.reportType?.message}</p>
-            </div>
-          </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Tipo de reporte</label>
+                  <select
+                    className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-400/20 dark:border-white/10 dark:bg-slate-900 dark:text-white"
+                    {...form.register("reportType")}
+                  >
+                    {reportTypes.map((reportType) => (
+                      <option key={reportType} value={reportType}>
+                        {reportTypeLabels[reportType]}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-rose-400">{form.formState.errors.reportType?.message}</p>
+                </div>
+              </div>
 
-          <div className="mt-4 space-y-2">
-            <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Actividad asociada</label>
-            <select
-              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-400/20 dark:border-white/10 dark:bg-slate-900 dark:text-white"
-              {...form.register("activityId")}
-            >
-              <option value="">Sin actividad específica</option>
-              {filteredActivities.map((activity) => (
-                <option key={activity.id} value={activity.id}>
-                  {activity.title} {activity.activity_date ? `· ${new Date(activity.activity_date).toLocaleDateString("es-CO")}` : ""}
-                </option>
-              ))}
-            </select>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Este vínculo es opcional. Puede asociarse a una actividad específica o dejarse como reporte general del grupo.</p>
-            <p className="text-xs text-rose-400">{form.formState.errors.activityId?.message}</p>
-          </div>
+              <div className="mt-4 space-y-2">
+                <label className="text-sm font-medium text-slate-800 dark:text-slate-200">Actividad asociada</label>
+                <select
+                  className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-slate-300 focus:ring-2 focus:ring-slate-400/20 dark:border-white/10 dark:bg-slate-900 dark:text-white"
+                  {...form.register("activityId")}
+                >
+                  <option value="">Sin actividad específica</option>
+                  {filteredActivities.map((activity) => (
+                    <option key={activity.id} value={activity.id}>
+                      {activity.title} {activity.activity_date ? `· ${new Date(activity.activity_date).toLocaleDateString("es-CO")}` : ""}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Este vínculo es opcional. Puede asociarse a una actividad específica o dejarse como reporte general del grupo.</p>
+                <p className="text-xs text-rose-400">{form.formState.errors.activityId?.message}</p>
+              </div>
+            </div>
+          </form>
         </div>
 
-        <div className="flex flex-wrap items-center justify-end gap-3">
+        <div className="shrink-0 border-t border-slate-200 bg-white/96 px-6 py-4 shadow-[0_-18px_40px_-28px_rgba(15,23,42,0.12)] backdrop-blur-md dark:border-white/10 dark:bg-slate-950/95 dark:shadow-[0_-18px_40px_-28px_rgba(0,0,0,0.75)]">
+          <div className="flex flex-wrap items-center justify-end gap-3">
           {serverError ? <p className="mr-auto text-sm text-rose-400">{serverError}</p> : null}
           <button
             type="button"
@@ -186,6 +192,7 @@ export const ReportFormDialog = ({ isOpen, groups, activities, onClose, onComple
             Cancelar
           </button>
           <button
+            form="report-form"
             type="submit"
             disabled={isPending}
             className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-slate-500 to-slate-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
@@ -193,8 +200,9 @@ export const ReportFormDialog = ({ isOpen, groups, activities, onClose, onComple
             {isPending ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             Crear reporte
           </button>
+          </div>
         </div>
-      </form>
+      </div>
     </Modal>
   );
 };

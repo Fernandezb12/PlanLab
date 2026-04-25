@@ -287,13 +287,13 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
         }}
         title={plan ? "Mejorar plan con IA" : "Generar plan con IA"}
         description="Completa la información pedagógica y revisa la propuesta antes de guardarla."
-        contentClassName="w-[94vw] max-w-[min(1400px,96vw)] max-h-[92vh] overflow-hidden p-0"
+        contentClassName="w-[calc(100vw-24px)] max-w-[min(1400px,96vw)] max-h-[95dvh] md:max-h-[90vh] p-0"
         bodyClassName="min-h-0 flex-1 overflow-hidden p-0"
       >
         <div className="flex min-h-0 flex-1 flex-col">
-          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5 lg:overflow-hidden lg:p-0">
-            <div className="grid min-w-0 gap-4 lg:h-full lg:grid-cols-[minmax(360px,0.88fr)_minmax(0,1.12fr)] lg:gap-0">
-              <form id="plan-ai-form" className="min-w-0 space-y-5 lg:min-h-0 lg:overflow-y-auto lg:border-r lg:border-slate-200 lg:px-6 lg:py-5 dark:lg:border-white/10" onSubmit={runGeneration}>
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 sm:py-5 lg:p-0">
+            <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(360px,0.88fr)_minmax(0,1.12fr)] lg:gap-0">
+              <form id="plan-ai-form" className="min-w-0 space-y-5 lg:border-r lg:border-slate-200 lg:px-6 lg:py-5 dark:lg:border-white/10" onSubmit={runGeneration}>
                 <div className="rounded-[26px] border border-slate-200 bg-slate-50/80 p-5 dark:border-white/10 dark:bg-white/[0.04]">
                   <div className="mb-4 flex items-center gap-3">
                     <div className="grid h-10 w-10 place-items-center rounded-2xl bg-violet-500/15 text-violet-200">
@@ -398,7 +398,7 @@ export const PlanAIDialog = ({ isOpen, groups, plan, onClose, onCompleted }: Pla
                 </div>
               </form>
 
-              <div className="min-w-0 lg:min-h-0 lg:overflow-y-auto lg:px-6 lg:py-5">
+              <div className="min-w-0 lg:px-6 lg:py-5">
               {isGenerating ? (
                 <div className="space-y-4">
                   <Skeleton className="h-8 w-48" />

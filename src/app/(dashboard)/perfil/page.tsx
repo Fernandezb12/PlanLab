@@ -1,9 +1,10 @@
-import { Lock, Palette } from "lucide-react";
+import { Palette } from "lucide-react";
 import { redirect } from "next/navigation";
 
 import { LogoutButton } from "@/components/auth/logout-button";
 import { Card } from "@/components/ui/card";
 import { ModuleHeader } from "@/components/ui/module-header";
+import { ChangePasswordButton } from "@/features/profile/change-password-button";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function PerfilPage() {
@@ -46,10 +47,7 @@ export default async function PerfilPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <button className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold dark:border-white/10">
-          <Lock className="h-4 w-4" />
-          Cambiar contraseña
-        </button>
+        <ChangePasswordButton />
         <LogoutButton />
       </div>
     </section>

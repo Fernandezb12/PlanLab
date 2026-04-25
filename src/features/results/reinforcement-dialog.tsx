@@ -205,11 +205,11 @@ export const ReinforcementDialog = ({ isOpen, input, onClose, onCompleted }: Rei
         }}
         title={dialogTitle}
         description="La propuesta se genera desde resultados reales y queda lista para revisión docente."
-        contentClassName="max-w-5xl max-h-[88vh] p-0"
+        contentClassName="max-w-5xl max-h-[95dvh] md:max-h-[90vh] p-0"
         bodyClassName="min-h-0 flex-1 p-0"
       >
-        <div className="flex h-[78vh] max-h-[78vh] min-h-0 flex-col">
-          <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+        <div className="flex min-h-0 flex-1 flex-col">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5">
             {isGenerating ? (
               <div className="space-y-4">
                 <Skeleton className="h-8 w-44" />

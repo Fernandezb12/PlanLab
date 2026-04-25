@@ -193,12 +193,21 @@ El proyecto implementa una estructura pensada para proteger la información del 
 
 - Protección de rutas privadas.
 - Uso de autenticación real.
+- Recuperación y cambio de contraseña con Supabase Auth.
 - Validación de datos en frontend y backend.
 - Aislamiento de información por usuario autenticado.
 - Row Level Security `RLS` en Supabase.
 - Uso de Server Actions y Route Handlers para tareas sensibles.
 - Claves privadas protegidas mediante variables de entorno.
 - Separación entre lógica de cliente y lógica de servidor.
+
+### Configuración de recuperación de contraseña en Supabase
+
+Para que los enlaces de recuperación funcionen en producción y desarrollo local, configura en Supabase Auth:
+
+- **Site URL:** `https://plan-lab-flame.vercel.app`
+- **Redirect URL:** `https://plan-lab-flame.vercel.app/auth/update-password`
+- **Redirect URL:** `http://localhost:3000/auth/update-password`
 
 ---
 

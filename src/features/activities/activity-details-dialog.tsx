@@ -29,12 +29,12 @@ export const ActivityDetailsDialog = ({ isOpen, activity, onClose }: ActivityDet
       onClose={onClose}
       title={activity?.title ?? "Detalle de la actividad"}
       description="Consulta los datos básicos de la actividad sin salir del módulo."
-      contentClassName="max-w-3xl max-h-[80vh] p-0"
+      contentClassName="max-w-3xl max-h-[95dvh] md:max-h-[90vh] p-0"
       bodyClassName="min-h-0 flex-1 p-0"
     >
       {activity ? (
-        <div className="flex h-[68vh] max-h-[68vh] min-h-0 flex-col">
-          <div className="min-h-0 flex-1 overflow-y-auto px-6 py-5">
+        <div className="flex min-h-0 flex-1 flex-col">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-5">
             <div className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-white/[0.04]">

@@ -9,6 +9,20 @@ export const loginSchema = z.object({
   password: z.string().min(6, "Mínimo 6 caracteres")
 });
 
+export const passwordRecoverySchema = z.object({
+  email: z.string().email("Ingresa un correo válido")
+});
+
+export const updatePasswordSchema = z
+  .object({
+    password: z.string().min(8, "Mínimo 8 caracteres"),
+    confirmPassword: z.string().min(8, "Confirma tu contraseña")
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas no coinciden",
+    path: ["confirmPassword"]
+  });
+
 export const registerSchema = z
   .object({
     fullName: z.string().min(3, "Ingresa tu nombre completo"),
@@ -25,4 +39,6 @@ export const registerSchema = z
   });
 
 export type LoginInput = z.infer<typeof loginSchema>;
+export type PasswordRecoveryInput = z.infer<typeof passwordRecoverySchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
+export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;
