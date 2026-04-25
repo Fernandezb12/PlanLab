@@ -20,6 +20,8 @@ export type ReportExportStudentRow = {
   averageScore: number | null;
   observation: string | null;
   statusLabel: string;
+  alertReason: string | null;
+  suggestedAction: string | null;
 };
 
 export type ReportExportData = {
@@ -63,6 +65,70 @@ const isLowScore = (value: number | null) => {
   }
 
   return value <= 5 ? value < 3 : value < 60;
+};
+
+const pluralizeStudents = (count: number) =>
+  count === 1 ? "1 estudiante requiere seguimiento específico." : `${count} estudiantes requieren seguimiento específico.`;
+
+const getStudentStatus = ({
+  attendanceAverage,
+  averageScore,
+  hasRecords,
+  hasObservation
+}: {
+  attendanceAverage: number | null;
+  averageScore: number | null;
+  hasRecords: boolean;
+  hasObservation: boolean;
+}) => {
+  if (!hasRecords || (attendanceAverage === null && averageScore === null)) {
+    return {
+      statusLabel: "Sin registro",
+      alertReason: "sin registros consolidados",
+      suggestedAction: "completar los registros pendientes para mejorar la lectura del proceso."
+    };
+  }
+
+  const lowScore = isLowScore(averageScore);
+  const lowAttendance = attendanceAverage !== null && attendanceAverage < 80;
+
+  if (lowScore && lowAttendance) {
+    return {
+      statusLabel: "Seguimiento prioritario",
+      alertReason: "bajo rendimiento e inasistencia",
+      suggestedAction: "aplicar refuerzo individual y revisar participación en la próxima actividad."
+    };
+  }
+
+  if (lowScore) {
+    return {
+      statusLabel: "Bajo rendimiento",
+      alertReason: "bajo rendimiento",
+      suggestedAction: "planificar refuerzo individual y verificar comprensión en la próxima actividad."
+    };
+  }
+
+  if (lowAttendance) {
+    return {
+      statusLabel: "Baja asistencia",
+      alertReason: "baja asistencia",
+      suggestedAction: "revisar causas de inasistencia y acordar acciones de acompañamiento."
+    };
+  }
+
+  if (hasObservation) {
+    return {
+      statusLabel: "Seguimiento",
+      alertReason: "observación registrada",
+      suggestedAction: "revisar la observación y mantener seguimiento formativo."
+    };
+  }
+
+  return {
+    statusLabel: "Estable",
+    alertReason: null,
+    suggestedAction: null
+  };
 };
 
 const reportSubtitleFor = (reportType: string, reportTypeLabel: string) => {
@@ -109,13 +175,12 @@ export const buildReportExportData = ({
     const studentAverage = average(studentScores);
     const studentAttendance = studentRecords.length ? (studentRecords.filter((record) => record.attended).length / studentRecords.length) * 100 : null;
     const observation = studentRecords.map((record) => record.observation?.trim()).find(Boolean) ?? null;
-    const statusLabel = isLowScore(studentAverage)
-      ? "Bajo rendimiento"
-      : studentAttendance !== null && studentAttendance < 75
-        ? "Inasistencia"
-        : observation
-          ? "Seguimiento"
-          : "Estable";
+    const status = getStudentStatus({
+      attendanceAverage: studentAttendance,
+      averageScore: studentAverage,
+      hasRecords: studentRecords.length > 0,
+      hasObservation: Boolean(observation)
+    });
 
     return {
       id: student.id,
@@ -124,15 +189,18 @@ export const buildReportExportData = ({
       attendanceAverage: studentAttendance,
       averageScore: studentAverage,
       observation,
-      statusLabel
+      ...status
     };
   });
 
   const studentsWithAlert = rows.filter((row) => row.statusLabel !== "Estable").length;
+  const hasLowScoreStudents = rows.some((row) => row.statusLabel === "Bajo rendimiento" || row.statusLabel === "Seguimiento prioritario");
+  const hasLowAttendanceStudents = rows.some((row) => row.statusLabel === "Baja asistencia" || row.statusLabel === "Seguimiento prioritario");
+  const hasUnregisteredStudents = rows.some((row) => row.statusLabel === "Sin registro");
   const alerts = [
     ...(isLowScore(averageScore) ? ["El promedio general del grupo requiere refuerzo pedagógico."] : []),
-    ...(attendanceAverage !== null && attendanceAverage < 75 ? ["La asistencia promedio requiere seguimiento."] : []),
-    ...(studentsWithAlert > 0 ? [`${studentsWithAlert} estudiantes requieren seguimiento específico.`] : []),
+    ...(attendanceAverage !== null && attendanceAverage < 80 ? ["La asistencia promedio requiere seguimiento."] : []),
+    ...(studentsWithAlert > 0 ? [pluralizeStudents(studentsWithAlert)] : []),
     ...(records.length === 0 ? ["No hay registros individuales suficientes para consolidar el reporte."] : [])
   ];
 
@@ -142,8 +210,13 @@ export const buildReportExportData = ({
     .slice(0, 8);
 
   const recommendations = [
-    ...(isLowScore(averageScore) ? ["Planificar una actividad de refuerzo con seguimiento individual a los desempeños bajos."] : []),
-    ...(attendanceAverage !== null && attendanceAverage < 75 ? ["Revisar causas de inasistencia y acordar acciones de acompañamiento con el grupo."] : []),
+    ...(hasLowScoreStudents || isLowScore(averageScore)
+      ? ["Planificar una actividad de refuerzo y realizar seguimiento individual a los estudiantes con desempeño bajo."]
+      : []),
+    ...(hasUnregisteredStudents ? ["Completar los registros pendientes para mejorar la lectura del grupo."] : []),
+    ...(hasLowAttendanceStudents || (attendanceAverage !== null && attendanceAverage < 80)
+      ? ["Revisar causas de inasistencia y establecer acciones de acompañamiento."]
+      : []),
     ...(alerts.length === 0 ? ["El grupo mantiene un comportamiento estable. Continuar con seguimiento periódico y retroalimentación formativa."] : [])
   ];
 

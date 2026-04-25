@@ -5,7 +5,6 @@ import {
   Footer,
   HeadingLevel,
   Packer,
-  PageNumber,
   Paragraph,
   ShadingType,
   Table,
@@ -30,6 +29,13 @@ const colors = {
   rowAlt: "F9FAFB",
   accent: "7C3AED",
   accentBg: "F5F3FF",
+  warningBg: "FFFBEB",
+  warningText: "92400E",
+  riskBg: "FFF1F2",
+  riskText: "BE123C",
+  successBg: "ECFDF5",
+  successText: "15803D",
+  neutralBg: "F8FAFC",
   white: "FFFFFF"
 };
 
@@ -114,6 +120,22 @@ const tableBodyCell = (text: string, fill: string) =>
     children: [new Paragraph({ children: [new TextRun({ text, color: colors.secondary, size: 17 })] })]
   });
 
+const statusTextColor = (status: string) => {
+  if (status === "Estable") {
+    return colors.successText;
+  }
+
+  if (status === "Seguimiento" || status === "Baja asistencia") {
+    return colors.warningText;
+  }
+
+  if (status === "Bajo rendimiento" || status === "Seguimiento prioritario") {
+    return colors.riskText;
+  }
+
+  return colors.secondary;
+};
+
 const studentTable = (data: ReportExportData) => {
   if (!data.students.length || !data.recordsAnalyzed) {
     return textBox("No hay registros individuales suficientes para consolidar una tabla de estudiantes.");
@@ -138,7 +160,12 @@ const studentTable = (data: ReportExportData) => {
               tableBodyCell(formatPercent(student.attendanceAverage), fill),
               tableBodyCell(formatScore(student.averageScore), fill),
               tableBodyCell(student.observation || "Sin observación", fill),
-              tableBodyCell(student.statusLabel, fill)
+              new TableCell({
+                shading: { type: ShadingType.CLEAR, fill },
+                borders: { top: softBorder, bottom: softBorder, left: softBorder, right: softBorder },
+                margins: { top: 95, bottom: 95, left: 100, right: 100 },
+                children: [new Paragraph({ children: [new TextRun({ text: student.statusLabel, color: statusTextColor(student.statusLabel), bold: true, size: 17 })] })]
+              })
             ]
           });
         })
@@ -148,16 +175,68 @@ const studentTable = (data: ReportExportData) => {
   ];
 };
 
+const followUpSection = (data: ReportExportData) => {
+  const followUpStudents = data.students.filter((student) => student.statusLabel !== "Estable");
+
+  if (!followUpStudents.length) {
+    return [];
+  }
+
+  return [
+    sectionTitle("Estudiantes que requieren seguimiento"),
+    ...followUpStudents.flatMap((student) => [
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          new TableRow({
+            children: [
+              new TableCell({
+                shading: { type: ShadingType.CLEAR, fill: colors.riskBg },
+                borders: {
+                  top: softBorder,
+                  bottom: softBorder,
+                  left: { style: BorderStyle.SINGLE, size: 18, color: colors.riskText },
+                  right: softBorder
+                },
+                margins: { top: 130, bottom: 130, left: 160, right: 160 },
+                children: [
+                  new Paragraph({
+                    spacing: { after: 50 },
+                    children: [new TextRun({ text: `${student.studentName}${student.studentCode ? ` · ${student.studentCode}` : ""}`, bold: true, color: colors.text, size: 20 })]
+                  }),
+                  new Paragraph({
+                    spacing: { after: 50 },
+                    children: [
+                      new TextRun({
+                        text: `Asistencia: ${formatPercent(student.attendanceAverage)} · Promedio: ${formatScore(student.averageScore)}`,
+                        color: colors.secondary,
+                        size: 18
+                      })
+                    ]
+                  }),
+                  new Paragraph({
+                    spacing: { after: 50 },
+                    children: [new TextRun({ text: `Motivo: ${student.alertReason ?? student.statusLabel.toLowerCase()}.`, color: colors.secondary, size: 18 })]
+                  }),
+                  new Paragraph({
+                    children: [new TextRun({ text: `Acción sugerida: ${student.suggestedAction ?? "mantener seguimiento formativo."}`, color: colors.secondary, size: 18 })]
+                  })
+                ]
+              })
+            ]
+          })
+        ]
+      }),
+      new Paragraph({ spacing: { after: 80 } })
+    ])
+  ];
+};
+
 const footer = new Footer({
   children: [
     new Paragraph({
       alignment: AlignmentType.RIGHT,
-      children: [
-        new TextRun({ text: "Generado desde PlanLab    |    Página ", color: colors.secondary, size: 18 }),
-        new TextRun({ children: [PageNumber.CURRENT], color: colors.text, size: 18 }),
-        new TextRun({ text: " de ", color: colors.secondary, size: 18 }),
-        new TextRun({ children: [PageNumber.TOTAL_PAGES], color: colors.text, size: 18 })
-      ]
+      children: [new TextRun({ text: "Generado desde PlanLab", color: colors.secondary, size: 18 })]
     })
   ]
 });
@@ -213,6 +292,7 @@ export const buildReportWordBuffer = async ({ data }: BuildReportWordDocumentInp
               infoRow("Estudiantes con alerta", data.students.filter((student) => student.statusLabel !== "Estable").length, "Registros analizados", data.recordsAnalyzed)
             ]
           }),
+          ...followUpSection(data),
           sectionTitle("Tabla de estudiantes"),
           ...studentTable(data),
           sectionTitle("Alertas detectadas"),

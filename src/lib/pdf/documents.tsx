@@ -219,6 +219,38 @@ const styles = StyleSheet.create({
     fontSize: 8.4,
     lineHeight: 1.35
   },
+  statusBadge: {
+    alignSelf: "flex-start",
+    borderRadius: 999,
+    borderWidth: 1,
+    paddingHorizontal: 6,
+    paddingVertical: 2.5,
+    fontSize: 7.4,
+    fontWeight: 700
+  },
+  followUpCard: {
+    borderWidth: 1,
+    borderColor: "#FBCFE8",
+    borderLeftWidth: 3,
+    borderLeftColor: "#E11D48",
+    borderRadius: 10,
+    backgroundColor: "#FFF1F2",
+    paddingHorizontal: 10,
+    paddingVertical: 9,
+    marginBottom: 8
+  },
+  followUpTitle: {
+    color: colors.ink,
+    fontSize: 9.8,
+    fontWeight: 700,
+    marginBottom: 3
+  },
+  followUpMeta: {
+    color: colors.muted,
+    fontSize: 8.6,
+    lineHeight: 1.35,
+    marginBottom: 3
+  },
   subtleTableCell: {
     paddingHorizontal: 10,
     paddingVertical: 9,
@@ -254,6 +286,22 @@ const formatReportDate = (value: string) => {
 };
 const hyphenationCallback = (word: string | null) => [word ?? ""];
 Font.registerHyphenationCallback(hyphenationCallback);
+
+const getStatusBadgeStyle = (status: string) => {
+  if (status === "Estable") {
+    return { backgroundColor: "#ECFDF5", borderColor: "#BBF7D0", color: "#15803D" };
+  }
+
+  if (status === "Seguimiento" || status === "Baja asistencia") {
+    return { backgroundColor: "#FFFBEB", borderColor: "#FDE68A", color: "#92400E" };
+  }
+
+  if (status === "Bajo rendimiento" || status === "Seguimiento prioritario") {
+    return { backgroundColor: "#FFF1F2", borderColor: "#FBCFE8", color: "#BE123C" };
+  }
+
+  return { backgroundColor: "#F8FAFC", borderColor: "#CBD5E1", color: "#475569" };
+};
 
 const BaseDocument = ({ documentTitle, subject, teacherName, generatedAt, aiAssisted = false, children }: BaseDocumentProps) => (
   <Document title={documentTitle} author="PlanLab" subject={subject} creator="PlanLab AI Core">
@@ -378,6 +426,27 @@ export const ReportPdfDocument = ({ data }: { data: ReportExportData }) => (
         </View>
       </View>
 
+      {data.students.some((student) => student.statusLabel !== "Estable") ? (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Estudiantes que requieren seguimiento</Text>
+          {data.students
+            .filter((student) => student.statusLabel !== "Estable")
+            .map((student) => (
+              <View key={`follow-${student.id}`} style={styles.followUpCard} wrap={false}>
+                <Text style={styles.followUpTitle}>
+                  {student.studentName}
+                  {student.studentCode ? ` · ${student.studentCode}` : ""}
+                </Text>
+                <Text style={styles.followUpMeta}>
+                  Asistencia: {formatPercent(student.attendanceAverage, "N/D")} · Promedio: {formatScore(student.averageScore, "N/D")}
+                </Text>
+                <Text style={styles.followUpMeta}>Motivo: {student.alertReason ?? student.statusLabel.toLowerCase()}.</Text>
+                <Text style={styles.followUpMeta}>Acción sugerida: {student.suggestedAction ?? "mantener seguimiento formativo."}</Text>
+              </View>
+            ))}
+        </View>
+      ) : null}
+
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Detalle por estudiante</Text>
         {data.students.length && data.recordsAnalyzed ? (
@@ -397,7 +466,9 @@ export const ReportPdfDocument = ({ data }: { data: ReportExportData }) => (
                 <Text style={[styles.tableCellSmall, { width: "13%" }]}>{formatPercent(student.attendanceAverage, "N/D")}</Text>
                 <Text style={[styles.tableCellSmall, { width: "12%" }]}>{formatScore(student.averageScore, "N/D")}</Text>
                 <Text style={[styles.tableCellSmall, { width: "24%" }]}>{student.observation || "Sin observación"}</Text>
-                <Text style={[styles.tableCellSmall, { width: "14%" }]}>{student.statusLabel}</Text>
+                <View style={[styles.tableCellSmall, { width: "14%" }]}>
+                  <Text style={[styles.statusBadge, getStatusBadgeStyle(student.statusLabel)]}>{student.statusLabel}</Text>
+                </View>
               </View>
             ))}
           </View>
