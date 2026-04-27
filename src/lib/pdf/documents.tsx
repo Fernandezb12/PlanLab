@@ -288,12 +288,20 @@ const hyphenationCallback = (word: string | null) => [word ?? ""];
 Font.registerHyphenationCallback(hyphenationCallback);
 
 const getStatusBadgeStyle = (status: string) => {
+  if (status === "Destacado") {
+    return { backgroundColor: "#DCFCE7", borderColor: "#86EFAC", color: "#166534" };
+  }
+
   if (status === "Estable") {
     return { backgroundColor: "#ECFDF5", borderColor: "#BBF7D0", color: "#15803D" };
   }
 
-  if (status === "Seguimiento" || status === "Baja asistencia") {
+  if (status === "Seguimiento sugerido") {
     return { backgroundColor: "#FFFBEB", borderColor: "#FDE68A", color: "#92400E" };
+  }
+
+  if (status === "Baja asistencia") {
+    return { backgroundColor: "#FEF3C7", borderColor: "#F59E0B", color: "#92400E" };
   }
 
   if (status === "Bajo rendimiento" || status === "Seguimiento prioritario") {
@@ -302,6 +310,11 @@ const getStatusBadgeStyle = (status: string) => {
 
   return { backgroundColor: "#F8FAFC", borderColor: "#CBD5E1", color: "#475569" };
 };
+
+const getFollowUpCardStyle = (countsAsAlert: boolean) =>
+  countsAsAlert
+    ? { backgroundColor: "#FFF1F2", borderColor: "#FBCFE8", borderLeftColor: "#E11D48" }
+    : { backgroundColor: "#FFFBEB", borderColor: "#FDE68A", borderLeftColor: "#F59E0B" };
 
 const BaseDocument = ({ documentTitle, subject, teacherName, generatedAt, aiAssisted = false, children }: BaseDocumentProps) => (
   <Document title={documentTitle} author="PlanLab" subject={subject} creator="PlanLab AI Core">
@@ -417,7 +430,7 @@ export const ReportPdfDocument = ({ data }: { data: ReportExportData }) => (
           </View>
           <View style={[styles.statCard, { width: "24%" }]}>
             <Text style={styles.statLabel}>Con alerta</Text>
-            <Text style={styles.statValue}>{data.students.filter((student) => student.statusLabel !== "Estable").length}</Text>
+            <Text style={styles.statValue}>{data.alertCount}</Text>
           </View>
           <View style={[styles.statCard, { width: "24%" }]}>
             <Text style={styles.statLabel}>Registros</Text>
@@ -426,13 +439,14 @@ export const ReportPdfDocument = ({ data }: { data: ReportExportData }) => (
         </View>
       </View>
 
-      {data.students.some((student) => student.statusLabel !== "Estable") ? (
+      {data.followUpStudents.length ? (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Estudiantes que requieren seguimiento</Text>
-          {data.students
-            .filter((student) => student.statusLabel !== "Estable")
-            .map((student) => (
-              <View key={`follow-${student.id}`} style={styles.followUpCard} wrap={false}>
+          {data.followUpStudents.map((student) => (
+              <View key={`follow-${student.id}`} style={[styles.followUpCard, getFollowUpCardStyle(student.countsAsAlert)]} wrap={false}>
+                <Text style={[styles.statusBadge, getStatusBadgeStyle(student.statusLabel), { marginBottom: 5 }]}>
+                  {student.countsAsAlert ? "Prioritario" : "Sugerido"}
+                </Text>
                 <Text style={styles.followUpTitle}>
                   {student.studentName}
                   {student.studentCode ? ` · ${student.studentCode}` : ""}
@@ -440,8 +454,8 @@ export const ReportPdfDocument = ({ data }: { data: ReportExportData }) => (
                 <Text style={styles.followUpMeta}>
                   Asistencia: {formatPercent(student.attendanceAverage, "N/D")} · Promedio: {formatScore(student.averageScore, "N/D")}
                 </Text>
-                <Text style={styles.followUpMeta}>Motivo: {student.alertReason ?? student.statusLabel.toLowerCase()}.</Text>
-                <Text style={styles.followUpMeta}>Acción sugerida: {student.suggestedAction ?? "mantener seguimiento formativo."}</Text>
+                <Text style={styles.followUpMeta}>Motivo: {student.reason}</Text>
+                <Text style={styles.followUpMeta}>Acción sugerida: {student.suggestedAction}</Text>
               </View>
             ))}
         </View>
@@ -504,13 +518,40 @@ export const ReportPdfDocument = ({ data }: { data: ReportExportData }) => (
       </View>
 
       <View style={[styles.sectionCard, { marginTop: 14 }]} wrap={false}>
-        <Text style={styles.sectionTitle}>Observaciones generales</Text>
-        {data.observations.length ? (
-          data.observations.map((observation, index) => (
-            <Text key={index} style={styles.listItem}>
-              • {observation}
-            </Text>
-          ))
+        <Text style={styles.sectionTitle}>Observaciones docentes</Text>
+        {data.positiveObservations.length || data.followUpObservations.length || data.generalObservations.length ? (
+          <View>
+            {data.positiveObservations.length ? (
+              <View style={{ marginBottom: 8 }}>
+                <Text style={[styles.followUpTitle, { color: "#15803D" }]}>Observaciones positivas</Text>
+                {data.positiveObservations.map((observation, index) => (
+                  <Text key={`positive-${index}`} style={styles.listItem}>
+                    • {observation}
+                  </Text>
+                ))}
+              </View>
+            ) : null}
+            {data.followUpObservations.length ? (
+              <View style={{ marginBottom: 8 }}>
+                <Text style={[styles.followUpTitle, { color: "#92400E" }]}>Observaciones de seguimiento</Text>
+                {data.followUpObservations.map((observation, index) => (
+                  <Text key={`follow-up-${index}`} style={styles.listItem}>
+                    • {observation}
+                  </Text>
+                ))}
+              </View>
+            ) : null}
+            {data.generalObservations.length ? (
+              <View>
+                <Text style={[styles.followUpTitle, { color: colors.muted }]}>Observaciones generales</Text>
+                {data.generalObservations.map((observation, index) => (
+                  <Text key={`general-${index}`} style={styles.listItem}>
+                    • {observation}
+                  </Text>
+                ))}
+              </View>
+            ) : null}
+          </View>
         ) : (
           <Text style={styles.paragraph}>No se registraron observaciones adicionales para este reporte.</Text>
         )}
