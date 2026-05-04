@@ -1,5 +1,7 @@
 import type { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
 
+import { getStudentReportStatus, normalizeScoreToFive } from "@/lib/reports/status";
+
 type NotificationType =
   | "activity_pending"
   | "group_alert"
@@ -73,7 +75,7 @@ const collectDerivedNotificationCandidates = async (supabase: SupabaseClient, us
       supabase.from("groups").select("id,name,level").eq("user_id", userId),
       supabase.from("students").select("id,group_id,full_name").eq("user_id", userId),
       supabase.from("activities").select("id,group_id,title,status,created_at").eq("user_id", userId),
-      supabase.from("activity_records").select("id,activity_id,student_id,attended,result_score,created_at").eq("user_id", userId)
+      supabase.from("activity_records").select("id,activity_id,student_id,attended,result_score,observation,created_at").eq("user_id", userId)
     ]);
 
   if (groupsError || studentsError || activitiesError || recordsError) {
@@ -111,15 +113,17 @@ const collectDerivedNotificationCandidates = async (supabase: SupabaseClient, us
   const groupSummaries = groups.map((group) => {
     const groupStudents = students.filter((student) => student.group_id === group.id);
     const groupRecords = records.filter((record) => activityById.get(record.activity_id)?.group_id === group.id);
-    const groupScores = groupRecords.map((record) => record.result_score).filter((score): score is number => typeof score === "number");
+    const groupScores = groupRecords
+      .map((record) => normalizeScoreToFive(record.result_score))
+      .filter((score): score is number => typeof score === "number");
     const averageScore = average(groupScores);
     const attendanceRate = groupRecords.length ? (groupRecords.filter((record) => record.attended).length / groupRecords.length) * 100 : null;
 
     let tone: "stable" | "watch" | "risk" = "stable";
 
-    if ((averageScore !== null && averageScore < 60) || (attendanceRate !== null && attendanceRate < 70)) {
+    if ((averageScore !== null && averageScore < 3) || (attendanceRate !== null && attendanceRate < 80)) {
       tone = "risk";
-    } else if ((averageScore !== null && averageScore < 75) || (attendanceRate !== null && attendanceRate < 85)) {
+    } else if ((averageScore !== null && averageScore < 3.5) || (attendanceRate !== null && attendanceRate < 85)) {
       tone = "watch";
     }
 
@@ -151,20 +155,30 @@ const collectDerivedNotificationCandidates = async (supabase: SupabaseClient, us
   const studentAlerts = students
     .map((student) => {
       const studentRecords = records.filter((record) => record.student_id === student.id);
-      const studentScores = studentRecords.map((record) => record.result_score).filter((score): score is number => typeof score === "number");
+      const studentScores = studentRecords
+        .map((record) => normalizeScoreToFive(record.result_score))
+        .filter((score): score is number => typeof score === "number");
       const studentAverage = average(studentScores);
-      const absenceRate = studentRecords.length ? (studentRecords.filter((record) => !record.attended).length / studentRecords.length) * 100 : null;
+      const attendanceRate = studentRecords.length ? (studentRecords.filter((record) => record.attended).length / studentRecords.length) * 100 : null;
+      const observation = studentRecords.map((record) => record.observation?.trim()).find(Boolean) ?? null;
+      const status = getStudentReportStatus({
+        attendanceAverage: attendanceRate,
+        averageScore: studentAverage,
+        hasRecords: studentRecords.length > 0,
+        observation
+      });
 
       if (!studentRecords.length) {
         return null;
       }
 
-      if ((studentAverage !== null && studentAverage < 60) || (absenceRate !== null && absenceRate >= 40)) {
+      if (status.countsAsAlert) {
         return {
           id: student.id,
           fullName: student.full_name,
           average: studentAverage,
-          absenceRate
+          attendanceRate,
+          reason: status.reason
         };
       }
 
@@ -175,8 +189,8 @@ const collectDerivedNotificationCandidates = async (supabase: SupabaseClient, us
   for (const student of studentAlerts.slice(0, 8)) {
     candidates.push({
       type: "student_alert",
-      title: "Estudiante con seguimiento sugerido",
-      message: `${student.fullName} presenta alerta por ${student.average !== null && student.average < 60 ? "bajo rendimiento" : "inasistencia reiterada"}.`,
+      title: "Estudiante con alerta",
+      message: `${student.fullName} presenta alerta: ${student.reason}`,
       href: "/resultados",
       metadata: { studentId: student.id },
       dedupeKey: `student-alert:${student.id}`,

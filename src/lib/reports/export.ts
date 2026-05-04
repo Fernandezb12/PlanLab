@@ -1,6 +1,7 @@
 import {
   classifyObservationTone,
   getStudentReportStatus,
+  normalizeScoreToFive,
   type ObservationTone,
   type StudentReportSeverity,
   type StudentReportStatusValue
@@ -92,7 +93,7 @@ const isLowScore = (value: number | null) => {
 };
 
 const pluralizePriorityStudents = (count: number) =>
-  count === 1 ? "1 estudiante requiere seguimiento prioritario." : `${count} estudiantes requieren seguimiento prioritario.`;
+  count === 1 ? "1 estudiante requiere seguimiento específico." : `${count} estudiantes requieren seguimiento específico.`;
 
 const reportSubtitleFor = (reportType: string, reportTypeLabel: string) => {
   if (reportType === "asistencia") {
@@ -128,13 +129,17 @@ export const buildReportExportData = ({
   records,
   activitiesAnalyzed
 }: BuildReportExportDataInput): ReportExportData => {
-  const scoreValues = records.map((record) => record.result_score).filter((score): score is number => typeof score === "number");
+  const scoreValues = records
+    .map((record) => normalizeScoreToFive(record.result_score))
+    .filter((score): score is number => typeof score === "number");
   const averageScore = average(scoreValues);
   const attendanceAverage = records.length ? (records.filter((record) => record.attended).length / records.length) * 100 : null;
 
   const rows = students.map((student) => {
     const studentRecords = records.filter((record) => record.student_id === student.id);
-    const studentScores = studentRecords.map((record) => record.result_score).filter((score): score is number => typeof score === "number");
+    const studentScores = studentRecords
+      .map((record) => normalizeScoreToFive(record.result_score))
+      .filter((score): score is number => typeof score === "number");
     const studentAverage = average(studentScores);
     const studentAttendance = studentRecords.length ? (studentRecords.filter((record) => record.attended).length / studentRecords.length) * 100 : null;
     const observation = studentRecords.map((record) => record.observation?.trim()).find(Boolean) ?? null;
@@ -214,7 +219,7 @@ export const buildReportExportData = ({
     records.length === 0
       ? `El grupo ${groupName} aún no cuenta con registros individuales suficientes para consolidar indicadores académicos.`
       : alertCount > 0
-        ? `Se identifican ${alertCount} ${alertCount === 1 ? "estudiante con alerta académica o de asistencia que requiere" : "estudiantes con alerta académica o de asistencia que requieren"} seguimiento prioritario.`
+        ? `Se identifican ${alertCount} ${alertCount === 1 ? "estudiante que requiere" : "estudiantes que requieren"} seguimiento específico.`
         : suggestedFollowUpCount > 0
           ? "Se identifican estudiantes con seguimiento sugerido, sin alertas críticas."
           : "El grupo presenta un comportamiento general estable. Se registran observaciones docentes para seguimiento formativo.";

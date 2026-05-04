@@ -6,6 +6,7 @@ import { ResultsPdfDocument } from "@/lib/pdf/documents";
 import { buildResultsPdfPath } from "@/lib/pdf/filenames";
 import { renderPdfToBuffer } from "@/lib/pdf/render";
 import { uploadPdfToStorage } from "@/lib/pdf/storage";
+import { normalizeScoreToFive } from "@/lib/reports/status";
 import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
@@ -101,20 +102,22 @@ export async function POST(request: Request) {
         id: student.id,
         studentName: student.full_name,
         attended: latestRecord?.attended ?? false,
-        resultScore: latestRecord?.result_score ?? null,
+        resultScore: normalizeScoreToFive(latestRecord?.result_score),
         observation: latestRecord?.observation ?? null
       };
     });
 
-    const scores = relevantRecords.map((record) => record.result_score).filter((score): score is number => typeof score === "number");
+    const scores = relevantRecords
+      .map((record) => normalizeScoreToFive(record.result_score))
+      .filter((score): score is number => typeof score === "number");
     const averageScore = average(scores);
     const attendanceAverage = relevantRecords.length
       ? (relevantRecords.filter((record) => record.attended).length / relevantRecords.length) * 100
       : null;
 
     const alerts = [
-      ...(averageScore !== null && averageScore < 60 ? ["El promedio del grupo requiere acciones de refuerzo y seguimiento."] : []),
-      ...(attendanceAverage !== null && attendanceAverage < 75 ? ["La asistencia promedio refleja riesgo de continuidad en el proceso."] : []),
+      ...(averageScore !== null && averageScore < 3 ? ["El promedio del grupo requiere acciones de refuerzo y seguimiento."] : []),
+      ...(attendanceAverage !== null && attendanceAverage < 80 ? ["La asistencia promedio refleja riesgo de continuidad en el proceso."] : []),
       ...(rows.some((row) => !row.attended) ? ["Existen estudiantes con inasistencia registrada en el corte seleccionado."] : [])
     ].slice(0, 4);
 

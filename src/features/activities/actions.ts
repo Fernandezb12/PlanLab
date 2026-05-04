@@ -3,7 +3,13 @@
 import { revalidatePath } from "next/cache";
 
 import { createClient } from "@/lib/supabase/server";
-import { activitySchema, saveActivityRecordsSchema, type ActivityInput, type SaveActivityRecordsInput } from "@/lib/validations/activities";
+import {
+  activitySchema,
+  activityScoreRangeMessage,
+  saveActivityRecordsSchema,
+  type ActivityInput,
+  type SaveActivityRecordsInput
+} from "@/lib/validations/activities";
 
 export type ActivityActionResult = {
   success: boolean;
@@ -207,6 +213,16 @@ export const saveActivityRecordsAction = async (input: SaveActivityRecordsInput)
   const parsed = saveActivityRecordsSchema.safeParse(input);
 
   if (!parsed.success) {
+    const hasScoreError = parsed.error.issues.some((issue) => issue.path.includes("resultScore"));
+
+    if (hasScoreError) {
+      return {
+        success: false,
+        message: activityScoreRangeMessage,
+        fieldErrors: parsed.error.flatten().fieldErrors
+      };
+    }
+
     return validationErrorResult(parsed.error.flatten().fieldErrors);
   }
 

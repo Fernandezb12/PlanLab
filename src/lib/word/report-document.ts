@@ -121,11 +121,11 @@ const tableBodyCell = (text: string, fill: string) =>
   });
 
 const statusTextColor = (status: string) => {
-  if (status === "Estable") {
+  if (status === "Destacado" || status === "Estable") {
     return colors.successText;
   }
 
-  if (status === "Seguimiento" || status === "Baja asistencia") {
+  if (status === "Seguimiento sugerido" || status === "Baja asistencia") {
     return colors.warningText;
   }
 
@@ -176,7 +176,7 @@ const studentTable = (data: ReportExportData) => {
 };
 
 const followUpSection = (data: ReportExportData) => {
-  const followUpStudents = data.students.filter((student) => student.statusLabel !== "Estable");
+  const followUpStudents = data.followUpStudents;
 
   if (!followUpStudents.length) {
     return [];
@@ -191,11 +191,11 @@ const followUpSection = (data: ReportExportData) => {
           new TableRow({
             children: [
               new TableCell({
-                shading: { type: ShadingType.CLEAR, fill: colors.riskBg },
+                shading: { type: ShadingType.CLEAR, fill: student.countsAsAlert ? colors.riskBg : colors.warningBg },
                 borders: {
                   top: softBorder,
                   bottom: softBorder,
-                  left: { style: BorderStyle.SINGLE, size: 18, color: colors.riskText },
+                  left: { style: BorderStyle.SINGLE, size: 18, color: student.countsAsAlert ? colors.riskText : colors.warningText },
                   right: softBorder
                 },
                 margins: { top: 130, bottom: 130, left: 160, right: 160 },
@@ -289,7 +289,7 @@ export const buildReportWordBuffer = async ({ data }: BuildReportWordDocumentInp
             width: { size: 100, type: WidthType.PERCENTAGE },
             rows: [
               infoRow("Promedio general", formatScore(data.averageScore), "Asistencia promedio", formatPercent(data.attendanceAverage)),
-              infoRow("Estudiantes con alerta", data.students.filter((student) => student.statusLabel !== "Estable").length, "Registros analizados", data.recordsAnalyzed)
+              infoRow("Estudiantes con alerta", data.alertCount, "Registros analizados", data.recordsAnalyzed)
             ]
           }),
           ...followUpSection(data),

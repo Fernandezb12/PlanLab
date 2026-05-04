@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState, useTransition } from "react";
 
 import { Modal } from "@/components/ui/modal";
 import { type ActivityActionResult, saveActivityRecordsAction } from "@/features/activities/actions";
-import { getActivityStatusLabel, type SaveActivityRecordsInput } from "@/lib/validations/activities";
+import { activityScoreRangeMessage, getActivityStatusLabel, type SaveActivityRecordsInput } from "@/lib/validations/activities";
 
 type StudentRecord = {
   id: string;
@@ -59,7 +59,7 @@ const buildInitialRows = (activity: ActivityRecord | null, students: StudentReco
       return {
         studentId: student.id,
         attended: existingRecord?.attended ?? true,
-        resultScore: existingRecord?.result_score ?? null,
+        resultScore: typeof existingRecord?.result_score === "number" && existingRecord.result_score > 5 ? existingRecord.result_score / 20 : (existingRecord?.result_score ?? null),
         observation: existingRecord?.observation ?? ""
       };
     });
@@ -111,6 +111,19 @@ export const ActivityRecordsDialog = ({ isOpen, activity, students, existingReco
     }
 
     setServerError(null);
+
+    const hasInvalidScore = rows.some((row) => {
+      if (row.resultScore === null) {
+        return false;
+      }
+
+      return !Number.isFinite(row.resultScore) || row.resultScore < 0 || row.resultScore > 5;
+    });
+
+    if (hasInvalidScore) {
+      setServerError(activityScoreRangeMessage);
+      return;
+    }
 
     startTransition(async () => {
       const result = await saveActivityRecordsAction({
@@ -208,6 +221,8 @@ export const ActivityRecordsDialog = ({ isOpen, activity, students, existingReco
 
                     <input
                       type="number"
+                      min={0}
+                      max={5}
                       step="0.1"
                       inputMode="decimal"
                       value={row.resultScore ?? ""}

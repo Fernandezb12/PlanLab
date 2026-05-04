@@ -10,6 +10,10 @@ export type StudentReportStatusValue =
 export type StudentReportSeverity = "success" | "neutral" | "warning" | "danger";
 
 export type ObservationTone = "positive" | "negative" | "general" | "none";
+export type ObservationClassification = {
+  type: "positive" | "negative" | "neutral" | "empty";
+  countsAsAlert: boolean;
+};
 
 export type StudentReportStatus = {
   status: StudentReportStatusValue;
@@ -39,7 +43,9 @@ const positiveObservationTerms = [
   "responsable",
   "cumplio",
   "buena exposicion",
-  "buen desempeno"
+  "buen desempeno",
+  "correcto",
+  "satisfactoriamente"
 ];
 
 const negativeObservationTerms = [
@@ -51,7 +57,10 @@ const negativeObservationTerms = [
   "requiere apoyo",
   "bajo compromiso",
   "no entrego",
-  "incumplio"
+  "incumplio",
+  "no presento",
+  "dificultad",
+  "necesita refuerzo"
 ];
 
 const normalizeText = (value: string) =>
@@ -61,25 +70,39 @@ const normalizeText = (value: string) =>
     .toLowerCase()
     .trim();
 
-export const classifyObservationTone = (observation?: string | null): ObservationTone => {
+export const classifyObservation = (observation?: string | null): ObservationClassification => {
   const normalized = observation ? normalizeText(observation) : "";
 
   if (!normalized) {
-    return "none";
+    return { type: "empty", countsAsAlert: false };
   }
 
   if (negativeObservationTerms.some((term) => normalized.includes(term))) {
-    return "negative";
+    return { type: "negative", countsAsAlert: false };
   }
 
   if (positiveObservationTerms.some((term) => normalized.includes(term))) {
-    return "positive";
+    return { type: "positive", countsAsAlert: false };
   }
 
-  return "general";
+  return { type: "neutral", countsAsAlert: false };
 };
 
-const normalizeScoreToFive = (score: number | null | undefined) => {
+export const classifyObservationTone = (observation?: string | null): ObservationTone => {
+  const classification = classifyObservation(observation);
+
+  if (classification.type === "empty") {
+    return "none";
+  }
+
+  if (classification.type === "neutral") {
+    return "general";
+  }
+
+  return classification.type;
+};
+
+export const normalizeScoreToFive = (score: number | null | undefined) => {
   if (typeof score !== "number" || Number.isNaN(score)) {
     return null;
   }
@@ -98,6 +121,7 @@ export const getStudentReportStatus = ({
   const normalizedScore = normalizeScoreToFive(averageScore);
   const hasAttendance = hasMetric(attendanceAverage);
   const hasScore = normalizedScore !== null;
+  const observationClassification = classifyObservation(observation);
   const observationTone = classifyObservationTone(observation);
 
   if (!hasRecords || (!hasAttendance && !hasScore)) {
@@ -105,7 +129,7 @@ export const getStudentReportStatus = ({
       status: "sin_registro",
       label: "Sin registro",
       severity: "neutral",
-      reason: "No hay datos suficientes para evaluar el desempeño.",
+      reason: "Sin registros suficientes.",
       suggestedAction: "Completar registros pendientes.",
       countsAsAlert: false,
       observationTone
@@ -132,7 +156,7 @@ export const getStudentReportStatus = ({
       status: "bajo_rendimiento",
       label: "Bajo rendimiento",
       severity: "danger",
-      reason: "Promedio inferior al nivel mínimo esperado.",
+      reason: "Promedio inferior al nivel esperado.",
       suggestedAction: "Planificar refuerzo individual y verificar comprensión en la próxima actividad.",
       countsAsAlert: true,
       observationTone
@@ -157,11 +181,11 @@ export const getStudentReportStatus = ({
       label: "Seguimiento sugerido",
       severity: "warning",
       reason:
-        observationTone === "negative"
-          ? "La observación sugiere acompañamiento formativo."
+        observationClassification.type === "negative"
+          ? "Observación docente con seguimiento sugerido."
           : "El desempeño está en rango básico y conviene acompañar el avance.",
       suggestedAction:
-        observationTone === "negative"
+        observationClassification.type === "negative"
           ? "Revisar la situación descrita y reforzar acuerdos de trabajo."
           : "Reforzar conceptos puntuales en próximas actividades.",
       countsAsAlert: false,
@@ -169,7 +193,7 @@ export const getStudentReportStatus = ({
     };
   }
 
-  if (normalizedScore !== null && normalizedScore >= 4.5 && (!hasAttendance || attendanceAverage >= 90)) {
+  if (normalizedScore !== null && normalizedScore >= 4.5 && (!hasAttendance || (typeof attendanceAverage === "number" && attendanceAverage >= 90))) {
     return {
       status: "destacado",
       label: "Destacado",

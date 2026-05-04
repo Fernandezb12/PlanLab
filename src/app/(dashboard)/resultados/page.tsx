@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { ResultsPanel } from "@/features/results/results-panel";
+import { getStudentReportStatus, normalizeScoreToFive } from "@/lib/reports/status";
 import { createClient } from "@/lib/supabase/server";
 import type { GenerateReinforcementInput } from "@/lib/validations/ai";
 import { getActivityStatusLabel } from "@/lib/validations/activities";
@@ -106,6 +107,7 @@ export default async function ResultadosPage() {
 
   const numericScores = recordsWithActivity
     .map((record) => record.result_score)
+    .map((score) => normalizeScoreToFive(score))
     .filter((score): score is number => typeof score === "number");
 
   const attendanceAverage =
@@ -118,7 +120,9 @@ export default async function ResultadosPage() {
     const groupStudents = students.filter((student) => student.group_id === group.id);
     const groupActivities = activities.filter((activity) => activity.group_id === group.id);
     const groupRecords = recordsWithActivity.filter((record) => record.group_id === group.id);
-    const groupScores = groupRecords.map((record) => record.result_score).filter((score): score is number => typeof score === "number");
+    const groupScores = groupRecords
+      .map((record) => normalizeScoreToFive(record.result_score))
+      .filter((score): score is number => typeof score === "number");
     const groupAttendance = groupRecords.length ? (groupRecords.filter((record) => record.attended).length / groupRecords.length) * 100 : null;
     const groupAverage = average(groupScores);
     const recordedActivitiesCount = new Set(groupRecords.map((record) => record.activity_id)).size;
@@ -132,9 +136,9 @@ export default async function ResultadosPage() {
 
     let tone: "stable" | "watch" | "risk" = "stable";
 
-    if ((groupAverage !== null && groupAverage < 60) || (groupAttendance !== null && groupAttendance < 70)) {
+    if ((groupAverage !== null && groupAverage < 3) || (groupAttendance !== null && groupAttendance < 80)) {
       tone = "risk";
-    } else if ((groupAverage !== null && groupAverage < 75) || (groupAttendance !== null && groupAttendance < 85)) {
+    } else if ((groupAverage !== null && groupAverage < 3.5) || (groupAttendance !== null && groupAttendance < 85)) {
       tone = "watch";
     }
 
@@ -171,23 +175,32 @@ export default async function ResultadosPage() {
   const studentAlerts = students
     .map((student) => {
       const studentRecords = recordsWithActivity.filter((record) => record.student_id === student.id);
-      const studentScores = studentRecords.map((record) => record.result_score).filter((score): score is number => typeof score === "number");
+      const studentScores = studentRecords
+        .map((record) => normalizeScoreToFive(record.result_score))
+        .filter((score): score is number => typeof score === "number");
       const studentAverage = average(studentScores);
-      const absenceRate = studentRecords.length
-        ? (studentRecords.filter((record) => !record.attended).length / studentRecords.length) * 100
-        : null;
+      const attendanceRate = studentRecords.length ? (studentRecords.filter((record) => record.attended).length / studentRecords.length) * 100 : null;
+      const observation = studentRecords.map((record) => record.observation?.trim()).find(Boolean) ?? null;
+      const status = getStudentReportStatus({
+        attendanceAverage: attendanceRate,
+        averageScore: studentAverage,
+        hasRecords: studentRecords.length > 0,
+        observation
+      });
 
       if (!studentRecords.length) {
         return null;
       }
 
-      if ((studentAverage !== null && studentAverage < 60) || (absenceRate !== null && absenceRate >= 40)) {
+      if (status.countsAsAlert) {
         return {
           id: student.id,
           full_name: student.full_name,
           group_id: student.group_id,
           average: studentAverage,
-          absenceRate
+          attendanceRate,
+          statusLabel: status.label,
+          reason: status.reason
         };
       }
 
@@ -209,7 +222,7 @@ export default async function ResultadosPage() {
     ...studentAlerts.slice(0, 3).map((student) => ({
       id: `student-${student.id}`,
       tone: "warning" as const,
-      text: `${student.full_name} presenta alerta por ${student.average !== null && student.average < 60 ? "bajo rendimiento" : "inasistencia recurrente"}.`
+      text: `${student.full_name} presenta alerta: ${student.reason}`
     })),
     ...(pendingActivitiesCount > 0
       ? [

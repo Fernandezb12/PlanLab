@@ -12,6 +12,8 @@ export const activityStatusLabels: Record<(typeof activityStatuses)[number], str
 export const getActivityStatusLabel = (status: string) =>
   activityStatusLabels[status as keyof typeof activityStatusLabels] ?? "Programada";
 
+export const activityScoreRangeMessage = "La nota debe estar entre 0 y 5.0.";
+
 export const activitySchema = z.object({
   id: z.string().uuid().optional(),
   lessonPlanId: z.string().uuid("Selecciona un plan válido"),
@@ -33,7 +35,7 @@ export const activityRecordInputSchema = z.object({
     }
 
     if (typeof value === "number") {
-      return Number.isNaN(value) ? null : value;
+      return Number.isFinite(value) ? value : Number.NaN;
     }
 
     if (typeof value === "string") {
@@ -44,11 +46,11 @@ export const activityRecordInputSchema = z.object({
       }
 
       const parsedValue = Number(normalizedValue);
-      return Number.isNaN(parsedValue) ? value : parsedValue;
+      return Number.isFinite(parsedValue) ? parsedValue : Number.NaN;
     }
 
     return value;
-  }, z.number({ invalid_type_error: "Ingresa una nota numérica válida" }).nullable()),
+  }, z.number({ invalid_type_error: activityScoreRangeMessage }).min(0, activityScoreRangeMessage).max(5, activityScoreRangeMessage).nullable()),
   observation: z.string().trim().max(500, "La observación es demasiado larga").optional().or(z.literal(""))
 });
 

@@ -47,6 +47,7 @@ type ResultsPanelProps = {
 
 const formatScore = (value: number | null, fallback = "Sin notas") => (value === null ? fallback : value.toFixed(1));
 const formatPercent = (value: number | null, fallback = "Sin registros") => (value === null ? fallback : `${Math.round(value)}%`);
+const scoreBarValue = (value: number | null) => (value === null ? 0 : Math.max(8, Math.min(100, value <= 5 ? (value / 5) * 100 : value)));
 
 const toneStyles: Record<GroupSummary["tone"], string> = {
   stable: "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200",
@@ -161,7 +162,7 @@ export const ResultsPanel = ({
                         <span>{formatScore(group.averageScore)}</span>
                       </div>
                       <div className="h-2 overflow-hidden rounded-full bg-slate-200 dark:bg-white/10">
-                        <AnimatedBar value={Math.max(8, Math.min(100, group.averageScore ?? 0))} className="h-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-700" />
+                        <AnimatedBar value={scoreBarValue(group.averageScore)} className="h-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 transition-all duration-700" />
                       </div>
                     </div>
 

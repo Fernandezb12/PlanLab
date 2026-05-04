@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { DashboardPanel } from "@/features/dashboard/dashboard-panel";
+import { getStudentReportStatus, normalizeScoreToFive } from "@/lib/reports/status";
 import { createClient } from "@/lib/supabase/server";
 
 const quickActions = [
@@ -141,7 +142,9 @@ export default async function DashboardHomePage() {
   const records = activityRecordsData ?? [];
   const upcomingCount = upcomingActivities?.length ?? 0;
 
-  const numericScores = records.map((record) => record.result_score).filter((score): score is number => typeof score === "number");
+  const numericScores = records
+    .map((record) => normalizeScoreToFive(record.result_score))
+    .filter((score): score is number => typeof score === "number");
   const overallAverage = average(numericScores);
   const pendingActivities = activities.filter((activity) => !records.some((record) => record.activity_id === activity.id));
 
@@ -150,7 +153,9 @@ export default async function DashboardHomePage() {
       const activity = activities.find((currentActivity) => currentActivity.id === record.activity_id);
       return activity?.group_id === group.id;
     });
-    const groupScores = groupRecords.map((record) => record.result_score).filter((score): score is number => typeof score === "number");
+    const groupScores = groupRecords
+      .map((record) => normalizeScoreToFive(record.result_score))
+      .filter((score): score is number => typeof score === "number");
     const groupAverage = average(groupScores);
     const groupAttendance = groupRecords.length ? (groupRecords.filter((record) => record.attended).length / groupRecords.length) * 100 : null;
 
@@ -165,11 +170,18 @@ export default async function DashboardHomePage() {
 
   const studentAlertsCount = students.filter((student) => {
     const studentRecords = records.filter((record) => record.student_id === student.id);
-    const studentScores = studentRecords.map((record) => record.result_score).filter((score): score is number => typeof score === "number");
+    const studentScores = studentRecords
+      .map((record) => normalizeScoreToFive(record.result_score))
+      .filter((score): score is number => typeof score === "number");
     const studentAverage = average(studentScores);
-    const absenceRate = studentRecords.length ? (studentRecords.filter((record) => !record.attended).length / studentRecords.length) * 100 : null;
+    const attendanceRate = studentRecords.length ? (studentRecords.filter((record) => record.attended).length / studentRecords.length) * 100 : null;
+    const status = getStudentReportStatus({
+      attendanceAverage: attendanceRate,
+      averageScore: studentAverage,
+      hasRecords: studentRecords.length > 0
+    });
 
-    return Boolean(studentRecords.length) && ((studentAverage !== null && studentAverage < 60) || (absenceRate !== null && absenceRate >= 40));
+    return status.countsAsAlert;
   }).length;
 
   const alerts = [
@@ -182,7 +194,7 @@ export default async function DashboardHomePage() {
         ]
       : []),
     ...groupSummaries
-      .filter((group) => (group.average !== null && group.average < 60) || (group.attendance !== null && group.attendance < 70))
+      .filter((group) => (group.average !== null && group.average < 3) || (group.attendance !== null && group.attendance < 80))
       .slice(0, 2)
       .map((group) => ({
         id: `group-${group.id}`,
